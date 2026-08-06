@@ -1,0 +1,363 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SM Markets - Homepage with Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-surface": "#191c1d",
+                        "primary-container": "#0046be",
+                        "border-subtle": "#e0e0e0",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#afc1ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-white": "#FFFFFF",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-fixed": "#ffe08b",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#fecb00",
+                        "on-tertiary-fixed": "#410002",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#434654",
+                        "surface-dim": "#d9dadb",
+                        "promo-orange": "#FF8F1C",
+                        "secondary-fixed-dim": "#f1c100",
+                        "surface-variant": "#e1e3e4",
+                        "surface-tint": "#2155cc",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary-fixed-variant": "#93000d",
+                        "tertiary": "#7a0008",
+                        "on-tertiary-container": "#ffafa7",
+                        "secondary": "#745b00",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-error": "#ffffff",
+                        "primary": "#00328c",
+                        "outline-variant": "#c3c6d6",
+                        "on-secondary-fixed-variant": "#584400",
+                        "outline": "#737685",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-fixed": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#a60010",
+                        "on-primary-fixed-variant": "#003da9",
+                        "text-dark": "#1a1a1a",
+                        "background": "#f8f9fa",
+                        "on-secondary-container": "#6e5700",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "4px",
+                        "gutter-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "stack-md": "12px",
+                        "stack-lg": "24px"
+                    },
+                    "fontFamily": {
+                        "title-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"],
+                        "label-bold": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #f8f9fa; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Modal Overlay Styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+        
+        /* Scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+<!-- TopNavBar -->
+<nav class="bg-primary dark:bg-primary text-on-primary dark:text-on-primary docked full-width top-0 sticky bg-primary border-b border-white/10 shadow-md flex justify-between items-center w-full h-16 px-margin-desktop z-40">
+<div class="flex items-center gap-4">
+<span class="text-headline-lg font-headline-lg font-bold text-white tracking-tight">SM MARKETS</span>
+<div class="hidden lg:flex items-center gap-2 border border-white/30 rounded-full px-4 py-1 ml-4 bg-white/10 hover:bg-white/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-white text-sm">location_on</span>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-white/80 leading-none">Default Store</span>
+<span class="text-xs font-bold text-white leading-none">Store City</span>
+</div>
+</div>
+</div>
+<div class="flex-1 max-w-2xl mx-8 relative">
+<input class="w-full h-10 pl-4 pr-12 rounded bg-white text-on-surface border-none focus:ring-2 focus:ring-secondary-container text-body-sm font-body-sm" placeholder="Se..." type="text">
+<button class="absolute right-0 top-0 h-10 w-12 flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 bg-white text-primary px-4 py-2 rounded font-label-bold text-label-bold hover:bg-surface-container transition-colors duration-200">
+<span class="material-symbols-outlined text-sm">person</span>
+                Login or Register
+            </button>
+<button class="text-white hover:bg-primary-container p-2 rounded-full transition-colors duration-200 relative">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</div>
+</nav>
+<div class="flex">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] hidden md:flex flex-col bg-surface border-r border-border-subtle docked full-height left-0 w-64 overflow-y-auto no-scrollbar z-30">
+<div class="p-margin-mobile border-b border-border-subtle">
+<div class="w-full aspect-[2/1] rounded bg-surface-variant overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="A brightly colored promotional banner for SM Price Drop, featuring various grocery items like snacks, drinks, and household goods scattered against a vibrant pink and purple background with bold sale text. The aesthetic is loud, energetic, and typical of Southeast Asian retail sale promotions." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfYKWQf6GO0Fw2FPUTGrsJtJBUj_IHPKZOoLtXPNNSg0wRPsmXU7VFPOGfFjvcf9jdstlpWjVHaoND-MrGdAJxrO6gym8yLVTkl4i02ooEXmU4gkjyD7aahsYwsAeK2MUgkoSCPkpkNy-t-haI8YTPY7JeL-5mv5tbEh3k_nAmEBQSP3fpiR7BFlYMQ1SrRKVrBVnyg-ffPkwvv0vp5dTRK0huSXewygw3716cVLY9ElKzaWyu9bjbcQ">
+</div>
+<h3 class="text-title-md font-title-md text-primary font-bold mb-1">For you</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Browse our daily selections</p>
+</div>
+<div class="py-2 border-b border-border-subtle">
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<span class="text-body-sm font-body-sm font-semibold">Recipe</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-primary">article</span>
+<span class="text-body-sm font-body-sm font-semibold">Blog</span>
+</a>
+</div>
+<div class="py-4">
+<h4 class="px-margin-mobile text-title-md font-title-md text-primary font-bold mb-2">Categories</h4>
+<nav class="flex flex-col">
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">verified</span>
+<span class="text-body-sm font-body-sm font-semibold">Only in SM Markets</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-primary font-bold bg-primary-fixed/20 border-l-4 border-primary hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-primary">nutrition</span>
+<span class="text-body-sm font-body-sm font-bold">Fresh Produce</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">restaurant</span>
+<span class="text-body-sm font-body-sm font-semibold">Fresh Meat &amp; Seafood</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">icecream</span>
+<span class="text-body-sm font-body-sm font-semibold">Frozen Goods</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">microwave</span>
+<span class="text-body-sm font-body-sm font-semibold">Ready To Heat &amp; Eat Items</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">cooking</span>
+<span class="text-body-sm font-body-sm font-semibold">Ready To Cook</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">egg_alt</span>
+<span class="text-body-sm font-body-sm font-semibold">Chilled &amp; Dairy Items</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-md px-margin-mobile text-on-surface-variant hover:bg-surface-container-high transition-all group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">bakery_dining</span>
+<span class="text-body-sm font-body-sm font-semibold">Bakery</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Main Content Area (Blurred by Modal Overlay) -->
+<main class="ml-0 md:ml-64 p-gutter-desktop w-full max-w-[calc(100vw-256px)] blur-sm pointer-events-none transition-all duration-300">
+<!-- Featured Products Section (Yellow) -->
+<section class="bg-secondary-container p-6 rounded-lg mb-8 relative">
+<h2 class="text-headline-lg font-headline-lg text-primary font-bold mb-6">Featured Products</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<!-- Product Card 1 -->
+<div class="bg-white p-4 rounded border border-border-subtle flex flex-col hover:shadow-md transition-shadow relative">
+<div class="aspect-square mb-4 bg-surface-container-low rounded p-2 flex items-center justify-center">
+<img class="max-h-full object-contain" data-alt="A clear, high-resolution product shot of a stand-up pouch of Coco Mama Fresh Gata (coconut milk). The packaging is white with green and blue accents, showing coconuts and a pour of thick coconut milk. Bright, clean lighting typical of e-commerce photography against a pure white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHHsHOTFfZnjiLCTMYuYo1NJKhbgdJyNQLBGDEbXtojCVTqyL0nESzmWn74VhhLNkQdNdl1F0bRb17Oqb5wZR1_0H45np-GPJVOtWmOUfukk8obd_5pdTozWnJP52sCxiC_aItW9m-Evz9YPwa3Zsml_QX-EMfYMhqsmiCm64QyMOVZDwO_VEC6erFow5gaA06GpoPKU8gjkF40eiKRhqUUUqLcmi4ndWSCTGrr5W4TpzFrD-D8Jv2vQ">
+</div>
+<div class="flex gap-2 mb-2">
+<span class="bg-primary-fixed text-primary text-[10px] font-bold px-2 py-0.5 rounded">200ML</span>
+</div>
+<h3 class="text-body-sm font-body-sm text-on-surface font-semibold mb-2 line-clamp-2 min-h-[40px]">Coco Mama Fresh Gata | 200ml</h3>
+<div class="mt-auto flex justify-between items-end mb-4">
+<span class="text-price-display font-price-display text-text-dark">₱34.75</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-primary text-white font-label-bold text-label-bold py-2 rounded hover:bg-primary-fixed-variant transition-colors">Add to Cart</button>
+<button class="w-10 h-10 border border-outline-variant text-primary rounded flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white p-4 rounded border border-border-subtle flex flex-col hover:shadow-md transition-shadow relative">
+<div class="aspect-square mb-4 bg-surface-container-low rounded p-2 flex items-center justify-center">
+<img class="max-h-full object-contain" data-alt="A clean product shot of Dari Creme Classic Butter Salted in a rectangular plastic tub. The packaging is mostly yellow with blue branding. The lighting is even and bright, highlighting the product clearly against a white background for an online grocery store." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjeja2MY6VFDE3tDupTlJf-a87RlqShBgsJp4SQ2OwNU5Uq_A81RvOVj6Okguno2vuB7DubQsIarMMpuZCee9SN6P_zguw1ea4l7qCP6bW0m_rORoCTeisWIW3UcY-G2tG9J1yisvutx3234A0j7mKeKzRhbG0yZqT8q71QS2vGz3iZDBSyV1z-p5mj72SqtA53giZ9-1wzcNWaXRc9XbF4IeHCXZywQUnnqJR9Nu877wFyo6ty0XL6w">
+</div>
+<div class="flex gap-2 mb-2">
+<span class="bg-primary-fixed text-primary text-[10px] font-bold px-2 py-0.5 rounded">200G</span>
+<span class="bg-error text-white text-[10px] font-bold px-2 py-0.5 rounded">14% OFF</span>
+</div>
+<h3 class="text-body-sm font-body-sm text-on-surface font-semibold mb-2 line-clamp-2 min-h-[40px]">Dari Creme Butter Salted | 200g</h3>
+<div class="mt-auto flex justify-between items-end mb-4">
+<div class="flex items-center gap-2">
+<span class="text-price-display font-price-display text-error">₱57.00</span>
+<span class="text-xs text-outline line-through">₱66.50</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-primary text-white font-label-bold text-label-bold py-2 rounded hover:bg-primary-fixed-variant transition-colors">Add to Cart</button>
+<button class="w-10 h-10 border border-outline-variant text-primary rounded flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white p-4 rounded border border-border-subtle flex flex-col hover:shadow-md transition-shadow hidden lg:flex relative">
+<div class="aspect-square mb-4 bg-surface-container-low rounded p-2 flex items-center justify-center">
+<img class="max-h-full object-contain" data-alt="A well-lit product photo of a frozen bag of Purefoods Chicken Breast Nuggets. The bag is white with red and yellow branding, showing a picture of crispy golden nuggets. Professional, clean e-commerce style photography on a white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8lo7fYHt_TcR44zJr0_1v48h0cjAkejcFw7VCrRRV-dcNp-Ywry1yfocjuT5B8-K8C7pMAQjNPc1K0HwmyocNce6pLq1piHmHcy6KqE1qbXYoAnSl5Sdy6gHtJfic1bwafWFVCNSk9SWASQA6PTuIo3pZGAx3e6EnwfivofhR_2ZKk1YH8kbHKilHqrK0miJkw9p9ySVttmASsGZNkf-fpBccUEaCSBkWy2vvXggwGZa4dtdHpXi3eQ">
+</div>
+<div class="flex gap-2 mb-2">
+<span class="bg-primary-fixed text-primary text-[10px] font-bold px-2 py-0.5 rounded">200G</span>
+</div>
+<h3 class="text-body-sm font-body-sm text-on-surface font-semibold mb-2 line-clamp-2 min-h-[40px]">PureFoods Chicken Breast Nuggets Crispy 'N Juicy | 200g</h3>
+<div class="mt-auto flex justify-between items-end mb-4">
+<span class="text-price-display font-price-display text-text-dark">₱114.00</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-primary text-white font-label-bold text-label-bold py-2 rounded hover:bg-primary-fixed-variant transition-colors">Add to Cart</button>
+<button class="w-10 h-10 border border-outline-variant text-primary rounded flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Dark Overlay for Modal -->
+<div class="fixed inset-0 modal-overlay z-40 transition-opacity duration-300"></div>
+<!-- Chat Modal Overlay (Slide in from right) -->
+<div class="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-2xl z-50 flex flex-col transform transition-transform duration-300 ease-in-out border-l border-border-subtle">
+<!-- Modal Header -->
+<div class="bg-primary text-white p-4 flex justify-between items-center shrink-0 shadow-sm relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary relative"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw" alt="SM Markets Assistant Mascot" class="w-full h-full rounded-full object-cover"><span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span></div>
+<div>
+<h2 class="font-title-md text-title-md font-bold leading-tight">SM Markets Assistant</h2>
+<span class="text-xs text-primary-fixed-dim">Online • Usually replies in minutes</span>
+</div>
+</div>
+<button aria-label="Close chat" class="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Message History Area -->
+<div class="flex-1 overflow-y-auto p-4 bg-surface flex flex-col gap-4">
+<!-- System Message / Timestamp -->
+<div class="text-center">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider bg-surface-container-high px-2 py-1 rounded-full">Today, 10:42 AM</span>
+</div>
+<!-- Bot Message (Greeting) -->
+<div class="flex gap-2 max-w-[85%] self-start">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm filled">smart_toy</span>
+</div>
+<div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-border-subtle text-body-sm text-on-surface">
+<p class="">Hello! 👋 Welcome to SM Markets. How can I help you with your groceries today?</p>
+</div>
+</div>
+<!-- Bot Message (Suggestion Chips) -->
+<div class="flex gap-2 max-w-[85%] self-start mt-1 pl-10">
+<div class="flex flex-wrap gap-2">
+<button class="text-xs bg-white border border-primary text-primary px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors font-medium">Track Order</button>
+<button class="text-xs bg-white border border-primary text-primary px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors font-medium">Latest Promos</button>
+<button class="text-xs bg-white border border-primary text-primary px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors font-medium">Store Hours</button>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-2 max-w-[85%] self-end mt-2">
+<div class="bg-primary text-white p-3 rounded-2xl rounded-tr-none shadow-sm text-body-sm">
+<p class="">Do you have any fresh salmon available at the default store?</p>
+</div>
+</div>
+<!-- Bot Message (Loading/Typing Indicator) -->
+<div class="flex gap-2 max-w-[85%] self-start mt-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-sm filled">smart_toy</span>
+</div>
+<div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-border-subtle flex items-center gap-1 h-10 w-16">
+<div class="w-2 h-2 bg-primary/40 rounded-full animate-bounce"></div>
+<div class="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+<div class="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="bg-white p-3 border-t border-border-subtle shrink-0">
+<div class="flex items-end gap-2 bg-surface-container-low rounded-xl border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary p-1 transition-all">
+<button class="p-2 text-outline hover:text-primary transition-colors shrink-0 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none text-body-sm py-2 px-1 max-h-32 text-on-surface" placeholder="Type your message..." rows="1" style="min-height: 40px;"></textarea>
+<button class="p-2 bg-primary text-white rounded-full hover:bg-primary-fixed-variant transition-colors shrink-0 mb-0.5 mr-0.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+<div class="text-center mt-2">
+<span class="text-[10px] text-outline">Powered by SM Assistant AI</span>
+</div>
+</div>
+</div>
+<!-- Floating Chat Button (Obscured state simulation) -->
+<div class="fixed bottom-6 right-6 z-30 opacity-50 pointer-events-none hidden md:block">
+<button class="w-14 h-14 bg-secondary-container rounded-full shadow-lg flex items-center justify-center text-primary relative">
+<span class="material-symbols-outlined text-[28px] filled">chat</span>
+</button>
+</div>
+
+
+</body></html>

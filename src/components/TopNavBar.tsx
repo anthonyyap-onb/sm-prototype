@@ -19,8 +19,14 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
       {/* Logo */}
       <div className="flex items-center gap-4">
         <a href="#" className="flex items-center" aria-label="SM Markets home">
-          <span className="text-2xl font-bold text-white tracking-tight">SM MARKETS</span>
+          <img
+            src="https://lh3.googleusercontent.com/aida/AP1WRLugqu8ObLD9oE2v0fclYMM881pGZOE_d9EaFNK9AFi9cilPWcHt2_TL_cgZAZKC49OZZikoN_c29h4VQCRi1FLw3fCyahN76tHNzpfWbTnx2Vow6wyYxNlZ4W6WHOfRDFJfA2fveuTxMw0kukACXkI3EpMGIL3RSDdOcz00B5F7soNloKbDYB8a0DVlBN4DoipEWV_J7nJxZVTc5kbMlSXSuPsc3PULztSWobcx8WeMex1f-xqsI3rKMAk"
+            alt="SM MARKETS Logo"
+            className="h-8 object-contain"
+            referrerPolicy="no-referrer"
+          />
         </a>
+        
 
         {/* Store picker */}
         <div className="relative">

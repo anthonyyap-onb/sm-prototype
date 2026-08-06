@@ -16,9 +16,7 @@ export default function SideNavBar() {
     <aside className="fixed left-0 top-16 h-[calc(100vh-64px)] hidden md:flex flex-col bg-[var(--color-surface)] border-r border-[var(--color-border-subtle)] w-64 overflow-y-auto custom-scrollbar z-40">
       {/* Promo banner */}
       <div className="p-4 border-b border-[var(--color-border-subtle)]">
-        <div className="w-full aspect-[2/1] rounded overflow-hidden mb-4 bg-gradient-to-br from-[var(--color-secondary-container)] to-[var(--color-promo-orange)] flex items-center justify-center">
-          <span className="text-xs font-bold text-[var(--color-primary)] text-center px-2">SM Price Drop Promos</span>
-        </div>
+        <img className="w-full h-auto rounded mb-4 object-cover" data-alt="A promotional banner for SM Price Drop featuring various grocery items like hotdogs, canned goods, and snacks on a bright pink and yellow background. Modern retail aesthetic, high contrast." src="https://smmarkets.ph/media/resized/1443x600/m/a/mailer_july_24_-_aug_6_.jpeg"/>
         <h3 className="text-lg font-bold text-[var(--color-primary)] mb-1">For you</h3>
         <p className="text-sm text-[var(--color-on-surface-variant)]">Browse our daily selections</p>
       </div>

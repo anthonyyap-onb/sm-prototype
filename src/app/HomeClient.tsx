@@ -1,0 +1,61 @@
+'use client';
+
+import { useState } from 'react';
+import type { Store, StoreProducts } from '@/types';
+import TopNavBar from '@/components/TopNavBar';
+import SideNavBar from '@/components/SideNavBar';
+import ProductGrid from '@/components/ProductGrid';
+import ChatModal from '@/components/ChatModal';
+import ChatFAB from '@/components/ChatFAB';
+
+const DEFAULT_STORE_ID = 'sm-megamall';
+
+interface HomeClientProps {
+  stores: Store[];
+  allStoreProducts: StoreProducts[];
+}
+
+export default function HomeClient({ stores, allStoreProducts }: HomeClientProps) {
+  const [selectedStoreId, setSelectedStoreId] = useState(DEFAULT_STORE_ID);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const storeData = allStoreProducts.find((sp) => sp.storeId === selectedStoreId)
+    ?? allStoreProducts[0];
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <TopNavBar
+        stores={stores}
+        selectedStoreId={selectedStoreId}
+        onStoreChange={setSelectedStoreId}
+      />
+
+      <div className="flex flex-1 overflow-hidden">
+        <SideNavBar />
+
+        {/* Main content — blurs when chat is open */}
+        <main
+          className={`flex-1 md:ml-64 p-10 overflow-y-auto bg-[var(--color-surface-bright)] transition-all duration-300 ${
+            isChatOpen ? 'blur-sm pointer-events-none select-none' : ''
+          }`}
+        >
+          <ProductGrid
+            title="Featured Products"
+            products={storeData.featuredProducts}
+            sectionClassName="bg-[var(--color-secondary-container)] mb-8"
+            titleClassName="text-[var(--color-primary)]"
+          />
+          <ProductGrid
+            title="SM Price Drop"
+            products={storeData.priceDrop}
+            sectionClassName="bg-[var(--color-error)]"
+            titleClassName="text-white"
+          />
+        </main>
+      </div>
+
+      <ChatFAB onClick={() => setIsChatOpen((v) => !v)} isOpen={isChatOpen} />
+      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+    </div>
+  );
+}

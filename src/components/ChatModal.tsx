@@ -10,7 +10,11 @@ interface ChatModalProps {
   inventoryData: any[];
 }
 
-const SUGGESTION_CHIPS = ['Track Order', 'Latest Promos', 'Store Hours'];
+const SUGGESTION_CHIPS = [
+  'Ingredients for Sinigang',
+  'Check chicken nugget stock',
+  'What can I cook today?'
+];
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
 
@@ -19,10 +23,20 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
 
-  console.log(`Location: ${selectedLocation}`);
-  console.log('Inventory Data:', inventoryData);
-
-  const { messages, sendMessage, status, error } = useChat();
+  const { messages, sendMessage, status, error } = useChat({
+    messages: [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!',
+          },
+        ],
+      },
+    ],
+  });
 
   const isLoading = status === 'submitted' || status === 'streaming';
 

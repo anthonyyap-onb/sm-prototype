@@ -47,8 +47,16 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
         {/* Header */}
         <div className="bg-[var(--color-primary)] text-white p-4 flex justify-between items-center shrink-0 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center relative shrink-0">
+            {/* <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center relative shrink-0">
               <span className="material-symbols-outlined fill text-[var(--color-primary)] text-lg">smart_toy</span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+            </div> */}
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary relative">
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw"
+                alt="SM Markets Assistant Mascot"
+                className="w-full h-full rounded-full object-cover"
+              />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
             </div>
             <div>

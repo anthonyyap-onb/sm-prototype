@@ -1,0 +1,194 @@
+[
+  {
+    "storeId": "sm-megamall",
+    "featuredProducts": [
+      {
+        "id": "mp-1",
+        "name": "PureFoods Chicken Breast Nuggets Crispy 'N Juicy | 200g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLtch1HS9gR61PRmqsXHfYOmCqEk_-avTU9IxI-Xc-BpH3TCkGOFf69FigdSpyF1kJ8L-InzudEZBphhwPLwOCyCzXeZmSRqfT2Eq1TEeoZ8Hsr1go30skc01KnZqvo2-QeW3_zqsoQx7SIO8bPDu1IUi4LkwuIMBpUC2AQTMVZzIZvESfwrPYxsl5yWq2-x5Zw0cj8UIXsE5_i2XQdXaprwoCwEiTbT91MG8kP4_cgs51cg4Nt7UZOLfl9P",
+        "weight": "200G",
+        "price": 114.00
+      },
+      {
+        "id": "mp-2",
+        "name": "Dari Creme Butter Salted | 200g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuzo_nYNj3Ue-sZnFW-7llkYKodt5R_s9CnXn0oHEHWH9FpYhBXo-ucydqhSOR1JQYfUnLC0G6FvUcsMRnwQHn6WalotXXorq-T-HOG56YMLap2TpLfNhWUYCg0wZnW7Rx_ELTaxkqSxg9vgl7X42SZKGPj-V3lD8iU9jn4Tj8cT61F7isPm_VRTuzEAJqPtAYPdT6BNTqwL5uWSmup1VONO1MDHmojGovfUumkgTq0NEthUiTJGpqSkiUv",
+        "weight": "200G",
+        "price": 57.00,
+        "originalPrice": 66.50,
+        "discountPercent": 14
+      },
+      {
+        "id": "mp-3",
+        "name": "Gardenia Pinoy Tasty | 450g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuceXvpT7wdmQ1XgiqggJ-biiIYvvNHsXijRC1OoJ9r7_DInG1bDaGhe6WA32aakJ-uBlqYKpKifhlapN-eyW8SHs9XehXoRsC6j6lF1PY1QU-NZAUvIG-6xdyLSKeDQpWdZW7pTsR1BAIy6_MC7W3eZ88ncsb4Rn9v49GoFruAPrQc62_hI8ky-7R6FTQxMhgHBmaNeUKrpXIQIEimEWPq37mdkmGDsmXtp7PTXvxNizZe5j9SxVZsyyhu",
+        "weight": "450G",
+        "price": 44.00
+      }
+    ],
+    "priceDrop": [
+      {
+        "id": "mpd-1",
+        "name": "Argentina Corned Beef | 260g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuWTX4gd3Qe2QvRjngPXPbLN8xyGdSavjqXWC_ae0NxRRIHQk0_moahBKSXaG7-6NKhwF8TK2Ji2GZuhprom2-ZglgNRlPUQay_Yrpd3hZyI9SspymGhc29zvKbC2JbU_Y8hnnZUlAod_TRwtP6UQQ4j7v8qEm2nsAeggBZI04Vv4FaO0C8pS72mf0JnJ9RSAiPfXYbPXREa_nFTIrmIp_sd93W20hGMiDQJs1x13QWjy5dHJ2Ct8jn5K-M",
+        "weight": "260G",
+        "price": 52.75,
+        "originalPrice": 65.00,
+        "discountPercent": 19
+      },
+      {
+        "id": "mpd-2",
+        "name": "Century Tuna Flakes in Oil | 180g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuO28H7LnSFCwo6-pvjsInmgsKyKA9gGj7fGNvpHLY3adrsyaZUeSh4CTr8NlpbFCVXmOdCRpkTDYv-JXzqD9neGRX83tKsAhLaLLLSqBmqzXRggB5EpJXyUrnp1rHck4qTs_f0BZwPBNlQjv8l8XdHXNrnQMl1jMWBGDbaCsn3ZwcEMj1gLOzarhvG75mMwkqvqqzE0EHn0jTcnADb3mrrPgPiCa0vyCmy0lnuRsmlgVgWIXjcXmUkmg2f",
+        "weight": "180G",
+        "price": 28.50,
+        "originalPrice": 35.00,
+        "discountPercent": 19
+      }
+    ]
+  },
+  {
+    "storeId": "sm-mall-of-asia",
+    "featuredProducts": [
+      {
+        "id": "moa-1",
+        "name": "Coco Mama Fresh Gata | 200ml",
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAHHsHOTFfZnjiLCTMYuYo1NJKhbgdJyNQLBGDEbXtojCVTqyL0nESzmWn74VhhLNkQdNdl1F0bRb17Oqb5wZR1_0H45np-GPJVOtWmOUfukk8obd_5pdTozWnJP52sCxiC_aItW9m-Evz9YPwa3Zsml_QX-EMfYMhqsmiCm64QyMOVZDwO_VEC6erFow5gaA06GpoPKU8gjkF40eiKRhqUUUqLcmi4ndWSCTGrr5W4TpzFrD-D8Jv2vQ",
+        "weight": "200ML",
+        "price": 34.75
+      },
+      {
+        "id": "moa-2",
+        "name": "Dari Creme Butter Salted | 200g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAjeja2MY6VFDE3tDupTlJf-a87RlqShBgsJp4SQ2OwNU5Uq_A81RvOVj6Okguno2vuB7DubQsIarMMpuZCee9SN6P_zguw1ea4l7qCP6bW0m_rORoCTeisWIW3UcY-G2tG9J1yisvutx3234A0j7mKeKzRhbG0yZqT8q71QS2vGz3iZDBSyV1z-p5mj72SqtA53giZ9-1wzcNWaXRc9XbF4IeHCXZywQUnnqJR9Nu877wFyo6ty0XL6w",
+        "weight": "200G",
+        "price": 57.00,
+        "originalPrice": 66.50,
+        "discountPercent": 14
+      },
+      {
+        "id": "moa-3",
+        "name": "PureFoods Chicken Breast Nuggets | 200g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuB8lo7fYHt_TcR44zJr0_1v48h0cjAkejcFw7VCrRRV-dcNp-Ywry1yfocjuT5B8-K8C7pMAQjNPc1K0HwmyocNce6pLq1piHmHcy6KqE1qbXYoAnSl5Sdy6gHtJfic1bwafWFVCNSk9SWASQA6PTuIo3pZGAx3e6EnwfivofhR_2ZKk1YH8kbHKilHqrK0miJkw9p9ySVttmASsGZNkf-fpBccUEaCSBkWy2vvXggwGZa4dtdHpXi3eQ",
+        "weight": "200G",
+        "price": 114.00
+      }
+    ],
+    "priceDrop": [
+      {
+        "id": "moad-1",
+        "name": "Lucky Me Pancit Canton Original | 80g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuWTX4gd3Qe2QvRjngPXPbLN8xyGdSavjqXWC_ae0NxRRIHQk0_moahBKSXaG7-6NKhwF8TK2Ji2GZuhprom2-ZglgNRlPUQay_Yrpd3hZyI9SspymGhc29zvKbC2JbU_Y8hnnZUlAod_TRwtP6UQQ4j7v8qEm2nsAeggBZI04Vv4FaO0C8pS72mf0JnJ9RSAiPfXYbPXREa_nFTIrmIp_sd93W20hGMiDQJs1x13QWjy5dHJ2Ct8jn5K-M",
+        "weight": "80G",
+        "price": 12.00,
+        "originalPrice": 15.00,
+        "discountPercent": 20
+      },
+      {
+        "id": "moad-2",
+        "name": "San Miguel Beer Pale Pilsen | 330ml",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuO28H7LnSFCwo6-pvjsInmgsKyKA9gGj7fGNvpHLY3adrsyaZUeSh4CTr8NlpbFCVXmOdCRpkTDYv-JXzqD9neGRX83tKsAhLaLLLSqBmqzXRggB5EpJXyUrnp1rHck4qTs_f0BZwPBNlQjv8l8XdHXNrnQMl1jMWBGDbaCsn3ZwcEMj1gLOzarhvG75mMwkqvqqzE0EHn0jTcnADb3mrrPgPiCa0vyCmy0lnuRsmlgVgWIXjcXmUkmg2f",
+        "weight": "330ML",
+        "price": 55.00,
+        "originalPrice": 65.00,
+        "discountPercent": 15
+      }
+    ]
+  },
+  {
+    "storeId": "sm-north-edsa",
+    "featuredProducts": [
+      {
+        "id": "ne-1",
+        "name": "Gardenia White Bread | 600g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuceXvpT7wdmQ1XgiqggJ-biiIYvvNHsXijRC1OoJ9r7_DInG1bDaGhe6WA32aakJ-uBlqYKpKifhlapN-eyW8SHs9XehXoRsC6j6lF1PY1QU-NZAUvIG-6xdyLSKeDQpWdZW7pTsR1BAIy6_MC7W3eZ88ncsb4Rn9v49GoFruAPrQc62_hI8ky-7R6FTQxMhgHBmaNeUKrpXIQIEimEWPq37mdkmGDsmXtp7PTXvxNizZe5j9SxVZsyyhu",
+        "weight": "600G",
+        "price": 68.00
+      },
+      {
+        "id": "ne-2",
+        "name": "PureFoods Chicken Breast Nuggets | 400g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLtch1HS9gR61PRmqsXHfYOmCqEk_-avTU9IxI-Xc-BpH3TCkGOFf69FigdSpyF1kJ8L-InzudEZBphhwPLwOCyCzXeZmSRqfT2Eq1TEeoZ8Hsr1go30skc01KnZqvo2-QeW3_zqsoQx7SIO8bPDu1IUi4LkwuIMBpUC2AQTMVZzIZvESfwrPYxsl5yWq2-x5Zw0cj8UIXsE5_i2XQdXaprwoCwEiTbT91MG8kP4_cgs51cg4Nt7UZOLfl9P",
+        "weight": "400G",
+        "price": 185.00
+      },
+      {
+        "id": "ne-3",
+        "name": "Dari Creme Butter Unsalted | 225g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuzo_nYNj3Ue-sZnFW-7llkYKodt5R_s9CnXn0oHEHWH9FpYhBXo-ucydqhSOR1JQYfUnLC0G6FvUcsMRnwQHn6WalotXXorq-T-HOG56YMLap2TpLfNhWUYCg0wZnW7Rx_ELTaxkqSxg9vgl7X42SZKGPj-V3lD8iU9jn4Tj8cT61F7isPm_VRTuzEAJqPtAYPdT6BNTqwL5uWSmup1VONO1MDHmojGovfUumkgTq0NEthUiTJGpqSkiUv",
+        "weight": "225G",
+        "price": 72.00,
+        "originalPrice": 85.00,
+        "discountPercent": 15
+      }
+    ],
+    "priceDrop": [
+      {
+        "id": "ned-1",
+        "name": "Nescafe 3-in-1 Original | 28g x 10",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuWTX4gd3Qe2QvRjngPXPbLN8xyGdSavjqXWC_ae0NxRRIHQk0_moahBKSXaG7-6NKhwF8TK2Ji2GZuhprom2-ZglgNRlPUQay_Yrpd3hZyI9SspymGhc29zvKbC2JbU_Y8hnnZUlAod_TRwtP6UQQ4j7v8qEm2nsAeggBZI04Vv4FaO0C8pS72mf0JnJ9RSAiPfXYbPXREa_nFTIrmIp_sd93W20hGMiDQJs1x13QWjy5dHJ2Ct8jn5K-M",
+        "weight": "280G",
+        "price": 78.00,
+        "originalPrice": 95.00,
+        "discountPercent": 18
+      },
+      {
+        "id": "ned-2",
+        "name": "Alaska Condensada Sweetened Milk | 300ml",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuO28H7LnSFCwo6-pvjsInmgsKyKA9gGj7fGNvpHLY3adrsyaZUeSh4CTr8NlpbFCVXmOdCRpkTDYv-JXzqD9neGRX83tKsAhLaLLLSqBmqzXRggB5EpJXyUrnp1rHck4qTs_f0BZwPBNlQjv8l8XdHXNrnQMl1jMWBGDbaCsn3ZwcEMj1gLOzarhvG75mMwkqvqqzE0EHn0jTcnADb3mrrPgPiCa0vyCmy0lnuRsmlgVgWIXjcXmUkmg2f",
+        "weight": "300ML",
+        "price": 42.00,
+        "originalPrice": 52.00,
+        "discountPercent": 19
+      }
+    ]
+  },
+  {
+    "storeId": "sm-aura",
+    "featuredProducts": [
+      {
+        "id": "aura-1",
+        "name": "Coco Mama Fresh Gata | 400ml",
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAHHsHOTFfZnjiLCTMYuYo1NJKhbgdJyNQLBGDEbXtojCVTqyL0nESzmWn74VhhLNkQdNdl1F0bRb17Oqb5wZR1_0H45np-GPJVOtWmOUfukk8obd_5pdTozWnJP52sCxiC_aItW9m-Evz9YPwa3Zsml_QX-EMfYMhqsmiCm64QyMOVZDwO_VEC6erFow5gaA06GpoPKU8gjkF40eiKRhqUUUqLcmi4ndWSCTGrr5W4TpzFrD-D8Jv2vQ",
+        "weight": "400ML",
+        "price": 58.50
+      },
+      {
+        "id": "aura-2",
+        "name": "Gardenia Wheat Bread | 400g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuceXvpT7wdmQ1XgiqggJ-biiIYvvNHsXijRC1OoJ9r7_DInG1bDaGhe6WA32aakJ-uBlqYKpKifhlapN-eyW8SHs9XehXoRsC6j6lF1PY1QU-NZAUvIG-6xdyLSKeDQpWdZW7pTsR1BAIy6_MC7W3eZ88ncsb4Rn9v49GoFruAPrQc62_hI8ky-7R6FTQxMhgHBmaNeUKrpXIQIEimEWPq37mdkmGDsmXtp7PTXvxNizZe5j9SxVZsyyhu",
+        "weight": "400G",
+        "price": 58.00
+      },
+      {
+        "id": "aura-3",
+        "name": "Argentina Corned Beef | 380g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuWTX4gd3Qe2QvRjngPXPbLN8xyGdSavjqXWC_ae0NxRRIHQk0_moahBKSXaG7-6NKhwF8TK2Ji2GZuhprom2-ZglgNRlPUQay_Yrpd3hZyI9SspymGhc29zvKbC2JbU_Y8hnnZUlAod_TRwtP6UQQ4j7v8qEm2nsAeggBZI04Vv4FaO0C8pS72mf0JnJ9RSAiPfXYbPXREa_nFTIrmIp_sd93W20hGMiDQJs1x13QWjy5dHJ2Ct8jn5K-M",
+        "weight": "380G",
+        "price": 78.25,
+        "originalPrice": 95.00,
+        "discountPercent": 18
+      }
+    ],
+    "priceDrop": [
+      {
+        "id": "aurad-1",
+        "name": "Magnolia All-Purpose Cream | 250ml",
+        "imageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAjeja2MY6VFDE3tDupTlJf-a87RlqShBgsJp4SQ2OwNU5Uq_A81RvOVj6Okguno2vuB7DubQsIarMMpuZCee9SN6P_zguw1ea4l7qCP6bW0m_rORoCTeisWIW3UcY-G2tG9J1yisvutx3234A0j7mKeKzRhbG0yZqT8q71QS2vGz3iZDBSyV1z-p5mj72SqtA53giZ9-1wzcNWaXRc9XbF4IeHCXZywQUnnqJR9Nu877wFyo6ty0XL6w",
+        "weight": "250ML",
+        "price": 46.00,
+        "originalPrice": 58.00,
+        "discountPercent": 21
+      },
+      {
+        "id": "aurad-2",
+        "name": "Del Monte Tomato Sauce | 250g",
+        "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuO28H7LnSFCwo6-pvjsInmgsKyKA9gGj7fGNvpHLY3adrsyaZUeSh4CTr8NlpbFCVXmOdCRpkTDYv-JXzqD9neGRX83tKsAhLaLLLSqBmqzXRggB5EpJXyUrnp1rHck4qTs_f0BZwPBNlQjv8l8XdHXNrnQMl1jMWBGDbaCsn3ZwcEMj1gLOzarhvG75mMwkqvqqzE0EHn0jTcnADb3mrrPgPiCa0vyCmy0lnuRsmlgVgWIXjcXmUkmg2f",
+        "weight": "250G",
+        "price": 22.50,
+        "originalPrice": 28.00,
+        "discountPercent": 20
+      }
+    ]
+  }
+]

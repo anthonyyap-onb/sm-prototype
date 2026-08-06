@@ -1,0 +1,6 @@
+[
+  { "id": "sm-megamall",     "name": "SM Megamall",     "city": "Mandaluyong" },
+  { "id": "sm-mall-of-asia", "name": "SM Mall of Asia", "city": "Pasay" },
+  { "id": "sm-north-edsa",   "name": "SM North EDSA",   "city": "Quezon City" },
+  { "id": "sm-aura",         "name": "SM Aura Premier", "city": "Taguig" }
+]

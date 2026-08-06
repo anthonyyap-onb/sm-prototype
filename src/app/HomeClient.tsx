@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Store, StoreProducts } from '@/types';
 import TopNavBar from '@/components/TopNavBar';
 import SideNavBar from '@/components/SideNavBar';
@@ -18,6 +18,15 @@ interface HomeClientProps {
 export default function HomeClient({ stores, allStoreProducts }: HomeClientProps) {
   const [selectedStoreId, setSelectedStoreId] = useState(DEFAULT_STORE_ID);
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const selectedStore = useMemo(() => {
+    return stores.find((s) => s.id === selectedStoreId);
+  }, [stores, selectedStoreId]);
+
+  const currentInventory = useMemo(() => {
+    const storeRecord = allStoreProducts.find((p) => p.storeId === selectedStoreId);
+    return storeRecord ? storeRecord.featuredProducts : [];
+  }, [allStoreProducts, selectedStoreId]);
 
   const storeData = allStoreProducts.find((sp) => sp.storeId === selectedStoreId)
     ?? allStoreProducts[0];
@@ -55,7 +64,12 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
       </div>
 
       <ChatFAB onClick={() => setIsChatOpen((v) => !v)} isOpen={isChatOpen} />
-      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <ChatModal 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)}
+        selectedLocation={selectedStore?.name + " " + selectedStore?.city} 
+        inventoryData={currentInventory}
+      />
     </div>
   );
 }

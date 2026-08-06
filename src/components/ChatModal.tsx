@@ -6,31 +6,23 @@ import { useChat } from '@ai-sdk/react';
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedLocation?: string;
+  inventoryData: any[];
 }
 
 const SUGGESTION_CHIPS = ['Track Order', 'Latest Promos', 'Store Hours'];
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
 
-export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
+export default function ChatModal({ isOpen, onClose, selectedLocation, inventoryData }: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
 
-  const { messages, status, sendMessage } = useChat({
-    messages: [
-      {
-        id: 'welcome-msg',
-        role: 'assistant',
-        parts: [
-          {
-            type: 'text',
-            text: 'Hello! 👋 Welcome to SM Markets. How can I help you with your groceries today?',
-          },
-        ],
-      },
-    ],
-  });
+  console.log(`Location: ${selectedLocation}`);
+  console.log('Inventory Data:', inventoryData);
+
+  const { messages, sendMessage, status, error } = useChat();
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -67,7 +59,16 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       textareaRef.current.style.height = '40px';
     }
 
-    await sendMessage({ text });
+    // Pass body options as the second argument
+    await sendMessage(
+      { text },
+      {
+        body: {
+          storeLocation: selectedLocation,
+          inventoryData: inventoryData,
+        },
+      }
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -85,6 +86,8 @@ export default function ChatModal({ isOpen, onClose }: ChatModalProps) {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 128)}px`;
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <>

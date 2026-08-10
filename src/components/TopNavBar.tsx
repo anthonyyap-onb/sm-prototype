@@ -5,6 +5,8 @@ import Link from 'next/link';
 import type { Store } from '@/types';
 import StorePicker from './StorePicker';
 import { useCart } from '@/context/CartContext';
+import Image from 'next/image';
+import logo from '../../public/sm-logo.png'
 
 interface TopNavBarProps {
   stores: Store[];
@@ -21,14 +23,13 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
     <header className="bg-[var(--color-primary)] text-[var(--color-on-primary)] sticky top-0 z-50 flex justify-between items-center w-full h-16 px-10 shadow-md border-b border-white/10">
       {/* Logo */}
       <div className="flex items-center gap-4">
-        <a href="#" className="flex items-center" aria-label="SM Markets home">
-          <img
-            src="https://lh3.googleusercontent.com/aida/AP1WRLugqu8ObLD9oE2v0fclYMM881pGZOE_d9EaFNK9AFi9cilPWcHt2_TL_cgZAZKC49OZZikoN_c29h4VQCRi1FLw3fCyahN76tHNzpfWbTnx2Vow6wyYxNlZ4W6WHOfRDFJfA2fveuTxMw0kukACXkI3EpMGIL3RSDdOcz00B5F7soNloKbDYB8a0DVlBN4DoipEWV_J7nJxZVTc5kbMlSXSuPsc3PULztSWobcx8WeMex1f-xqsI3rKMAk"
+        <Link href="/" className="flex items-center" aria-label="SM Markets home">
+          <Image
+            src={logo}
             alt="SM MARKETS Logo"
-            className="h-8 object-contain"
-            referrerPolicy="no-referrer"
+            className="h-8 w-auto object-contain" 
           />
-        </a>
+        </Link>
         
 
         {/* Store picker */}

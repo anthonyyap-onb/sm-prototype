@@ -88,7 +88,7 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
         </button>
         <Link
           href="/cart"
-          className="relative hover:bg-[var(--color-primary-container)] p-2 rounded transition-colors duration-200 text-white opacity-90"
+          className="relative flex items-center justify-center hover:bg-[var(--color-primary-container)] p-2 rounded transition-colors duration-200 text-white opacity-90"
           aria-label="Shopping cart"
         >
           <span className="material-symbols-outlined">shopping_cart</span>

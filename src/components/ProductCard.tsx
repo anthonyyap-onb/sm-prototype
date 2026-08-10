@@ -64,7 +64,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {quantity === 0 ? (
             <button
               onClick={() => addToCart(product)}
-              className="flex-1 bg-[var(--color-primary)] text-white rounded font-bold text-xs py-2 hover:bg-[var(--color-primary-container)] transition-colors"
+              className="flex-1 bg-[var(--color-primary)] text-white rounded font-bold text-xs py-2 cursor-pointer hover:bg-[var(--color-primary-container)] transition-colors"
               aria-label={`Add ${name} to cart`}
             >
               Add to Cart
@@ -73,7 +73,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="flex-1 flex items-center justify-between bg-[var(--color-primary)] rounded overflow-hidden">
               <button
                 onClick={() => decrementItem(product.id)}
-                className="w-9 h-9 flex items-center justify-center text-white hover:bg-[var(--color-primary-container)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-white cursor-pointer hover:bg-[var(--color-primary-container)] transition-colors"
                 aria-label={`Decrease quantity of ${name}`}
               >
                 <span className="material-symbols-outlined text-base">remove</span>
@@ -81,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <span className="text-white font-bold text-sm">{quantity}</span>
               <button
                 onClick={() => incrementItem(product.id)}
-                className="w-9 h-9 flex items-center justify-center text-white hover:bg-[var(--color-primary-container)] transition-colors"
+                className="w-9 h-9 flex items-center justify-center text-white cursor-pointer hover:bg-[var(--color-primary-container)] transition-colors"
                 aria-label={`Increase quantity of ${name}`}
               >
                 <span className="material-symbols-outlined text-base">add</span>

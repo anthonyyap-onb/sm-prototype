@@ -80,7 +80,6 @@ export async function POST(req: Request) {
     # RESPONSE FORMATTING
     - Use clean bullet points and concise bold titles.
     - Keep responses brief and optimized for mobile screens.
-    - Wrap the text you want to bold with <strong></strong> tags instead of **bolded text**.
     `;
 
   const result = streamText({

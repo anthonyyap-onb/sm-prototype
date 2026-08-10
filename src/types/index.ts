@@ -19,3 +19,8 @@ export interface StoreProducts {
   featuredProducts: Product[];
   priceDrop: Product[];
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}

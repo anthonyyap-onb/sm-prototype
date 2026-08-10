@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SM Markets Cart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Hanken Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#0046be',
+                            dark: '#00338d',
+                            light: '#e6effc'
+                        },
+                        surface: {
+                            DEFAULT: '#f8f9fa',
+                            lowest: '#ffffff',
+                            low: '#f3f4f5',
+                            container: '#ededee',
+                            high: '#e7e8e9',
+                            highest: '#e2e3e4',
+                            dim: '#d9dadb',
+                            bright: '#f8f9fa'
+                        },
+                        onSurface: {
+                            DEFAULT: '#1a1b1c',
+                            variant: '#444749'
+                        },
+                        outline: {
+                            DEFAULT: '#75777a',
+                            variant: '#c5c6c9'
+                        }
+                    },
+                    borderRadius: {
+                        'sm': '0.125rem',
+                        DEFAULT: '0.25rem',
+                        'md': '0.375rem',
+                        'lg': '0.5rem',
+                        'xl': '0.75rem',
+                        '2xl': '1rem',
+                        '3xl': '1.5rem',
+                    }
+                }
+            }
+        }
+    </script>
+<style data-purpose="custom-styles">
+        body {
+            background-color: #f3f4f5;
+        }
+        
+        /* Custom scrollbar for side nav */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #d9dadb;
+            border-radius: 10px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background: #75777a;
+        }
+    </style>
+</head>
+<body class="text-onSurface font-sans h-screen flex flex-col overflow-hidden">
+<!-- BEGIN: Main Header -->
+<header class="bg-brand text-white flex-none h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 shrink-0 shadow-sm z-50">
+<!-- Logo Area -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2" href="#">
+<span class="text-xl sm:text-2xl font-bold tracking-tight">SMMARKETS</span>
+<div class="bg-white rounded-full p-1 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center">
+<span class="text-brand font-bold text-xs sm:text-sm">SM</span>
+</div>
+</a>
+</div>
+<!-- Location Selector -->
+<div class="hidden lg:flex items-center gap-3 border border-white/40 rounded-full px-4 py-2 hover:bg-white/10 cursor-pointer transition-colors max-w-sm">
+<svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<div class="flex flex-col text-sm truncate">
+<span class="font-semibold truncate">SM Hypermarket Mall of Asia (CASHLESS)</span>
+<span class="text-white/80 text-xs truncate">Metro Manila, Pasay City</span>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="flex-1 max-w-2xl mx-4 lg:mx-8 relative hidden md:block">
+<input class="w-full rounded-md border-0 py-2.5 pl-4 pr-10 text-onSurface shadow-sm ring-1 ring-inset ring-outline-variant focus:ring-2 focus:ring-inset focus:ring-brand sm:text-sm sm:leading-6" placeholder="Search for hygi" type="text"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3">
+<svg class="w-5 h-5 text-onSurface-variant cursor-pointer" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-3 sm:gap-6">
+<button class="bg-surface-lowest text-brand font-medium text-sm rounded-md px-4 py-2 hover:bg-surface-low transition-colors hidden sm:flex items-center gap-2">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                Login or Register
+            </button>
+<div class="relative cursor-pointer hover:opacity-80 transition-opacity">
+<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">4</span>
+</div>
+</div>
+</header>
+<!-- END: Main Header -->
+<div class="flex flex-1 overflow-hidden">
+<!-- BEGIN: Sidebar Navigation -->
+<aside class="w-64 bg-surface-lowest flex-none overflow-y-auto border-r border-outline-variant hidden md:block sidebar-scroll">
+<div class="p-4 space-y-6">
+<!-- Promo Image -->
+<div class="rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-shadow">
+<img alt="SM Price Drop Promo" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtgGIJPJnRnbEY-pMk55c0M0_NiOazJOAsEIvOLO9GOPP_65lU3CfMUc_ButfuCvCsTRW9Ao9HCDa1YL1ZL-if5MCdDKBH0CQ25Y2TxnDWOZjDcveNPWT7wQBFBS02S04SF-jRlqEbEQceuN85NFLgTbYmghTlmHTiizIREO29FywMOjkHHis7s8vDZXCGuGwsUGwvr_C6-mcpWrLRURd2O9R4X-p6bkn64OlkdWJ9lzeAQecd3GhKmQ"/>
+</div>
+<!-- For You Section -->
+<div>
+<h3 class="font-bold text-lg mb-3">For you</h3>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 p-2 rounded-md hover:bg-surface-low transition-colors group" href="#">
+<div class="bg-brand text-white p-1.5 rounded-md group-hover:bg-brand-dark transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="font-medium text-sm">Recipe</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-2 rounded-md hover:bg-surface-low transition-colors group" href="#">
+<div class="bg-brand text-white p-1.5 rounded-md group-hover:bg-brand-dark transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.82 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.496 1.508 1.333 1.508 2.316V18" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="font-medium text-sm">Blog</span>
+</a>
+</li>
+</ul>
+</div>
+<hr class="border-outline-variant/40"/>
+<!-- Categories Section -->
+<div>
+<h3 class="font-bold text-lg mb-3">Categories</h3>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 p-2 rounded-md hover:bg-surface-low transition-colors" href="#">
+<div class="w-8 h-8 rounded-full border border-outline-variant/30 flex items-center justify-center bg-white overflow-hidden p-1">
+<img alt="Only in SM Markets" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj6vMEmWTEJTEjU8e9cHf3sFEFnsOr-rcT7e3uEiWkY94MBpkfehjSv-oePU-YRV4pqMlrlHfsH48V81HuOamj7GgFQonQcIwhBkRc2d_5TlbunGIRdSlzFPu-9r_8ggPzUR4w8ITkQzzm_AEmjjSdcyWnQCl5zdKTh32xqGQKMqzqwDvamJI2ZV6XiLfCDPaWpYjvG_2ZWZ9GaNjcvNkGsTd7SbX8ZkE3lOPiemell1ppq4OVL06u6Q"/>
+</div>
+<span class="font-medium text-sm">Only in SM Markets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-2 rounded-md hover:bg-surface-low transition-colors" href="#">
+<div class="w-8 h-8 rounded-full border border-outline-variant/30 flex items-center justify-center bg-white overflow-hidden p-1">
+<img alt="Watts Japan" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa4oX5wVpij_A4pmwkKvqP8cT21zs6bNa-2YYNEH5vDnQUjesYw5w6Z8ub1MfKMe1cYAMDN9UqXvOesBIYq_CHWwuYfQd-m0QVzeX6vZOED-lzyYgOy-oo2np43B4gliSjmAknYQiOg8q9sJ23_W5sl9j9gVyHVApHpDwSPK6VjMr55qJrnRgvxuiFDaCCf5XrK_3Vbvnahwh-TKZLSOd6NRRSvJmo9dG6Ijy96HT9BtFcuGt1WZbolg"/>
+</div>
+<span class="font-medium text-sm">Watts Japan</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-2 rounded-md hover:bg-surface-low transition-colors" href="#">
+<div class="w-8 h-8 rounded-full border border-outline-variant/30 flex items-center justify-center bg-white overflow-hidden p-1">
+<img alt="Miniso" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsbms8RyNWhafzEYne1tVCQHK_71rPy2yzazyJs-1uLX-Ebu-QK-Onq70wPM-gmxN4mXz2gdvbs0wd5KGxFYYRhPuiukiGmmwHTyp3uNG7RrxFXeFb4RwWQYsr6sBC5mSPbqdncEnCEs_v-y6pisil2Gwr6eOzeBjKem9Ua4CoU5oydHO6Bda6pwFGTNR4CT8JBjNPDNxn_pzFvMzNmJah9twPWHgOFV66J0ZCXP4q_8IoSWATE2BKEA"/>
+</div>
+<span class="font-medium text-sm">Miniso</span>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar Navigation -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex justify-center">
+<div class="max-w-6xl w-full">
+<h1 class="text-3xl font-bold text-brand mb-6">Cart</h1>
+<div class="flex flex-col lg:flex-row gap-6 items-start">
+<!-- BEGIN: Cart Items List -->
+<div class="flex-1 w-full">
+<div class="bg-surface-lowest rounded-xl shadow-sm border border-outline-variant p-4 sm:p-6 flex flex-col gap-6">
+<!-- Header actions -->
+<div class="flex justify-end border-b border-outline-variant/40 pb-4">
+<button class="text-outline hover:text-red-600 transition-colors" title="Clear Cart">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Cart Item 1 -->
+<div class="flex flex-col sm:flex-row gap-4 py-4 border-b border-outline-variant/20 last:border-0 relative">
+<div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white rounded-md flex items-center justify-center p-2 border border-outline-variant/30">
+<img alt="Saba Pink Salmon" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbb7Ar-dO0fnxNVtgnJKNgApp-Lt0MFtFp-10IVrLyscPtFSux9rCr01YfHTotu43aAQz8K1-hYuo5UMMVo8HxiFVwwz4U43Bo2yDW4wxVoTwFEV-xsl-hbmjtyZxySV7_XmfMVfdRGIgCSRR3Q_saUBSGC9l2nwlvu8AaiojxXQChKxSGB4KH0sL1Gxnv4wrnQ-g-TepbTAmsCyf4xi_SuqJamkCeidlT4ywSYaUFuieuJjwWEW2tFA"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h3 class="font-bold text-sm sm:text-base leading-tight">Saba Pink Salmon in Natural Oil | 155g</h3>
+<p class="text-xs text-green-600 mt-1 font-medium">In Stock</p>
+</div>
+<span class="font-bold text-lg whitespace-nowrap">₱59.00</span>
+</div>
+<div class="flex items-center justify-between mt-4">
+<!-- Quantity Control -->
+<div class="flex items-center bg-surface-low rounded-md border border-outline-variant/30 overflow-hidden">
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.5 12h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="w-8 sm:w-10 text-center font-medium text-sm">1</span>
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Item Actions -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-brand hover:bg-brand-light transition-colors" title="Save for later">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors" title="Remove item">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Cart Item 2 -->
+<div class="flex flex-col sm:flex-row gap-4 py-4 border-b border-outline-variant/20 last:border-0 relative">
+<div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white rounded-md flex items-center justify-center p-2 border border-outline-variant/30 relative">
+<img alt="Magnolia Chicken Breast Fillet" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIS4p9kRq99YZssm2H2GWaa07TP1nJRw8kDfEr2pai3QoTlrPi2DK6tEf9a1DG2Sns1TsEvk43XfOyYg9_JnalFcamb-ZRU64E_SV5b3u7_qDSXrg-5gBFW3MryTf7nUgMmq7RWtrx6iDx5-664fFOXDqg7idhjRKO1ydnvUDvo45WeXlr3Vwtm2flvXHLDh1DHH2HEZ5QFdck_mNQb6P5EWdNgay4VaSB7dwv53huUVwtyupO7iaMIQ"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h3 class="font-bold text-sm sm:text-base leading-tight">Magnolia Chicken Breast Fillet | 500g-550g</h3>
+<p class="text-xs text-green-600 mt-1 font-medium">In Stock</p>
+</div>
+<span class="font-bold text-lg whitespace-nowrap">₱185.90</span>
+</div>
+<div class="flex items-center justify-between mt-4">
+<!-- Quantity Control -->
+<div class="flex items-center bg-surface-low rounded-md border border-outline-variant/30 overflow-hidden">
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.5 12h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="w-8 sm:w-10 text-center font-medium text-sm">1</span>
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Item Actions -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-brand hover:bg-brand-light transition-colors" title="Save for later">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors" title="Remove item">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Cart Item 3 -->
+<div class="flex flex-col sm:flex-row gap-4 py-4 border-b border-outline-variant/20 last:border-0 relative">
+<div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white rounded-md flex items-center justify-center p-2 border border-outline-variant/30">
+<img alt="Axe Deodorant Roll On Dark Temptation" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgj0ZEZzgb6dQAa_PfndFbVRK3GX4OUkB7yWzVpkrh5W3Nv4tBVsy8VDy_knYxjYuJyku8FEvvLtBuMUFn5MR1_HCAgD1KEz9sIDlJLsX4EwMg6FqYQWsoKAl9CZhK85G-jODuQqOltlT2iC8oYIcG3PaCSAUz-NogNjQD4VKXcJDhEbf-HF16avvoGfnKnbEmQPcg8nUhYMVVMq91eL4r3-QY2EMjn3DcnGDV2HlIW1yIGs6f1L3KGQ"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h3 class="font-bold text-sm sm:text-base leading-tight">Axe Deodorant Roll On Dark Temptation | 40ml</h3>
+<p class="text-xs text-green-600 mt-1 font-medium">In Stock</p>
+</div>
+<span class="font-bold text-lg whitespace-nowrap">₱131.25</span>
+</div>
+<div class="flex items-center justify-between mt-4">
+<!-- Quantity Control -->
+<div class="flex items-center bg-surface-low rounded-md border border-outline-variant/30 overflow-hidden">
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.5 12h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="w-8 sm:w-10 text-center font-medium text-sm">2</span>
+<button class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-brand hover:bg-surface-container transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Item Actions -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-brand hover:bg-brand-light transition-colors" title="Save for later">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors" title="Remove item">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Cart Items List -->
+<!-- BEGIN: Order Details Sidebar -->
+<div class="w-full lg:w-80 shrink-0">
+<div class="bg-surface-lowest rounded-xl shadow-sm border border-outline-variant p-6 sticky top-4">
+<h2 class="text-xl font-bold text-brand mb-6">Order details</h2>
+<div class="space-y-4 text-sm mb-6">
+<div class="flex justify-between items-center">
+<span class="text-onSurface-variant">Item total</span>
+<span class="font-medium">₱507.40</span>
+</div>
+<div class="border-t border-outline-variant/40 pt-4 flex justify-between items-end">
+<div>
+<span class="text-lg font-bold text-brand block">Subtotal</span>
+<span class="text-xs text-outline">12% VAT included</span>
+</div>
+<span class="text-lg font-bold text-brand">₱507.40</span>
+</div>
+</div>
+<p class="text-xs text-outline mb-4 text-center">Vouchers and Final Total on Checkout</p>
+<button class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-md transition-colors text-lg shadow-sm">
+                                Checkout
+                            </button>
+</div>
+</div>
+<!-- END: Order Details Sidebar -->
+</div>
+</div>
+</main>
+<!-- END: Main Content Area -->
+</div>
+</body></html>

@@ -1,6 +1,8 @@
-// Server Component
+'use client';
+
 import Image from 'next/image';
 import type { Product } from '@/types';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +11,10 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { name, imageUrl, weight, price, originalPrice, discountPercent } = product;
   const isOnSale = Boolean(discountPercent && originalPrice);
+
+  const { items, addToCart, incrementItem, decrementItem } = useCart();
+  const cartItem = items.find((i) => i.product.id === product.id);
+  const quantity = cartItem?.quantity ?? 0;
 
   return (
     <div className="bg-white border border-[var(--color-border-subtle)] rounded-lg p-4 flex flex-col h-full hover:shadow-md transition-shadow">
@@ -55,12 +61,33 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Actions */}
         <div className="flex gap-2 mt-auto">
-          <button
-            className="flex-1 bg-[var(--color-primary)] text-white rounded font-bold text-xs py-2 hover:bg-[var(--color-primary-container)] transition-colors"
-            aria-label={`Add ${name} to cart`}
-          >
-            Add to Cart
-          </button>
+          {quantity === 0 ? (
+            <button
+              onClick={() => addToCart(product)}
+              className="flex-1 bg-[var(--color-primary)] text-white rounded font-bold text-xs py-2 hover:bg-[var(--color-primary-container)] transition-colors"
+              aria-label={`Add ${name} to cart`}
+            >
+              Add to Cart
+            </button>
+          ) : (
+            <div className="flex-1 flex items-center justify-between bg-[var(--color-primary)] rounded overflow-hidden">
+              <button
+                onClick={() => decrementItem(product.id)}
+                className="w-9 h-9 flex items-center justify-center text-white hover:bg-[var(--color-primary-container)] transition-colors"
+                aria-label={`Decrease quantity of ${name}`}
+              >
+                <span className="material-symbols-outlined text-base">remove</span>
+              </button>
+              <span className="text-white font-bold text-sm">{quantity}</span>
+              <button
+                onClick={() => incrementItem(product.id)}
+                className="w-9 h-9 flex items-center justify-center text-white hover:bg-[var(--color-primary-container)] transition-colors"
+                aria-label={`Increase quantity of ${name}`}
+              >
+                <span className="material-symbols-outlined text-base">add</span>
+              </button>
+            </div>
+          )}
           <button
             className="w-10 h-10 border border-[var(--color-border-subtle)] rounded flex items-center justify-center text-[var(--color-primary)] hover:bg-[var(--color-surface-container)] transition-colors"
             aria-label={`Add ${name} to favourites`}

@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { Store } from '@/types';
 import StorePicker from './StorePicker';
+import { useCart } from '@/context/CartContext';
 
 interface TopNavBarProps {
   stores: Store[];
@@ -13,6 +15,7 @@ interface TopNavBarProps {
 export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: TopNavBarProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const selectedStore = stores.find((s) => s.id === selectedStoreId) ?? stores[0];
+  const { totalItems } = useCart();
 
   return (
     <header className="bg-[var(--color-primary)] text-[var(--color-on-primary)] sticky top-0 z-50 flex justify-between items-center w-full h-16 px-10 shadow-md border-b border-white/10">
@@ -82,13 +85,18 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
           <span className="material-symbols-outlined text-sm">person</span>
           Login or Register
         </button>
-        <button
-          id="cart-btn"
+        <Link
+          href="/cart"
           className="relative hover:bg-[var(--color-primary-container)] p-2 rounded transition-colors duration-200 text-white opacity-90"
           aria-label="Shopping cart"
         >
           <span className="material-symbols-outlined">shopping_cart</span>
-        </button>
+          {totalItems > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+              {totalItems > 99 ? '99+' : totalItems}
+            </span>
+          )}
+        </Link>
       </div>
     </header>
   );

@@ -18,6 +18,8 @@ export interface StoreProducts {
   storeId: string;
   featuredProducts: Product[];
   priceDrop: Product[];
+  freshMeatAndSeafood: Product[];
+  pantry: Product[];
 }
 
 export interface CartItem {

@@ -25,7 +25,13 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
 
   const currentInventory = useMemo(() => {
     const storeRecord = allStoreProducts.find((p) => p.storeId === selectedStoreId);
-    return storeRecord ? storeRecord.featuredProducts : [];
+    if (!storeRecord) return [];
+    return [
+      ...storeRecord.featuredProducts,
+      ...storeRecord.priceDrop,
+      ...storeRecord.freshMeatAndSeafood,
+      ...storeRecord.pantry,
+    ];
   }, [allStoreProducts, selectedStoreId]);
 
   const storeData = allStoreProducts.find((sp) => sp.storeId === selectedStoreId)

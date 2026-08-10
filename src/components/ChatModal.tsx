@@ -2,28 +2,59 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
+import { useCart } from '@/context/CartContext';
+import type { Product } from '@/types';
 
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedLocation?: string;
-  inventoryData: any[];
+  inventoryData: Product[];
 }
 
 const SUGGESTION_CHIPS = [
   'Ingredients for Sinigang',
   'Check chicken nugget stock',
-  'What can I cook today?'
+  'What can I cook today?',
 ];
+
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
 
-export default function ChatModal({ isOpen, onClose, selectedLocation, inventoryData }: ChatModalProps) {
+interface AddToCartArgs {
+  productId?: string;
+  productName: string;
+  price?: number;
+  imageUrl?: string;
+  weight?: string;
+  ingredientNumber?: number;
+  quantity?: number;
+  isAlternative?: boolean;
+  originalIngredientName?: string;
+}
+
+export default function ChatModal({
+  isOpen,
+  onClose,
+  selectedLocation,
+  inventoryData,
+}: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
+  const { addToCart } = useCart();
 
-  const { messages, sendMessage, status, error } = useChat({
+  // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
+  const inventoryRef = useRef<Product[]>(inventoryData);
+  useEffect(() => {
+    inventoryRef.current = inventoryData;
+  }, [inventoryData]);
+
+  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addToolOutputRef = useRef<((...args: any[]) => void) | null>(null);
+
+  const { messages, sendMessage, status, addToolOutput } = useChat({
     messages: [
       {
         id: 'welcome-message',
@@ -36,11 +67,56 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
         ],
       },
     ],
+    onToolCall: ({ toolCall }) => {
+      if (toolCall.toolName !== 'addToCart') return;
+
+      const args = toolCall.input as AddToCartArgs;
+      const qty = args.quantity ?? 1;
+      let output: { success: boolean; message: string };
+
+      if (args.productId) {
+        const matched = inventoryRef.current.find((p) => p.id === args.productId);
+        if (matched) {
+          for (let i = 0; i < qty; i++) addToCart(matched);
+          output = { success: true, message: `Added ${matched.name} × ${qty} to cart.` };
+        } else {
+          // productId provided but not found in current inventory — fall through
+          output = {
+            success: false,
+            message: `Product ID ${args.productId} not found in current store inventory.`,
+          };
+        }
+      } else if (args.price !== undefined) {
+        // No product ID but we have enough info to create a synthetic product
+        const syntheticProduct: Product = {
+          id: `llm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name: args.productName,
+          imageUrl: args.imageUrl ?? '',
+          weight: args.weight ?? '',
+          price: args.price,
+        };
+        for (let i = 0; i < qty; i++) addToCart(syntheticProduct);
+        output = { success: true, message: `Added ${args.productName} × ${qty} to cart.` };
+      } else {
+        output = {
+          success: false,
+          message: `Could not add ${args.productName} to cart — no inventory match found. Please select it manually from the store page.`,
+        };
+      }
+
+      addToolOutputRef.current?.({
+        tool: 'addToCart',
+        toolCallId: toolCall.toolCallId,
+        output,
+      });
+    },
   });
+
+  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
-  // Auto-scroll to bottom on new messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -49,12 +125,10 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Focus input when modal opens
   useEffect(() => {
     if (isOpen) textareaRef.current?.focus();
   }, [isOpen]);
 
-  // Handle escape key
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose();
@@ -63,9 +137,8 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Submit Handler
   const handleSend = async (textToSend?: string) => {
-    const text = textToSend || input.trim();
+    const text = textToSend ?? input.trim();
     if (!text || isLoading) return;
 
     setInput('');
@@ -73,7 +146,6 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
       textareaRef.current.style.height = '40px';
     }
 
-    // Pass body options as the second argument
     await sendMessage(
       { text },
       {
@@ -94,7 +166,6 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
-    // Auto-expand textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = '40px';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 128)}px`;
@@ -159,58 +230,100 @@ export default function ChatModal({ isOpen, onClose, selectedLocation, inventory
             </span>
           </div>
 
-          {/* Dynamic Message Rendering */}
           {messages.map((m, index) => {
             const isAssistant = m.role === 'assistant';
 
-            // Extract text from AI SDK Message parts or content
-            // const textContent =
-            //   m.parts
-            //     ?.filter((p) => p.type === 'text')
-            //     .map((p) => (p as { type: 'text'; text: string }).text)
-            //     .join('') || '';
-
-            const textContent =
-              m.parts
-                ?.map((part) => {
-                  if (part.type === 'text') {
-                    return part.text;
-                  }
-                  return '';
-                })
-                .join('') || '';
-
-            
-
             return (
-              <div key={m.id || index} className="flex flex-col gap-2">
-                <div
-                  className={`flex gap-2 max-w-[85%] ${
-                    isAssistant ? 'self-start' : 'self-end flex-row-reverse'
-                  }`}
-                >
-                  {isAssistant && (
-                    <div className="w-8 h-8 rounded-full bg-[var(--color-primary-fixed)] flex items-center justify-center shrink-0">
-                      <img
-                        src={BOT_AVATAR}
-                        alt="SM Markets Assistant Mascot"
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    </div>
-                  )}
+              <div key={m.id ?? index} className="flex flex-col gap-2">
+                {m.parts?.map((part, partIdx) => {
+                  // Text parts
+                  if (part.type === 'text') {
+                    return (
+                      <div
+                        key={partIdx}
+                        className={`flex gap-2 max-w-[85%] ${
+                          isAssistant ? 'self-start' : 'self-end flex-row-reverse'
+                        }`}
+                      >
+                        {isAssistant && (
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-primary-fixed)] flex items-center justify-center shrink-0">
+                            <img
+                              src={BOT_AVATAR}
+                              alt="SM Markets Assistant Mascot"
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div
+                          className={`p-3 rounded-2xl shadow-sm text-sm ${
+                            isAssistant
+                              ? 'bg-white rounded-tl-none border border-[var(--color-border-subtle)] text-[var(--color-on-surface)]'
+                              : 'bg-[var(--color-primary)] text-white rounded-tr-none'
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap">{part.text}</p>
+                        </div>
+                      </div>
+                    );
+                  }
 
-                  <div
-                    className={`p-3 rounded-2xl shadow-sm text-sm ${
-                      isAssistant
-                        ? 'bg-white rounded-tl-none border border-[var(--color-border-subtle)] text-[var(--color-on-surface)]'
-                        : 'bg-[var(--color-primary)] text-white rounded-tr-none'
-                    }`}
-                  >
-                    <p className="whitespace-pre-wrap">{textContent}</p>
-                  </div>
-                </div>
+                  // Tool invocation parts — type is 'tool-addToCart' in AI SDK v7
+                  if (part.type === 'tool-addToCart') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
 
-                {/* Show Suggestion Chips under the initial Assistant greeting */}
+                    const args = toolPart.input as AddToCartArgs | undefined;
+                    const output = toolPart.output as
+                      | { success: boolean; message: string }
+                      | undefined;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending
+                              ? 'shopping_cart'
+                              : isSuccess
+                              ? 'check_circle'
+                              : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? `Adding ${args?.productName ?? 'item'}${
+                                  args?.quantity && args.quantity > 1
+                                    ? ` × ${args.quantity}`
+                                    : ''
+                                } to cart…`
+                              : output?.message ?? 'Cart updated'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })}
+
+                {/* Suggestion chips under the initial greeting */}
                 {index === 0 && isAssistant && (
                   <div className="flex gap-2 max-w-[85%] self-start pl-10 flex-wrap mt-1">
                     {SUGGESTION_CHIPS.map((chip) => (

@@ -26,3 +26,11 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface IngredientSuggestion {
+  number: number;
+  name: string;
+  matchedProductId?: string; // product ID if matched to inventory
+  matchedProductName?: string;
+  inStock: boolean;
+}

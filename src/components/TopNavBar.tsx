@@ -17,7 +17,7 @@ interface TopNavBarProps {
 export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: TopNavBarProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const selectedStore = stores.find((s) => s.id === selectedStoreId) ?? stores[0];
-  const { totalItems } = useCart();
+  const { items } = useCart();
 
   return (
     <header className="bg-[var(--color-primary)] text-[var(--color-on-primary)] sticky top-0 z-50 flex justify-between items-center w-full h-16 px-10 shadow-md border-b border-white/10">
@@ -92,9 +92,9 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
           aria-label="Shopping cart"
         >
           <span className="material-symbols-outlined">shopping_cart</span>
-          {totalItems > 0 && (
+          {items.length > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-              {totalItems > 99 ? '99+' : totalItems}
+              {items.length > 99 ? '99+' : items.length}
             </span>
           )}
         </Link>

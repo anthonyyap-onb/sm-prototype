@@ -51,27 +51,26 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
           <ProductGrid
             title="Featured Products"
             products={storeData.featuredProducts}
-            sectionClassName="bg-[var(--color-secondary-container)] mb-8"
-            titleClassName="text-[var(--color-primary)]"
+            icon="star"
+            viewAllHref="#"
           />
           <ProductGrid
             title="SM Price Drop"
             products={storeData.priceDrop}
-            sectionClassName="bg-[var(--color-error)] mb-8"
-            titleClassName="text-white"
+            icon="sell"
+            viewAllHref="#"
           />
           <ProductGrid
             title="Fresh Meat and Seafood"
             products={storeData.freshMeatAndSeafood}
-            sectionClassName="bg-[rgb(255,143,28)] mb-8"
-            titleClassName="text-white"
+            icon="restaurant"
+            viewAllHref="#"
           />
           <ProductGrid
             title="Pantry"
             products={storeData.pantry}
-            // Remove spaces between the rgb values
-            sectionClassName="bg-[rgb(172,202,255)] mb-8" 
-            titleClassName="text-[rgb(0,48,255)]"
+            icon="shopping_basket"
+            viewAllHref="#"
           />
         </main>
       </div>

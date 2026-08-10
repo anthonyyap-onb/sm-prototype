@@ -167,7 +167,7 @@ When the user suggests their own ingredient (not from the numbered list), e.g., 
 `;
 
   const result = streamText({
-    model: google('gemini-2.0-flash'),
+    model: google('gemini-3.1-flash-lite'),
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
     tools: {

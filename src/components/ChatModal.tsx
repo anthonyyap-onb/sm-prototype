@@ -1,9 +1,94 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useCart } from '@/context/CartContext';
 import type { Product } from '@/types';
+
+function InlineMarkdown({ text }: { text: string }) {
+  const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let i = 0;
+
+  while ((match = tokenRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    const token = match[0];
+    if (token.startsWith('**')) {
+      parts.push(<strong key={i++}>{token.slice(2, -2)}</strong>);
+    } else if (token.startsWith('`')) {
+      parts.push(
+        <code key={i++} className="bg-gray-100 px-0.5 rounded text-xs font-mono">
+          {token.slice(1, -1)}
+        </code>
+      );
+    } else {
+      parts.push(<em key={i++}>{token.slice(1, -1)}</em>);
+    }
+    lastIndex = match.index + token.length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return <>{parts}</>;
+}
+
+function MarkdownContent({ text }: { text: string }) {
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  const listItems: string[] = [];
+  let listType: 'ol' | 'ul' | null = null;
+  let elemKey = 0;
+
+  const flushList = () => {
+    if (!listType || listItems.length === 0) return;
+    const Tag = listType === 'ol' ? 'ol' : 'ul';
+    elements.push(
+      <Tag
+        key={elemKey++}
+        className={`${listType === 'ol' ? 'list-decimal' : 'list-disc'} list-inside space-y-0.5 my-1`}
+      >
+        {listItems.map((item, idx) => (
+          <li key={idx}>
+            <InlineMarkdown text={item} />
+          </li>
+        ))}
+      </Tag>
+    );
+    listItems.length = 0;
+    listType = null;
+  };
+
+  lines.forEach((line, i) => {
+    const numberedMatch = line.match(/^\d+\.\s+(.*)/);
+    const bulletMatch = line.match(/^[-*]\s+(.*)/);
+
+    if (numberedMatch) {
+      if (listType === 'ul') flushList();
+      listType = 'ol';
+      listItems.push(numberedMatch[1]);
+    } else if (bulletMatch) {
+      if (listType === 'ol') flushList();
+      listType = 'ul';
+      listItems.push(bulletMatch[1]);
+    } else {
+      flushList();
+      if (line.trim() === '') {
+        if (elements.length > 0 && i < lines.length - 1) {
+          elements.push(<div key={elemKey++} className="h-1" />);
+        }
+      } else {
+        elements.push(
+          <p key={elemKey++}>
+            <InlineMarkdown text={line} />
+          </p>
+        );
+      }
+    }
+  });
+  flushList();
+
+  return <div className="space-y-0.5">{elements}</div>;
+}
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -261,7 +346,11 @@ export default function ChatModal({
                               : 'bg-[var(--color-primary)] text-white rounded-tr-none'
                           }`}
                         >
-                          <p className="whitespace-pre-wrap">{part.text}</p>
+                          {isAssistant ? (
+                            <MarkdownContent text={part.text} />
+                          ) : (
+                            <p className="whitespace-pre-wrap">{part.text}</p>
+                          )}
                         </div>
                       </div>
                     );

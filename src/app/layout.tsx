@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { StoreProvider } from "@/context/StoreContext";
 
 const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <CartProvider>{children}</CartProvider>
+        <StoreProvider>
+          <CartProvider>{children}</CartProvider>
+        </StoreProvider>
       </body>
     </html>
   );

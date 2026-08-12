@@ -7,22 +7,51 @@ import SideNavBar from '@/components/SideNavBar';
 import ProductGrid from '@/components/ProductGrid';
 import ChatModal from '@/components/ChatModal';
 import ChatFAB from '@/components/ChatFAB';
-
+import { useStore } from '@/context/StoreContext';
 
 interface HomeClientProps {
   stores: Store[];
   allStoreProducts: StoreProducts[];
 }
 
+function mergeAllProducts(allStoreProducts: StoreProducts[]): StoreProducts {
+  const seen = new Set<string>();
+  const merge = (arr: ReturnType<typeof allStoreProducts[0]['featuredProducts']['slice']>) =>
+    arr.filter((p) => {
+      if (seen.has(p.id)) return false;
+      seen.add(p.id);
+      return true;
+    });
+
+  return {
+    storeId: '',
+    featuredProducts: merge(allStoreProducts.flatMap((sp) => sp.featuredProducts)),
+    priceDrop: merge(allStoreProducts.flatMap((sp) => sp.priceDrop)),
+    freshMeatAndSeafood: merge(allStoreProducts.flatMap((sp) => sp.freshMeatAndSeafood)),
+    pantry: merge(allStoreProducts.flatMap((sp) => sp.pantry)),
+    freshProduce: merge(allStoreProducts.flatMap((sp) => sp.freshProduce)),
+  };
+}
+
 export default function HomeClient({ stores, allStoreProducts }: HomeClientProps) {
-  const [selectedStoreId, setSelectedStoreId] = useState('');
+  const { selectedStoreId, setSelectedStoreId } = useStore();
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const selectedStore = useMemo(() => {
-    return stores.find((s) => s.id === selectedStoreId);
-  }, [stores, selectedStoreId]);
+  const selectedStore = useMemo(
+    () => stores.find((s) => s.id === selectedStoreId),
+    [stores, selectedStoreId]
+  );
 
   const currentInventory = useMemo(() => {
+    if (!selectedStoreId) {
+      return allStoreProducts.flatMap((sp) => [
+        ...sp.featuredProducts,
+        ...sp.priceDrop,
+        ...sp.freshMeatAndSeafood,
+        ...sp.pantry,
+        ...sp.freshProduce,
+      ]);
+    }
     const storeRecord = allStoreProducts.find((p) => p.storeId === selectedStoreId);
     if (!storeRecord) return [];
     return [
@@ -34,8 +63,9 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
     ];
   }, [allStoreProducts, selectedStoreId]);
 
-  const storeData = allStoreProducts.find((sp) => sp.storeId === selectedStoreId)
-    ?? allStoreProducts[0];
+  const storeData = selectedStoreId
+    ? (allStoreProducts.find((sp) => sp.storeId === selectedStoreId) ?? mergeAllProducts(allStoreProducts))
+    : mergeAllProducts(allStoreProducts);
 
   return (
     <div className="flex flex-col min-h-screen">

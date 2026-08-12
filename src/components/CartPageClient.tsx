@@ -5,6 +5,7 @@ import { useCart } from '@/context/CartContext';
 import type { Store } from '@/types';
 import TopNavBar from './TopNavBar';
 import SideNavBar from './SideNavBar';
+import { useStore } from '@/context/StoreContext';
 
 interface CartPageClientProps {
   stores: Store[];
@@ -12,15 +13,14 @@ interface CartPageClientProps {
 
 export default function CartPageClient({ stores }: CartPageClientProps) {
   const { items, incrementItem, decrementItem, removeItem, clearCart, totalPrice } = useCart();
-
-  const defaultStoreId = stores[0]?.id ?? '';
+  const { selectedStoreId, setSelectedStoreId } = useStore();
 
   return (
     <div className="flex flex-col min-h-screen">
       <TopNavBar
         stores={stores}
-        selectedStoreId={defaultStoreId}
-        onStoreChange={() => {}}
+        selectedStoreId={selectedStoreId}
+        onStoreChange={setSelectedStoreId}
       />
 
       <div className="flex flex-1 overflow-hidden">

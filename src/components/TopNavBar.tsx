@@ -16,7 +16,7 @@ interface TopNavBarProps {
 
 export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: TopNavBarProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const selectedStore = stores.find((s) => s.id === selectedStoreId) ?? stores[0];
+  const selectedStore = stores.find((s) => s.id === selectedStoreId);
   const { items } = useCart();
 
   return (

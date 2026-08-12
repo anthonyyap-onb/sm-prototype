@@ -2,8 +2,14 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import type { Product, Store } from '@/types';
+import {
+  handleChatToolCall,
+  type AddToCartArgs,
+  type ChatToolOutput,
+} from '@/lib/tools/chatTools';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -108,18 +114,6 @@ const SUGGESTION_CHIPS = [
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
 
-interface AddToCartArgs {
-  productId?: string;
-  productName: string;
-  price?: number;
-  imageUrl?: string;
-  weight?: string;
-  ingredientNumber?: number;
-  quantity?: number;
-  isAlternative?: boolean;
-  originalIngredientName?: string;
-}
-
 export default function ChatModal({
   isOpen,
   onClose,
@@ -132,6 +126,7 @@ export default function ChatModal({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
   const { addToCart } = useCart();
+  const router = useRouter();
 
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
@@ -176,8 +171,7 @@ export default function ChatModal({
   }, [selectedLocation]);
 
   // addToolOutput ref — populated after useChat initialises so onToolCall can call it
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addToolOutputRef = useRef<((...args: any[]) => void) | null>(null);
+  const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
 
   // Tracks whether the most recent store change was triggered by the LLM tool.
   // If true, the useEffect below skips injecting a notification (LLM already knows).
@@ -197,64 +191,23 @@ export default function ChatModal({
       },
     ],
     onToolCall: ({ toolCall }) => {
-      if (toolCall.toolName === 'setStoreLocation') {
-        const args = toolCall.input as { storeId: string; storeName: string };
-        llmTriggeredStoreChangeRef.current = true;
-        onStoreChangeRef.current(args.storeId);
-        addToolOutputRef.current?.({
-          tool: 'setStoreLocation',
-          toolCallId: toolCall.toolCallId,
-          output: { success: true, message: `Store set to ${args.storeName}.` },
-        });
-        return;
-      }
-
-      if (toolCall.toolName !== 'addToCart') return;
-
-      const args = toolCall.input as AddToCartArgs;
-      const qty = args.quantity ?? 1;
-      let output: { success: boolean; message: string };
-
-      if (args.productId) {
-        const matched = inventoryRef.current.find((p) => p.id === args.productId);
-        if (matched) {
-          for (let i = 0; i < qty; i++) addToCart(matched);
-          output = { success: true, message: `Added ${matched.name} × ${qty} to cart.` };
-        } else {
-          // productId provided but not found in current inventory — fall through
-          output = {
-            success: false,
-            message: `Product ID ${args.productId} not found in current store inventory.`,
-          };
-        }
-      } else if (args.price !== undefined) {
-        // No product ID but we have enough info to create a synthetic product
-        const syntheticProduct: Product = {
-          id: `llm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          name: args.productName,
-          imageUrl: args.imageUrl ?? '',
-          weight: args.weight ?? '',
-          price: args.price,
-        };
-        for (let i = 0; i < qty; i++) addToCart(syntheticProduct);
-        output = { success: true, message: `Added ${args.productName} × ${qty} to cart.` };
-      } else {
-        output = {
-          success: false,
-          message: `Could not add ${args.productName} to cart — no inventory match found. Please select it manually from the store page.`,
-        };
-      }
-
-      addToolOutputRef.current?.({
-        tool: 'addToCart',
-        toolCallId: toolCall.toolCallId,
-        output,
+      handleChatToolCall(toolCall, {
+        inventory: inventoryRef.current,
+        addToCart,
+        addToolOutput: (output) => addToolOutputRef.current?.(output),
+        navigateToCart: () => router.push('/cart'),
+        markStoreChangeAsToolTriggered: () => {
+          llmTriggeredStoreChangeRef.current = true;
+        },
+        changeStore: (storeId) => onStoreChangeRef.current(storeId),
       });
     },
   });
 
   // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
-  addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+  useEffect(() => {
+    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+  }, [addToolOutput]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -493,6 +446,52 @@ export default function ChatModal({
                                     ? ` × ${args.quantity}`
                                     : ''
                                 } to cart…`
+                              : output?.message ?? 'Cart updated'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (part.type === 'tool-checkout_cart') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as
+                      | { success: boolean; message: string }
+                      | undefined;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending
+                              ? 'shopping_cart_checkout'
+                              : isSuccess
+                              ? 'check_circle'
+                              : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Redirecting to your cart…'
                               : output?.message ?? 'Cart updated'}
                           </span>
                         </div>

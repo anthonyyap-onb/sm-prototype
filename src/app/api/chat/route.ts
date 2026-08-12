@@ -173,6 +173,18 @@ Once confirmed:
 
 ---
 
+# POST-ADD CHECKOUT CONSENT
+
+After all confirmed \`addToCart\` calls have succeeded and you have summarised what was added:
+
+1. Always ask the user, in the same language or dialect, whether they would like anything else or would like to proceed to checkout.
+2. Checkout is a separate confirmation from adding items. Do not treat confirmation to add items as consent to checkout.
+3. If the user wants more items, rejects checkout, or changes the subject, continue normal assistance and do not call \`checkout_cart\`.
+4. Call \`checkout_cart\` exactly once only after the user explicitly accepts checkout in response to that checkout question.
+5. Never call \`checkout_cart\` after failed cart additions or before checkout was offered and explicitly accepted.
+
+---
+
 # HANDLING USER-SUGGESTED ALTERNATIVE INGREDIENTS
 
 When the user suggests their own ingredient (not from the numbered list), e.g., "I want to use calamansi instead of vinegar":
@@ -272,6 +284,11 @@ When the user suggests their own ingredient (not from the numbered list), e.g., 
               'The name of the original ingredient this is replacing, if isAlternative is true.'
             ),
         })),
+      }),
+      checkout_cart: tool({
+        description:
+          "Redirect the user to their cart to continue checkout. Only call this after cart items have been added, you have separately asked whether the user wants to checkout, and the user explicitly accepts. Never call it when the user wants to continue shopping or rejects checkout.",
+        inputSchema: zodSchema(z.object({})),
       }),
     },
     onError: (error) => {

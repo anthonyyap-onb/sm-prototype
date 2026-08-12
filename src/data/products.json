@@ -1,7 +1,7 @@
 [
   {
     "storeId": "sm-megamall",
-    "featuredProducts": [
+        "featuredProducts": [
       { "id": "10220786001", "name": "CDO Classic Ham Sliced | 250g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10220786001-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "250G", "price": 112.00 },
       { "id": "20431243", "name": "CDO Ulam Burger Patties | 228g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20431243-cdo-ulam-burger-6-regular-beef-patties-228g_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "228G", "price": 71.50 },
       { "id": "20193719", "name": "SM Bonus White Bread Loaf Regular | 600g", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262020193719_sm_bonus_white_bread_loaf_regular_600g_b.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "600G", "price": 61.00 }
@@ -11,19 +11,73 @@
       { "id": "20061493", "name": "Lady's Choice Chicken Sandwich Spread | 220ml", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20061493-ladys_choice_chicken_spread_220ml_doy_copy__1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "220ML", "price": 99.25, "originalPrice": 110.00, "discountPercent": 10 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "20387847", "name": "JSL Dagupan Daing na Bangus Boneless | 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20387847_jsl_dagupan_boneless_daing_na_bangus_2s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 195.00 },
-      { "id": "10208595", "name": "LLM Crab Xl 600G Up | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10208595.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 910.00 },
-      { "id": "20179988", "name": "FBL Norwegian Salmon Head | pc", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20179988_copy_copy_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "pc", "price": 175.00 },
-      { "id": "20543348", "name": "Smalltown Scallop Haftshell Rainbow | 500g 18pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20543348.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "500g 18pcs", "price": 238.00 }
+      {
+        "id": "2112011",
+        "name": "Magnolia Chicken Adobo Cut | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/1/2112011.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 130.9
+      },
+      {
+        "id": "2058389",
+        "name": "SM Bonus Liempo | 400g-500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20481814_sm_bonus_c_pork_belly_skin_on__500g_-_copy_10.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g-500g",
+        "price": 175.0
+      },
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      }
     ],
     "pantry": [
-      { "id": "20058095", "name": "Purefoods Corned Beef | 210g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058095-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "210g 2pcs", "price": 228.00 },
-      { "id": "20016808", "name": "SM BONUS COCONUT MILK 400 ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400ml", "price": 54.50 },
-      { "id": "20519391", "name": "Maggi Magic Sarap Seasoning Mix | 8g 16pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20519391_maggi-magic-sarap_seasoning_mix-8gx16.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "8g 16pcs", "price": 73.75 },
-      { "id": "10185528", "name": "White King Arroz Caldo | 113g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10185528-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "113g", "price": 39.50 },
-      { "id": "10111312", "name": "Saba Pink Salmon in Natural Oil | 155g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10111312.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "155g", "price": 59.00 },
-      { "id": "10006675", "name": "Datu Puti Vinegar | 1L", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262010006675_datu_puti_vinegar_1lt_full_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1L", "price": 47.00 }
+      {
+        "id": "10006753",
+        "name": "Datu Puti Soy Sauce | 1L",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/7/27._10006753_datu_puti_soy_sauce_1lt.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1L",
+        "price": 58.0
+      },
+      {
+        "id": "10006675",
+        "name": "Datu Puti Vinegar | 1L",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262010006675_datu_puti_vinegar_1lt_full_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1L",
+        "price": 47.0
+      },
+      {
+        "id": "10157432",
+        "name": "SM Bonus Sugar Brown | 1kg",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10157432-1_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1kg",
+        "price": 73.0
+      },
+      {
+        "id": "20108508",
+        "name": "SM Bonus Palm Cooking Oil | 1L",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020108508_sm_bonus_palm_cooking_oil_1l_pet_1_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1L",
+        "price": 136.5
+      },
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      }
     ]
   },
   {
@@ -38,18 +92,94 @@
       { "id": "20232695", "name": "Oreo Vanilla | 29.4g 9pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20232695.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "26.25G 9PCS", "price": 79.50, "originalPrice": 90.00, "discountPercent": 12 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "20555023", "name": "Ocean's Harvest Seabass | 400g-600g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20555023_ocean_s_harvest_seabass_400_-_600g_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-600g", "price": 439.00 },
-      { "id": "10194545", "name": "LLM Crab Female 500G | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10194545.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 544.00 },
-      { "id": "20151394", "name": "JSL Dagupan Bangus Belly Boneless | 400g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20151394_jsl_dagupan_boneless_bangus_belly_2s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 235.00 },
-      { "id": "20555417", "name": "JSL Dagupan Daing Hot and Spicy | 400g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20555417.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 199.00 }
+      {
+        "id": "2058413",
+        "name": "SM Bonus Pork Sinigang Cut | 400g-500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20505167.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g-500g",
+        "price": 105.0
+      },
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      }
     ],
     "pantry": [
-      { "id": "20461594", "name": "COCO MAMA FRESH GATA SUP 200ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020461594_coco_mama_fresh_gata_sup_200ml.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "200ml", "price": 35.50 },
-      { "id": "20351791", "name": "Lucky Me Instant Pancit Canton Kalamansi | 80g 6", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20351791.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "80g 6pcs", "price": 88.50 },
-      { "id": "10157432", "name": "SM BONUS SUGAR BROWN 1KG", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10157432-1_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1kg", "price": 73.00 },
-      { "id": "10111312", "name": "Saba Pink Salmon in Natural Oil | 155g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10111312.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "155g", "price": 59.00 },
-      { "id": "10006715", "name": "SM BONUS BAGOONG SPICY 250G", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10006715_sm_bonus_bagoong_spicy_250g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "250g", "price": 81.50 }
+      {
+        "id": "20001305",
+        "name": "Knorr Sinigang Sa Sampalok Original | 44g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20001305_copy_.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "44g",
+        "price": 29.5
+      },
+      {
+        "id": "10006722",
+        "name": "Lorins Patis | 1L",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/_/1/_14_10006722_lorins_patis_1l_c.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1L",
+        "price": 76.5
+      },
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "20332497",
+        "name": "M Tomato Native | 350g-400g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20332497.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350G-400G",
+        "price": 62.8
+      },
+      {
+        "id": "2037435",
+        "name": "SM Bonus Onion Red | 350g-400g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262020481799_-_sm_bonus_-_j_red_onion_300g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350G-400G",
+        "price": 32.8
+      },
+      {
+        "id": "2011847",
+        "name": "SM Bonus Stringbeans | 200g-250g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/3/13-20481805-sitaw_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "200G-250G",
+        "price": 25.75
+      },
+      {
+        "id": "20575128",
+        "name": "GHO Kangkong Tai | 250g-300g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20575128.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "250G-300G",
+        "price": 58.8
+      },
+      {
+        "id": "20332484",
+        "name": "M Radish | 400g-500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20332484-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400G-500G",
+        "price": 91.0
+      },
+      {
+        "id": "2011859",
+        "name": "SM Bonus Okra | 350g-400g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20498670_-_sm_bonus_j_okra_300g_-_copy_10.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350G-400G",
+        "price": 20.0
+      },
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      }
     ]
   },
   {
@@ -64,18 +194,66 @@
       { "id": "20099965", "name": "Skinwhite Deodorant Whitening Roll On Powder | 40ml", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20099965_skinwhite-deodornt_whtng_r_o_powder-40ml_front_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "40ML", "price": 81.75, "originalPrice": 95.00, "discountPercent": 14 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "10194542", "name": "LLM Crab Male 500G | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10194542.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 706.00 },
-      { "id": "20543621", "name": "Small Town Scallop Half Shell Regular | 500g 24pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20543621.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "500g 24pcs", "price": 269.00 },
-      { "id": "20179988", "name": "FBL Norwegian Salmon Head | pc", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20179988_copy_copy_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "pc", "price": 175.00 },
-      { "id": "20530579", "name": "FFI Boneless Bangus Marinated | 350g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20530579-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "350g 2pcs", "price": 230.00 }
+      {
+        "id": "2072541",
+        "name": "SM Bonus C Ox Tail | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2072541-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 258.5
+      },
+      {
+        "id": "2059020",
+        "name": "SM Bonus C Ox Tripe | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2059020.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 159.5
+      },
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      }
     ],
     "pantry": [
-      { "id": "10185527", "name": "White King Champorado | 113g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10185527_white_king_champorado_113g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "113g", "price": 44.50 },
-      { "id": "20058095", "name": "Purefoods Corned Beef | 210g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058095-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "210g 2pcs", "price": 228.00 },
-      { "id": "10009631", "name": "Lady's Choice Sandwich Spread Chicken | 470mL", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10009631_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "470ml", "price": 264.50 },
-      { "id": "20519391", "name": "Maggi Magic Sarap Seasoning Mix | 8g 16pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20519391_maggi-magic-sarap_seasoning_mix-8gx16.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "8g 16pcs", "price": 73.75 },
-      { "id": "20016808", "name": "SM BONUS COCONUT MILK 400 ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400ml", "price": 54.50 }
+      {
+        "id": "10006715",
+        "name": "SM Bonus Bagoong Spicy | 250g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10006715_sm_bonus_bagoong_spicy_250g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "250g",
+        "price": 81.5
+      },
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "2011834",
+        "name": "SM Bonus J Onion Bulb White Local | 350g-400g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2011834_onion_white.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350G-400G",
+        "price": 32.0
+      },
+      {
+        "id": "2011839",
+        "name": "SM Bonus Pechay Tagalog | 150g-200g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20481810_pechay.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "150G-200G",
+        "price": 19.0
+      },
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      }
     ]
   },
   {
@@ -90,19 +268,94 @@
       { "id": "2020520", "name": "Nissin Butter Coconut | 14g 12pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/n/i/nissin_butter_coconut_14g_12pcs.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "12PCS", "price": 46.50, "originalPrice": 55.00, "discountPercent": 15 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "20555023", "name": "Ocean's Harvest Seabass | 400g-600g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20555023_ocean_s_harvest_seabass_400_-_600g_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-600g", "price": 439.00 },
-      { "id": "10208595", "name": "LLM Crab Xl 600G Up | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10208595.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 910.00 },
-      { "id": "20151394", "name": "JSL Dagupan Bangus Belly Boneless | 400g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20151394_jsl_dagupan_boneless_bangus_belly_2s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 235.00 },
-      { "id": "20543348", "name": "Smalltown Scallop Haftshell Rainbow | 500g 18pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20543348.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "500g 18pcs", "price": 238.00 }
+      {
+        "id": "2058415",
+        "name": "SM Bonus Pigue | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20505171.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 147.95
+      },
+      {
+        "id": "2112007",
+        "name": "Magnolia Chicken Breast Fillet | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20481718_magnolia_chicken_fillet_breast.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 185.9
+      },
+      {
+        "id": "20097562",
+        "name": "NSJ Suahe | 350g-500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20505611.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350g-500g",
+        "price": 249.5
+      },
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      }
     ],
     "pantry": [
-      { "id": "10111312", "name": "Saba Pink Salmon in Natural Oil | 155g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10111312.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "155g", "price": 59.00 },
-      { "id": "10006715", "name": "SM BONUS BAGOONG SPICY 250G", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10006715_sm_bonus_bagoong_spicy_250g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "250g", "price": 81.50 },
-      { "id": "10006675", "name": "Datu Puti Vinegar | 1L", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262010006675_datu_puti_vinegar_1lt_full_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1L", "price": 47.00 },
-      { "id": "10185528", "name": "White King Arroz Caldo | 113g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10185528-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "113g", "price": 39.50 },
-      { "id": "20016808", "name": "SM BONUS COCONUT MILK 400 ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400ml", "price": 54.50 },
-      { "id": "20461594", "name": "COCO MAMA FRESH GATA SUP 200ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020461594_coco_mama_fresh_gata_sup_200ml.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "200ml", "price": 35.50 }
+      {
+        "id": "2023753003",
+        "name": "Super Q Golden Bihon | 500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2023753003_super_q_golden_bihon_500_g_full__emtuxxhefoc0jlqn.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g",
+        "price": 44.0
+      },
+      {
+        "id": "20488851",
+        "name": "Mama Sita Oyster Sauce Pouch | 405g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20488851_mama_sitas-oyster_sauce_spouch-405g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "405g",
+        "price": 87.5
+      },
+      {
+        "id": "10041025",
+        "name": "Knorr Chicken Cubes Pantry | 60g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10041025_copy_.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "60g",
+        "price": 37.0
+      },
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "20332479",
+        "name": "M Carrot | 450g-500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20332479-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "450G-500G",
+        "price": 156.5
+      },
+      {
+        "id": "20332433",
+        "name": "M Cabbage | 600g-700g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20332433-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "600G-700G",
+        "price": 114.1
+      },
+      {
+        "id": "2009167",
+        "name": "SM Bonus Calamansi | 350g-400g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10-20481794-calamansi_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "350G-400G",
+        "price": 41.2
+      },
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      }
     ]
   },
   {
@@ -117,18 +370,59 @@
       { "id": "10007936", "name": "GreenCross Isopropyl Alcohol 70% Solution with Moisturizer | 500ml", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10007936.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "500ML", "price": 82.00, "originalPrice": 95.00, "discountPercent": 14 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "10194545", "name": "LLM Crab Female 500G | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10194545.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 544.00 },
-      { "id": "20387847", "name": "JSL Dagupan Daing na Bangus Boneless | 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20387847_jsl_dagupan_boneless_daing_na_bangus_2s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 195.00 },
-      { "id": "20543621", "name": "Small Town Scallop Half Shell Regular | 500g 24pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20543621.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "500g 24pcs", "price": 269.00 },
-      { "id": "20530579", "name": "FFI Boneless Bangus Marinated | 350g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20530579-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "350g 2pcs", "price": 230.00 }
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      },
+      {
+        "id": "2112028",
+        "name": "Magnolia Chicken Lollipop | 500g-550g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/1/2112028.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g-550g",
+        "price": 142.45
+      }
     ],
     "pantry": [
-      { "id": "20058095", "name": "Purefoods Corned Beef | 210g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058095-1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "210g 2pcs", "price": 228.00 },
-      { "id": "20351791", "name": "Lucky Me Instant Pancit Canton Kalamansi | 80g 6", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20351791.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "80g 6pcs", "price": 88.50 },
-      { "id": "20461594", "name": "COCO MAMA FRESH GATA SUP 200ML", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020461594_coco_mama_fresh_gata_sup_200ml.jpg?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "200ml", "price": 35.50 },
-      { "id": "10157432", "name": "SM BONUS SUGAR BROWN 1KG", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10157432-1_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1kg", "price": 73.00 },
-      { "id": "10009631", "name": "Lady's Choice Sandwich Spread Chicken | 470mL", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10009631_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "470ml", "price": 264.50 }
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      },
+      {
+        "id": "10059887",
+        "name": "Century Tuna Flakes in Vegetable Oil | 180g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10059887_-_century_tuna-flakes__veg_oil-180g_2_1_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "180g",
+        "price": 46.0
+      },
+      {
+        "id": "20100191",
+        "name": "Mega Sardines In Tomato Sauce | 155g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262020100191_mega_sardines_in_tomato_sauce_155g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "155g",
+        "price": 25.25
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      },
+      {
+        "id": "20385118",
+        "name": "LGI Ginger Native | 300g-350g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20385118-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "300G-350G",
+        "price": 183.75
+      }
     ]
   },
   {
@@ -142,19 +436,59 @@
       { "id": "20351791", "name": "Lucky Me Instant Pancit Canton Kalamansi | 80g 6", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20351791.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "80G 6PCS", "price": 88.50, "originalPrice": 105.00, "discountPercent": 16 }
     ],
     "freshMeatAndSeafood": [
-      { "id": "20544622", "name": "Magnolia Chicken Rtc Grillers | 400g-500g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20544622-removebg-preview.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-500g", "price": 147.00 },
-      { "id": "20555023", "name": "Ocean's Harvest Seabass | 400g-600g", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20555023_ocean_s_harvest_seabass_400_-_600g_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g-600g", "price": 439.00 },
-      { "id": "10194542", "name": "LLM Crab Male 500G | 800g-1000g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10194542.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "800g-1000g", "price": 706.00 },
-      { "id": "20555417", "name": "JSL Dagupan Daing Hot and Spicy | 400g 2pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20555417.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "400g 2pcs", "price": 199.00 },
-      { "id": "20179988", "name": "FBL Norwegian Salmon Head | pc", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20179988_copy_copy_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "pc", "price": 175.00 }
+      {
+        "id": "20058773",
+        "name": "JSL Dagupan Daing na Bangus Boneless | 400g 3pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20058773_jsl_dagupan_boneless_daing_na_bangus_3s.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400g 3pcs",
+        "price": 199.0
+      },
+      {
+        "id": "20030992",
+        "name": "Magnolia Chicken Liver | 250g-300g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262020481790_magnolia_chicken_liver_500g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "250g-300g",
+        "price": 75.0
+      }
     ],
     "pantry": [
-      { "id": "10185527", "name": "White King Champorado | 113g", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10185527_white_king_champorado_113g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "113g", "price": 44.50 },
-      { "id": "10009631", "name": "Lady's Choice Sandwich Spread Chicken | 470mL", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10009631_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "470ml", "price": 264.50 },
-      { "id": "20519391", "name": "Maggi Magic Sarap Seasoning Mix | 8g 16pcs", "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20519391_maggi-magic-sarap_seasoning_mix-8gx16.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "8g 16pcs", "price": 73.75 },
-      { "id": "10006715", "name": "SM BONUS BAGOONG SPICY 250G", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10006715_sm_bonus_bagoong_spicy_250g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "250g", "price": 81.50 },
-      { "id": "10006675", "name": "Datu Puti Vinegar | 1L", "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos10262010006675_datu_puti_vinegar_1lt_full_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1L", "price": 47.00 },
-      { "id": "10157432", "name": "SM BONUS SUGAR BROWN 1KG", "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10157432-1_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=", "weight": "1kg", "price": 73.00 }
+      {
+        "id": "20016808",
+        "name": "SM Bonus Coconut Milk | 400ml",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "400ml",
+        "price": 54.5
+      },
+      {
+        "id": "10006951",
+        "name": "Spam Luncheon Meat 30% Less Sodium | 12oz",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10006951.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "12oz",
+        "price": 227.5
+      },
+      {
+        "id": "10185527",
+        "name": "White King Champorado | 113g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10185527_white_king_champorado_113g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "113g",
+        "price": 44.5
+      }
+    ],
+    "freshProduce": [
+      {
+        "id": "2046141",
+        "name": "Choice Harvest Ponkan | 10pcs",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/2046141.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "10PCS",
+        "price": 170.0
+      },
+      {
+        "id": "20280158",
+        "name": "Dizon Cavendish Banana | 1100g-1300g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20280158.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1100G-1300G",
+        "price": 130.0
+      }
     ]
   }
 ]

@@ -30,6 +30,7 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
       ...storeRecord.priceDrop,
       ...storeRecord.freshMeatAndSeafood,
       ...storeRecord.pantry,
+      ...storeRecord.freshProduce,
     ];
   }, [allStoreProducts, selectedStoreId]);
 
@@ -75,6 +76,12 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
             title="Pantry"
             products={storeData.pantry}
             icon="shopping_basket"
+            viewAllHref="#"
+          />
+          <ProductGrid
+            title="Fresh Produce"
+            products={storeData.freshProduce}
+            icon="eco"
             viewAllHref="#"
           />
         </main>

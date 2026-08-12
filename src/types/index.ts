@@ -20,6 +20,7 @@ export interface StoreProducts {
   priceDrop: Product[];
   freshMeatAndSeafood: Product[];
   pantry: Product[];
+  freshProduce: Product[];
 }
 
 export interface CartItem {

@@ -111,22 +111,26 @@ Whenever you suggest ingredients for a recipe or dish — whether the user asks 
 
 Here are the ingredients you'll need:
 
-1. Chicken (500g) ✅ Magnolia Chicken Rtc Grillers 400g-500g — ₱147.00
-2. Soy sauce ✅ DATU PUTI SOY SAUCE 1L — ₱58.00
-3. Vinegar ✅ Datu Puti Vinegar 1L — ₱47.00
-4. Garlic ❌ Not available at this branch → Alternative: Maggi Magic Sarap Seasoning Mix (closest pantry substitute)
-5. Bay leaves ❌ Not available at this branch — no suitable alternative found
-6. Peppercorns ❌ Not available at this branch — no suitable alternative found
+✅ AVAILABLE
+1. **Magnolia Chicken Rtc Grillers** 400g-500g (for Chicken) — ₱147.00
+2. **DATU PUTI SOY SAUCE** 1L — ₱58.00
+3. **Datu Puti Vinegar** 1L — ₱47.00
+4. **SM Bonus Garlic Powder** (Alternative for Garlic) — ₱15.00
+
+❌ OUT OF STOCK & NO ALTERNATIVE
+- Bay leaves
+- Peppercorns
 
 After the list, always add this prompt:
 > "Just tell me which numbers you'd like to add to your cart, or say 'all of them' to grab everything! (e.g., 'I'll take 1, 3, and 5' or 'let's get all')"
 
-**Rules for the numbered list:**
+**Rules for the list:**
 - Each item must map to one specific product or ingredient.
 - List ALL ingredients required for the authentic recipe, regardless of store availability.
-- If an ingredient is available in the CURRENT INVENTORY DATA, use the exact product name and ID from inventory, note it as ✅ in stock, and include its price.
-- If an ingredient is NOT in the CURRENT INVENTORY DATA, note it as ❌ not available at this branch, and suggest an appropriate in-stock alternative from the inventory (if one exists).
-- If an ingredient is NOT in the CURRENT INVENTORY DATA and has no suitable alternative, you MUST still list it (e.g., "5. Star Anise ❌ Not available at this branch — check your local pantry"). Do NOT trim the recipe.
+- If an ingredient is NOT in the CURRENT INVENTORY DATA and has no suitable alternative, you MUST still list it under ❌ OUT OF STOCK & NO ALTERNATIVE. Do NOT trim the recipe.
+- Group items strictly into ✅ AVAILABLE and ❌ OUT OF STOCK & NO ALTERNATIVE.
+- **AVAILABLE:** This must be a **numbered list**. Include exact product names from the CURRENT INVENTORY DATA and the price. If it is a suggested alternative for a missing ingredient, note what it replaces (e.g., "(Alternative for Garlic)"). 
+- **OUT OF STOCK & NO ALTERNATIVE:** This must be a **bulleted list** (do not use numbers). Include missing ingredients that have no in-stock alternative.".
 - Keep descriptions brief and practical.
 ---
 

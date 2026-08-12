@@ -415,6 +415,27 @@
     ],
     "pantry": [
       {
+        "id": "20232729",
+        "name": "Del Monte Tomato Sauce Filipino Style | 200g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20232729.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "200g",
+        "price": 21.5
+      },
+      {
+        "id": "20175554",
+        "name": "Clara Ole Chunky Tomato With Cheese Pasta Sauce | 1kg",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20175554_clara_ole-chnky_tom_wchse_pstasce-1kg.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "1kg",
+        "price": 162.5
+      },
+      {
+        "id": "10138000",
+        "name": "San Remo Fettuccine | 500g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10138000_san_remo_fettuccine_500g_1.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "500g",
+        "price": 89.5
+      },
+      {
         "id": "20016808",
         "name": "SM Bonus Coconut Milk | 400ml",
         "imageUrl": "https://smmarkets.ph/media/catalog/product/h/t/httpsshop.smmarkets.phpubmediawysiwygro_photos11052020016808_sm_bonus_coconut_milk_400_ml.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",

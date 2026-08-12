@@ -35,6 +35,27 @@
     ],
     "pantry": [
       {
+        "id": "10191942",
+        "name": "SM Bonus Powder Onion | 50g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10191942_6.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "50g",
+        "price": 24.5
+      },
+      {
+        "id": "10191982",
+        "name": "SM Bonus Garlic Powder | 50g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/1/0/10191982_garlic.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "50g",
+        "price": 21.5
+      },
+      {
+        "id": "20352147",
+        "name": "SM Bonus Thyme Leaves | 15g",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20352147_sm_bonus-thyme_leaves-15g.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "15g",
+        "price": 17.0
+      },
+      {
         "id": "10006753",
         "name": "Datu Puti Soy Sauce | 1L",
         "imageUrl": "https://smmarkets.ph/media/catalog/product/2/7/27._10006753_datu_puti_soy_sauce_1lt.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
@@ -217,6 +238,13 @@
       }
     ],
     "pantry": [
+      {
+        "id": "20026204",
+        "name": "Skippy Creamy Peanut Butter | 16.3oz",
+        "imageUrl": "https://smmarkets.ph/media/catalog/product/2/0/20026204_skippy_creamy_peanut_butter_16.3oz_copy_.png?optimize=low&bg-color=255,255,255&fit=bounds&height=&width=",
+        "weight": "16.3oz",
+        "price": 249.5
+      },
       {
         "id": "10006715",
         "name": "SM Bonus Bagoong Spicy | 250g",

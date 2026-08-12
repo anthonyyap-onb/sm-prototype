@@ -17,16 +17,22 @@ export async function POST(req: Request) {
     messages,
     storeLocation,
     inventoryData,
+    storesData,
   }: {
     messages: UIMessage[];
     storeLocation?: string;
     inventoryData?: unknown;
+    storesData?: { id: string; name: string; city: string }[];
   } = await req.json();
 
   const formattedInventory =
     storeLocation && inventoryData
       ? JSON.stringify(inventoryData, null, 2)
       : '[]';
+
+  const storeListText = storesData && storesData.length > 0
+    ? storesData.map((s) => `  - \`${s.id}\` → ${s.name}, ${s.city}`).join('\n')
+    : '  - (no stores available)';
 
   const systemPrompt = `
 # ROLE & PERSONALITY
@@ -53,8 +59,22 @@ ${formattedInventory}
 \`\`\`
 
 1. **If NO store location is selected (CURRENT SELECTED BRANCH is "NONE"):**
-  - You MUST politely ask the user to select their store branch using the location dropdown in the application before answering inventory or product questions.
-  - *Exception:* If they ask for a general recipe (e.g., "how to make sinigang"), you may list standard ingredients, but remind them to choose a branch location to check if those items are in stock.
+  - Politely let the user know they need to select a store branch first before you can help with product availability or recipes.
+  - Tell them they can either:
+    a. Use the **store location dropdown** in the top navigation bar, OR
+    b. Simply **tell you the store name** (e.g., "SM Aura", "Mall of Asia", "SM Megamall") and you will set it for them.
+  - *Exception:* If they ask for a general recipe (e.g., "how to make sinigang"), you may list standard ingredients, but still remind them to choose a branch to check stock.
+
+2. **If the user mentions a store name** (e.g., "SM Aura", "Mall of Asia", "Megamall", "Southmall", "North EDSA", "Baguio") and no store is currently selected **or** they want to change the currently selected store:
+  - Confirm the store name with the user before calling the tool, unless you are highly confident about the match.
+  - Call the \`setStoreLocation\` tool with the matched store ID.
+  - After the tool responds successfully, tell the user which branch was set and that they can now browse products or ask for recipes.
+
+3. **Available store IDs for \`setStoreLocation\`:**
+${storeListText}
+  - Never use a store ID that is not on this list.
+
+4. When mentioning the store location in your responses, always highlight it with bold text (e.g., **SM Aura**, **Mall of Asia**).
 
 ---
 
@@ -171,6 +191,24 @@ When the user suggests their own ingredient (not from the numbered list), e.g., 
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
     tools: {
+      setStoreLocation: tool({
+        description:
+          "Set the user's active store branch so product availability and the product grid update to show that branch's inventory. Call this when the user tells you which SM branch they want to shop at. After successfully calling this tool, tell the user the store has been set.",
+        inputSchema: zodSchema(
+          z.object({
+            storeId: z
+              .string()
+              .describe(
+                'The store ID to activate. Must exactly match one of the IDs listed in the system prompt under "Available store IDs for setStoreLocation". Never fabricate a store ID.'
+              ),
+            storeName: z
+              .string()
+              .describe(
+                'The human-readable store name for display in the confirmation message, e.g. "SM Aura Premier".'
+              ),
+          })
+        ),
+      }),
       addToCart: tool({
         description:
           "Add a specific ingredient or product to the user's shopping cart. Only call this AFTER the user has explicitly confirmed the items. Call this once per distinct item the user wants to add. Use the product details from the CURRENT INVENTORY DATA when available — never fabricate product IDs.",

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useCart } from '@/context/CartContext';
-import type { Product } from '@/types';
+import type { Product, Store } from '@/types';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -95,6 +95,8 @@ interface ChatModalProps {
   onClose: () => void;
   selectedLocation?: string;
   inventoryData: Product[];
+  onStoreChange: (storeId: string) => void;
+  storesData: Store[];
 }
 
 const SUGGESTION_CHIPS = [
@@ -123,6 +125,8 @@ export default function ChatModal({
   onClose,
   selectedLocation,
   inventoryData,
+  onStoreChange,
+  storesData,
 }: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -134,6 +138,11 @@ export default function ChatModal({
   useEffect(() => {
     inventoryRef.current = inventoryData;
   }, [inventoryData]);
+
+  const onStoreChangeRef = useRef<(storeId: string) => void>(onStoreChange);
+  useEffect(() => {
+    onStoreChangeRef.current = onStoreChange;
+  }, [onStoreChange]);
 
   // addToolOutput ref — populated after useChat initialises so onToolCall can call it
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -153,6 +162,17 @@ export default function ChatModal({
       },
     ],
     onToolCall: ({ toolCall }) => {
+      if (toolCall.toolName === 'setStoreLocation') {
+        const args = toolCall.input as { storeId: string; storeName: string };
+        onStoreChangeRef.current(args.storeId);
+        addToolOutputRef.current?.({
+          tool: 'setStoreLocation',
+          toolCallId: toolCall.toolCallId,
+          output: { success: true, message: `Store set to ${args.storeName}.` },
+        });
+        return;
+      }
+
       if (toolCall.toolName !== 'addToCart') return;
 
       const args = toolCall.input as AddToCartArgs;
@@ -237,6 +257,7 @@ export default function ChatModal({
         body: {
           storeLocation: selectedLocation,
           inventoryData: inventoryData,
+          storesData: storesData,
         },
       }
     );
@@ -357,6 +378,38 @@ export default function ChatModal({
                   }
 
                   // Tool invocation parts — type is 'tool-addToCart' in AI SDK v7
+                  if (part.type === 'tool-setStoreLocation') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-blue-50 border-blue-200 text-blue-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">location_on</span>
+                          <span>
+                            {isPending
+                              ? 'Setting store location…'
+                              : toolPart.output?.message ?? 'Store location updated'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   if (part.type === 'tool-addToCart') {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const toolPart = part as any;

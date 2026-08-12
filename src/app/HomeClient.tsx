@@ -86,6 +86,8 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
         onClose={() => setIsChatOpen(false)}
         selectedLocation={selectedStore?.name + " " + selectedStore?.city} 
         inventoryData={currentInventory}
+        onStoreChange={setSelectedStoreId}
+        storesData={stores}
       />
     </div>
   );

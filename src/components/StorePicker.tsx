@@ -15,10 +15,21 @@ export default function StorePicker({ stores, selectedStoreId, onSelect, onClose
 
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      
+      // Check if the click is inside the dropdown
+      const isInsideDropdown = ref.current?.contains(target);
+      
+      // Check if the click is on the trigger button
+      const triggerButton = document.getElementById('store-picker-trigger');
+      const isOnTrigger = triggerButton?.contains(target);
+
+      // Only close if the click is strictly outside both
+      if (!isInsideDropdown && !isOnTrigger) {
         onClose();
       }
     }
+    
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [onClose]);

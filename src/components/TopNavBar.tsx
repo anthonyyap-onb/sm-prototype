@@ -42,10 +42,16 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
             aria-expanded={isPickerOpen}
           >
             <span className="material-symbols-outlined text-white text-xl">location_on</span>
-            <div className="flex flex-col text-left">
-              <span className="text-[12px] font-bold text-white leading-tight">{selectedStore.name}</span>
-              <span className="text-[10px] text-white/80 leading-tight">{selectedStore.city}</span>
-            </div>
+            {selectedStoreId === '' || !selectedStore ? (
+              <span className="text-[13px] text-white leading-tight">
+                Select a store
+              </span>
+            ) : (
+              <div className="flex flex-col text-left">
+                <span className="text-[12px] font-bold text-white leading-tight">{selectedStore.name}</span>
+                <span className="text-[10px] text-white/80 leading-tight">{selectedStore.city}</span>
+              </div>
+            )}
             <span className="material-symbols-outlined text-white text-sm ml-1">
               {isPickerOpen ? 'expand_less' : 'expand_more'}
             </span>

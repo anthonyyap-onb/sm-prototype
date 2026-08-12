@@ -8,7 +8,6 @@ import ProductGrid from '@/components/ProductGrid';
 import ChatModal from '@/components/ChatModal';
 import ChatFAB from '@/components/ChatFAB';
 
-const DEFAULT_STORE_ID = 'sm-megamall';
 
 interface HomeClientProps {
   stores: Store[];
@@ -16,7 +15,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ stores, allStoreProducts }: HomeClientProps) {
-  const [selectedStoreId, setSelectedStoreId] = useState(DEFAULT_STORE_ID);
+  const [selectedStoreId, setSelectedStoreId] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const selectedStore = useMemo(() => {
@@ -85,8 +84,10 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
       <ChatModal 
         isOpen={isChatOpen} 
         onClose={() => setIsChatOpen(false)}
-        selectedLocation={selectedStore?.name + " " + selectedStore?.city} 
+        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined} 
         inventoryData={currentInventory}
+        onStoreChange={setSelectedStoreId}
+        storesData={stores}
       />
     </div>
   );

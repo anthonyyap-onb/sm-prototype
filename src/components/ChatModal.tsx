@@ -144,11 +144,46 @@ export default function ChatModal({
     onStoreChangeRef.current = onStoreChange;
   }, [onStoreChange]);
 
+  // When the store is changed externally (via the dropdown), inject a synthetic
+  // assistant message so the LLM's conversation history reflects the change.
+  const isInitialMountRef = useRef(true);
+  useEffect(() => {
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      return;
+    }
+    if (!selectedLocation || selectedLocation.includes('undefined')) return;
+
+    if (llmTriggeredStoreChangeRef.current) {
+      llmTriggeredStoreChangeRef.current = false;
+      return;
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `store-change-${Date.now()}`,
+        role: 'assistant' as const,
+        parts: [
+          {
+            type: 'text' as const,
+            text: `📍 Store updated to **${selectedLocation}**. I can now help you find products at this branch!`,
+          },
+        ],
+      },
+    ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation]);
+
   // addToolOutput ref — populated after useChat initialises so onToolCall can call it
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addToolOutputRef = useRef<((...args: any[]) => void) | null>(null);
 
-  const { messages, sendMessage, status, addToolOutput } = useChat({
+  // Tracks whether the most recent store change was triggered by the LLM tool.
+  // If true, the useEffect below skips injecting a notification (LLM already knows).
+  const llmTriggeredStoreChangeRef = useRef(false);
+
+  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
     messages: [
       {
         id: 'welcome-message',
@@ -164,6 +199,7 @@ export default function ChatModal({
     onToolCall: ({ toolCall }) => {
       if (toolCall.toolName === 'setStoreLocation') {
         const args = toolCall.input as { storeId: string; storeName: string };
+        llmTriggeredStoreChangeRef.current = true;
         onStoreChangeRef.current(args.storeId);
         addToolOutputRef.current?.({
           tool: 'setStoreLocation',

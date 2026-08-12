@@ -84,7 +84,7 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
       <ChatModal 
         isOpen={isChatOpen} 
         onClose={() => setIsChatOpen(false)}
-        selectedLocation={selectedStore?.name + " " + selectedStore?.city} 
+        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined} 
         inventoryData={currentInventory}
         onStoreChange={setSelectedStoreId}
         storesData={stores}

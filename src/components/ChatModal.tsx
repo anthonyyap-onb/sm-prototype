@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
@@ -141,6 +141,58 @@ const CHECKOUT_SUGGESTION_CHIPS = [
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
 
+interface AddToCartArgs {
+  productId?: string;
+  productName: string;
+  price?: number;
+  imageUrl?: string;
+  weight?: string;
+  ingredientNumber?: number;
+  quantity?: number;
+  isAlternative?: boolean;
+  originalIngredientName?: string;
+}
+
+function stripMarkdown(text: string): string {
+  return text
+    // Remove emojis (and optional variation selector / combining enclosing keycap)
+    .replace(/\p{Extended_Pictographic}[️⃣]?/gu, '')
+    // Strip markdown formatting
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/`(.*?)`/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^[-*]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    // Remove table separator rows (e.g. | --- | --- |) then remaining pipes
+    .replace(/^\|[-|\s:]+\|$/gm, '')
+    .replace(/\|/g, ' ')
+    // Phonetic fixes for Philippine proper nouns
+    .replace(/\bEDSA\b/g, 'Edsah')
+    .replace(/\bTaguig\b/gi, 'Tagig')
+    .replace(/\bPasay\b/gi, 'Paahsigh')
+    .replace(/\bBaguio\b/gi, 'Bagyo')
+    .replace(/\bMandaluyong\b/gi, 'Maandaluyong')
+    .replace(/\bQuezon\b/gi, 'Kezon')
+    // ₱ prices — expand to spoken form
+    .replace(/₱([\d,]*)\.00\b/g, '$1 Pesos')
+    .replace(/₱([\d,]+)\.(\d+)/g, '$1 Pesos and $2 centavos')
+    .replace(/₱([\d,]+)/g, '$1 Pesos')
+    // Expand unit abbreviations — longer/more specific first to avoid partial matches
+    .replace(/(\d+)\s*kcal\b/gi, '$1 kilocalories')
+    .replace(/(\d+)\s*kg\b/gi, '$1 kilograms')
+    .replace(/(\d+)\s*mg\b/gi, '$1 milligrams')
+    .replace(/(\d+)\s*ml\b/gi, '$1 milliliters')
+    .replace(/(\d+)\s*lbs?\b/gi, '$1 pounds')
+    .replace(/(\d+)\s*oz\b/gi, '$1 ounces')
+    .replace(/(\d+)\s*tbsp\b/gi, '$1 tablespoons')
+    .replace(/(\d+)\s*tsp\b/gi, '$1 teaspoons')
+    .replace(/(\d+)\s*pcs?\b/gi, '$1 pieces')
+    .replace(/(\d+)\s*g\b/gi, '$1 grams')
+    .replace(/(\d+)\s*[Ll]\b/g, '$1 liters')
+    .trim();
+}
+
 export default function ChatModal({
   isOpen,
   onClose,
@@ -169,6 +221,16 @@ export default function ChatModal({
   const [isTranscribing, setIsTranscribing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // --- TTS State ---
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Sentence-level pipelining: fetch TTS for each sentence concurrently, play in order
+  const sentenceQueueRef = useRef<Promise<string>[]>([]);
+  const isPlayingQueueRef = useRef(false);
+  const processedUpToRef = useRef(0);         // chars of current msg already queued
+  const currentTTSMsgIdRef = useRef('welcome-message'); // skip the welcome greeting
+  const ttsGenRef = useRef(0);               // incremented on stop to cancel in-flight audio
 
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
@@ -302,11 +364,119 @@ export default function ChatModal({
     scrollToBottom();
   }, [messages, isLoading, isOpen]);
 
+  // Drains the sentence queue, playing each URL in order.
+  // Stable across renders (only touches refs + setIsSpeaking).
+  const drainQueue = useCallback(async () => {
+    if (isPlayingQueueRef.current) return;
+    isPlayingQueueRef.current = true;
+    const gen = ttsGenRef.current;
+    setIsSpeaking(true);
+
+    while (sentenceQueueRef.current.length > 0) {
+      if (ttsGenRef.current !== gen) break;
+      const urlPromise = sentenceQueueRef.current.shift()!;
+      try {
+        const url = await urlPromise;
+        if (ttsGenRef.current !== gen) { URL.revokeObjectURL(url); break; }
+        await new Promise<void>((resolve) => {
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+          audio.play().catch(() => resolve());
+        });
+      } catch { /* skip bad sentence */ }
+    }
+
+    if (ttsGenRef.current === gen) {
+      isPlayingQueueRef.current = false;
+      setIsSpeaking(false);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fires during Gemini streaming AND after it completes.
+  // Extracts complete sentences as they appear and immediately fires TTS fetch for each,
+  // so audio for sentence 1 is often ready before sentence 2 is even generated.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const last = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!last) return;
+
+    // New assistant message — reset pipeline
+    if (last.id !== currentTTSMsgIdRef.current) {
+      currentTTSMsgIdRef.current = last.id;
+      processedUpToRef.current = 0;
+      ttsGenRef.current++;
+      sentenceQueueRef.current = [];
+      isPlayingQueueRef.current = false;
+    }
+
+    const rawText = last.parts
+      ?.filter((p) => p.type === 'text')
+      .map((p) => (p as { type: 'text'; text: string }).text)
+      .join('') ?? '';
+    const text = stripMarkdown(rawText);
+    const unprocessed = text.slice(processedUpToRef.current);
+    if (!unprocessed) return;
+
+    // Queue each complete sentence found in the new text
+    const sentenceRegex = /[^.!?！？。]+[.!?！？。]+\s*/g;
+    let match: RegExpExecArray | null;
+    let consumed = 0;
+    while ((match = sentenceRegex.exec(unprocessed)) !== null) {
+      const sentence = match[0].trim();
+      if (sentence.length >= 5) {
+        sentenceQueueRef.current.push(
+          fetch('/api/speak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: sentence }),
+          })
+            .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+            .then((b) => URL.createObjectURL(b))
+        );
+      }
+      consumed = match.index + match[0].length;
+    }
+    processedUpToRef.current += consumed;
+
+    // When streaming is done, flush any remaining text as a final chunk
+    if (!isLoading) {
+      const remaining = text.slice(processedUpToRef.current).trim();
+      if (remaining.length >= 5) {
+        sentenceQueueRef.current.push(
+          fetch('/api/speak', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: remaining }),
+          })
+            .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+            .then((b) => URL.createObjectURL(b))
+        );
+        processedUpToRef.current = text.length;
+      }
+    }
+
+    if (sentenceQueueRef.current.length > 0) drainQueue();
+  }, [isOpen, isLoading, messages, drainQueue]);
+
+  const stopSpeaking = () => {
+    ttsGenRef.current++;
+    audioRef.current?.pause();
+    audioRef.current = null;
+    sentenceQueueRef.current = [];
+    isPlayingQueueRef.current = false;
+    setIsSpeaking(false);
+  };
+
   useEffect(() => {
     if (isOpen) {
       textareaRef.current?.focus();
-      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+    } else {
+      stopSpeaking();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => {
@@ -854,6 +1024,24 @@ export default function ChatModal({
 
           <div ref={messagesEndRef} />
         </div>
+
+        {/* Speaking indicator */}
+        {isSpeaking && (
+          <div className="bg-[var(--color-primary)]/10 border-t border-[var(--color-primary)]/20 px-4 py-2 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2 text-sm text-[var(--color-primary)]">
+              <span className="material-symbols-outlined text-base animate-pulse">volume_up</span>
+              <span>Speaking…</span>
+            </div>
+            <button
+              type="button"
+              onClick={stopSpeaking}
+              className="flex items-center gap-1 text-xs font-medium text-[var(--color-primary)] border border-[var(--color-primary)] px-2 py-1 rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+            >
+              <span className="material-symbols-outlined text-sm">stop</span>
+              Stop
+            </button>
+          </div>
+        )}
 
         {/* Input Box */}
         <div className="bg-white p-3 border-t border-[var(--color-border-subtle)] shrink-0">

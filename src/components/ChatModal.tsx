@@ -30,6 +30,7 @@ import {
   shouldShowMessageSuggestionChips,
 } from '@/lib/chat/chatPresentation';
 
+
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
   const parts: React.ReactNode[] = [];
@@ -165,6 +166,7 @@ export default function ChatModal({
 
   // --- STT State ---
   const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -353,9 +355,7 @@ export default function ChatModal({
       };
 
       mediaRecorder.onstop = () => {
-        // Combine chunks into a single audio blob
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        // Stop all tracks to turn off the red recording light in the browser tab
         stream.getTracks().forEach((track) => track.stop());
         handleAudioSubmit(audioBlob);
       };
@@ -370,7 +370,9 @@ export default function ChatModal({
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+      const recorder = mediaRecorderRef.current;
+      mediaRecorderRef.current = null;
+      recorder.stop();
       setIsRecording(false);
     }
   };
@@ -383,11 +385,24 @@ export default function ChatModal({
     reader.onloadend = async () => {
       const base64Audio = reader.result as string;
 
-      // Send standard text, but pack the audio into our custom body
+      setIsTranscribing(true);
+      let transcript = '🎙️ [Voice message]';
+      try {
+        const res = await fetch('/api/transcribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ audioBase64: base64Audio, audioMimeType: audioBlob.type }),
+        });
+        const data = await res.json();
+        if (data.transcript) transcript = data.transcript;
+      } catch (err) {
+        console.warn('Transcription failed, using fallback:', err);
+      } finally {
+        setIsTranscribing(false);
+      }
+
       await sendMessage(
-        {
-          text: '🎙️ [Voice message]',
-        },
+        { text: transcript },
         {
           body: {
             storeLocation: selectedLocation || '',
@@ -875,17 +890,21 @@ export default function ChatModal({
             </button>
             <button
               type="button"
-              className={`p-2 rounded-full cursor-pointer flex items-center justify-center mb-0.5 mr-0.5 ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-200'}`}
+              className={`p-2 rounded-full flex items-center justify-center mb-0.5 mr-0.5 transition-colors ${
+                isRecording
+                  ? 'bg-red-500 text-white animate-pulse cursor-pointer'
+                  : isTranscribing
+                  ? 'bg-yellow-500 text-white animate-pulse cursor-default'
+                  : 'bg-gray-200 cursor-pointer'
+              }`}
               onMouseDown={startRecording}
               onMouseUp={stopRecording}
-              onMouseLeave={stopRecording} // Failsafe if they drag their mouse away
-              onTouchStart={startRecording} // For mobile devices
+              onMouseLeave={stopRecording}
+              onTouchStart={startRecording}
               onTouchEnd={stopRecording}
-              disabled={isLoading}
+              disabled={isLoading || isTranscribing}
             >
-              {isRecording ? (
-                'Recording...'
-              ) : (
+              {isRecording ? 'Recording...' : isTranscribing ? 'Transcribing...' : (
                 <span className="material-symbols-outlined text-sm">mic</span>
               )}
             </button>

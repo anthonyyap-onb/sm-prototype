@@ -1,0 +1,58 @@
+[
+  {
+    "id": "maggi-five-save-ten",
+    "code": "MAGGI5SAVE10",
+    "title": "Save ₱10 on 5 Maggi packs",
+    "description": "Add five qualifying Maggi Magic Sarap packs and save ₱10.",
+    "terms": "Requires 5 units of the qualifying Maggi item. Prototype offer only.",
+    "validFrom": "2026-01-01",
+    "validUntil": "2026-12-31",
+    "stackable": true,
+    "isMock": true,
+    "sourceLabel": "Inspired by an official SM Markets online offer",
+    "sourceUrl": "https://www.facebook.com/SMMarkets/posts/995903046002859/",
+    "discount": { "type": "fixed", "amount": 10 },
+    "eligibility": { "requiredProductIds": ["20519391"], "minProductQuantity": 5 }
+  },
+  {
+    "id": "sm-bonus-minspend-save-twenty",
+    "code": "SMBONUS2000",
+    "title": "SM Bonus minimum-spend saving",
+    "description": "Save ₱20 when your merchandise subtotal reaches ₱2,000.",
+    "terms": "Minimum ₱2,000 merchandise subtotal. Adapted prototype offer only.",
+    "validFrom": "2026-01-01",
+    "validUntil": "2026-12-31",
+    "stackable": true,
+    "isMock": true,
+    "sourceLabel": "Inspired by the official SM Bonus Eggs ₱65 campaign",
+    "sourceUrl": "https://www.facebook.com/SMMarkets/posts/646265140966653/",
+    "discount": { "type": "fixed", "amount": 20 },
+    "eligibility": { "minSubtotal": 2000 }
+  },
+  {
+    "id": "smac-saver-five",
+    "code": "SMACSAVER5",
+    "title": "SMAC Saver 5% Off",
+    "description": "Save 5% on eligible groceries, up to ₱150.",
+    "terms": "Minimum ₱1,000 merchandise subtotal. Prototype offer only.",
+    "validFrom": "2026-01-01",
+    "validUntil": "2026-12-31",
+    "stackable": true,
+    "isMock": true,
+    "discount": { "type": "percentage", "percent": 5, "maxDiscount": 150 },
+    "eligibility": { "minSubtotal": 1000 }
+  },
+  {
+    "id": "free-delivery-1500",
+    "code": "FREEDEL1500",
+    "title": "Free Delivery",
+    "description": "Get the mock ₱99 delivery fee waived.",
+    "terms": "Minimum ₱1,500 merchandise subtotal. Prototype offer only.",
+    "validFrom": "2026-01-01",
+    "validUntil": "2026-12-31",
+    "stackable": true,
+    "isMock": true,
+    "discount": { "type": "free_delivery" },
+    "eligibility": { "minSubtotal": 1500 }
+  }
+]

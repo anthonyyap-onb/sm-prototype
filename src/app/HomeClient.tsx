@@ -8,6 +8,7 @@ import ProductGrid from '@/components/ProductGrid';
 import ChatModal from '@/components/ChatModal';
 import ChatFAB from '@/components/ChatFAB';
 import { useStore } from '@/context/StoreContext';
+import { getStoreInventory } from '@/lib/inventory/storeInventory';
 
 interface HomeClientProps {
   stores: Store[];
@@ -52,15 +53,7 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
         ...sp.freshProduce,
       ]);
     }
-    const storeRecord = allStoreProducts.find((p) => p.storeId === selectedStoreId);
-    if (!storeRecord) return [];
-    return [
-      ...storeRecord.featuredProducts,
-      ...storeRecord.priceDrop,
-      ...storeRecord.freshMeatAndSeafood,
-      ...storeRecord.pantry,
-      ...storeRecord.freshProduce,
-    ];
+    return getStoreInventory(allStoreProducts, selectedStoreId);
   }, [allStoreProducts, selectedStoreId]);
 
   const storeData = selectedStoreId

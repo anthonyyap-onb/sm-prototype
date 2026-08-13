@@ -1,9 +1,18 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import type { Product, Store } from '@/types';
+import { usePromos } from '@/context/PromoContext';
+import {
+  handleChatToolCall,
+  type AddToCartArgs,
+  type ChatToolOutput,
+} from '@/lib/tools/chatTools';
+import { shouldContinueAfterClientTools } from '@/lib/tools/chatContinuation';
+import { getPromoToolCards } from '@/lib/tools/promoToolPresentation';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -95,30 +104,25 @@ interface ChatModalProps {
   onClose: () => void;
   selectedLocation?: string;
   inventoryData: Product[];
-  onStoreChange: (storeId: string) => void;
-  storesData: Store[];
+  onStoreChange?: (storeId: string) => void;
+  storesData?: Store[];
+  pageContext?: 'shopping' | 'checkout';
 }
 
-const SUGGESTION_CHIPS = [
+const SHOPPING_SUGGESTION_CHIPS = [
   'Ingredients for Sinigang',
   'Check chicken nugget stock',
   'What can I cook today?',
 ];
 
+const CHECKOUT_SUGGESTION_CHIPS = [
+  'Show eligible promos',
+  'Explain my order total',
+  'Help with delivery',
+];
+
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
-
-interface AddToCartArgs {
-  productId?: string;
-  productName: string;
-  price?: number;
-  imageUrl?: string;
-  weight?: string;
-  ingredientNumber?: number;
-  quantity?: number;
-  isAlternative?: boolean;
-  originalIngredientName?: string;
-}
 
 export default function ChatModal({
   isOpen,
@@ -127,11 +131,19 @@ export default function ChatModal({
   inventoryData,
   onStoreChange,
   storesData,
+  pageContext = 'shopping',
 }: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
+  const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
+  const router = useRouter();
+  const isCheckout = pageContext === 'checkout';
+  const welcomeText = isCheckout
+    ? 'Hello! I am your SM Markets Assistant. I can help review your order, explain totals, delivery, and eligible promotions!'
+    : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
+  const suggestionChips = isCheckout ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
 
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
@@ -139,10 +151,57 @@ export default function ChatModal({
     inventoryRef.current = inventoryData;
   }, [inventoryData]);
 
-  const onStoreChangeRef = useRef<(storeId: string) => void>(onStoreChange);
+  const onStoreChangeRef = useRef(onStoreChange);
   useEffect(() => {
     onStoreChangeRef.current = onStoreChange;
   }, [onStoreChange]);
+
+  const promosRef = useRef({ evaluations, applyPromos });
+  useLayoutEffect(() => {
+    promosRef.current = { evaluations, applyPromos };
+  }, [evaluations, applyPromos]);
+
+  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
+  const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
+
+  // Tracks whether the most recent store change was triggered by the LLM tool.
+  // If true, the useEffect below skips injecting a notification (LLM already knows).
+  const llmTriggeredStoreChangeRef = useRef(false);
+
+  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
+    messages: [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: welcomeText,
+          },
+        ],
+      },
+    ],
+    sendAutomaticallyWhen: shouldContinueAfterClientTools,
+    onToolCall: ({ toolCall }) => {
+      handleChatToolCall(toolCall, {
+        inventory: inventoryRef.current,
+        addToCart,
+        addToolOutput: (output) => addToolOutputRef.current?.(output),
+        markStoreChangeAsToolTriggered: () => {
+          llmTriggeredStoreChangeRef.current = true;
+        },
+        changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
+        fetchPromos: () => promosRef.current.evaluations,
+        applyPromos: (ids) => promosRef.current.applyPromos(ids),
+        navigateToCheckout: () => router.push('/checkout'),
+      });
+    },
+  });
+
+  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  useEffect(() => {
+    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+  }, [addToolOutput]);
 
   // When the store is changed externally (via the dropdown), inject a synthetic
   // assistant message so the LLM's conversation history reflects the change.
@@ -174,87 +233,6 @@ export default function ChatModal({
     ]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
-
-  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addToolOutputRef = useRef<((...args: any[]) => void) | null>(null);
-
-  // Tracks whether the most recent store change was triggered by the LLM tool.
-  // If true, the useEffect below skips injecting a notification (LLM already knows).
-  const llmTriggeredStoreChangeRef = useRef(false);
-
-  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
-    messages: [
-      {
-        id: 'welcome-message',
-        role: 'assistant',
-        parts: [
-          {
-            type: 'text',
-            text: 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!',
-          },
-        ],
-      },
-    ],
-    onToolCall: ({ toolCall }) => {
-      if (toolCall.toolName === 'setStoreLocation') {
-        const args = toolCall.input as { storeId: string; storeName: string };
-        llmTriggeredStoreChangeRef.current = true;
-        onStoreChangeRef.current(args.storeId);
-        addToolOutputRef.current?.({
-          tool: 'setStoreLocation',
-          toolCallId: toolCall.toolCallId,
-          output: { success: true, message: `Store set to ${args.storeName}.` },
-        });
-        return;
-      }
-
-      if (toolCall.toolName !== 'addToCart') return;
-
-      const args = toolCall.input as AddToCartArgs;
-      const qty = args.quantity ?? 1;
-      let output: { success: boolean; message: string };
-
-      if (args.productId) {
-        const matched = inventoryRef.current.find((p) => p.id === args.productId);
-        if (matched) {
-          for (let i = 0; i < qty; i++) addToCart(matched);
-          output = { success: true, message: `Added ${matched.name} × ${qty} to cart.` };
-        } else {
-          // productId provided but not found in current inventory — fall through
-          output = {
-            success: false,
-            message: `Product ID ${args.productId} not found in current store inventory.`,
-          };
-        }
-      } else if (args.price !== undefined) {
-        // No product ID but we have enough info to create a synthetic product
-        const syntheticProduct: Product = {
-          id: `llm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          name: args.productName,
-          imageUrl: args.imageUrl ?? '',
-          weight: args.weight ?? '',
-          price: args.price,
-        };
-        for (let i = 0; i < qty; i++) addToCart(syntheticProduct);
-        output = { success: true, message: `Added ${args.productName} × ${qty} to cart.` };
-      } else {
-        output = {
-          success: false,
-          message: `Could not add ${args.productName} to cart — no inventory match found. Please select it manually from the store page.`,
-        };
-      }
-
-      addToolOutputRef.current?.({
-        tool: 'addToCart',
-        toolCallId: toolCall.toolCallId,
-        output,
-      });
-    },
-  });
-
-  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
-  addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -296,7 +274,21 @@ export default function ChatModal({
         body: {
           storeLocation: selectedLocation,
           inventoryData: inventoryData,
-          storesData: storesData,
+          storesData,
+          pageContext,
+          checkoutContext: {
+            evaluations,
+            appliedPromotions: appliedPromos,
+            totals,
+            cartItems: items.map(({ product, quantity }) => ({
+              productId: product.id,
+              productName: product.name,
+              weight: product.weight,
+              unitPrice: product.price,
+              quantity,
+              lineTotal: product.price * quantity,
+            })),
+          },
         },
       }
     );
@@ -503,13 +495,190 @@ export default function ChatModal({
                     );
                   }
 
+                  if (part.type === 'tool-checkout_cart') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as
+                      | { success: boolean; message: string }
+                      | undefined;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending
+                              ? 'shopping_cart_checkout'
+                              : isSuccess
+                              ? 'check_circle'
+                              : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Redirecting to checkout…'
+                              : output?.message ?? 'Checkout updated'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (part.type === 'tool-fetch_promos') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as ChatToolOutput['output'] | undefined;
+                    const promoToolCards = isSuccess ? getPromoToolCards(output?.data) : null;
+                    const eligibleEvaluationCount = promoToolCards?.filter(
+                      (card) => card.statusLabel === 'Eligible'
+                    ).length;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10 space-y-2">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending ? 'local_offer' : isSuccess ? 'check_circle' : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Checking live promotions…'
+                              : isSuccess
+                              ? `${output?.message ?? 'Promotions fetched.'}${
+                                  eligibleEvaluationCount === undefined
+                                    ? ''
+                                    : ` ${eligibleEvaluationCount} eligible.`
+                                }`
+                              : output?.message ?? 'Could not fetch promotions.'}
+                          </span>
+                        </div>
+                        {promoToolCards?.map((card) => (
+                          <div
+                            key={card.id}
+                            className="rounded-xl border border-[var(--color-border-subtle)] bg-white p-3 text-xs text-[var(--color-on-surface)] shadow-sm"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="font-semibold text-sm">{card.title}</p>
+                                <code className="font-mono text-[11px] text-[var(--color-primary)]">
+                                  {card.code}
+                                </code>
+                              </div>
+                              <span className="shrink-0 rounded-full bg-[var(--color-surface-container-high)] px-2 py-0.5 font-medium text-[10px]">
+                                {card.applied ? 'Applied · ' : ''}
+                                {card.statusLabel}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-[var(--color-on-surface-variant)]">{card.terms}</p>
+                            <p className="mt-1">
+                              <span className="font-medium">Reason:</span> {card.reason}
+                            </p>
+                            <p className="mt-1 font-medium">
+                              Estimated savings: {card.estimatedSavingsLabel}
+                            </p>
+                          </div>
+                        ))}
+                        {promoToolCards?.length === 0 && (
+                          <p className="rounded-xl border border-[var(--color-border-subtle)] bg-white px-3 py-2 text-xs text-[var(--color-on-surface-variant)]">
+                            No current prototype offers were returned.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (part.type === 'tool-apply_promos') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as ChatToolOutput['output'] | undefined;
+                    const data = output?.data;
+                    const hasRejections =
+                      typeof data === 'object' &&
+                      data !== null &&
+                      !Array.isArray(data) &&
+                      'rejected' in data &&
+                      Array.isArray(data.rejected) &&
+                      data.rejected.length > 0;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending ? 'local_offer' : isSuccess ? 'check_circle' : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Applying promotions…'
+                              : isSuccess && hasRejections
+                              ? `${output?.message ?? 'Promotions applied.'} Some promotions could not be applied.`
+                              : output?.message ?? 'No promotions were applied.'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return null;
                 })}
 
                 {/* Suggestion chips under the initial greeting */}
                 {index === 0 && isAssistant && (
                   <div className="flex gap-2 max-w-[85%] self-start pl-10 flex-wrap mt-1">
-                    {SUGGESTION_CHIPS.map((chip) => (
+                    {suggestionChips.map((chip) => (
                       <button
                         key={chip}
                         onClick={() => handleSend(chip)}

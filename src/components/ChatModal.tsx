@@ -160,9 +160,13 @@ export default function ChatModal({
   const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
   const router = useRouter();
   const isCheckout = pageContext === 'checkout';
-  const welcomeText = isCheckout
-    ? 'Hello! I am your SM Markets Assistant. I can help review your order, explain totals, delivery, and eligible promotions!'
-    : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
+  const getWelcomeText = (location?: string) =>
+    isCheckout
+      ? 'Hello! I am your SM Markets Assistant. I can help review your order, explain totals, delivery, and eligible promotions!'
+      : location
+      ? `Hello! I am your SM Markets Assistant. You're currently shopping at **${location}**. Ask me about products, recipes, or item availability!`
+      : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
+  const welcomeText = getWelcomeText(selectedLocation);
   // const suggestionChips = isCheckout ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
   const { setSelectedStoreId } = useStore();
 
@@ -569,7 +573,7 @@ export default function ChatModal({
     clearChatSession();
     historySessionRef.current = null;
     mountedLocationRef.current = selectedLocation;
-    setMessages(getInitialChatMessages({ version: CHAT_HISTORY_VERSION, messages: [], toolCalls: [] }, welcomeText));
+    setMessages(getInitialChatMessages({ version: CHAT_HISTORY_VERSION, messages: [], toolCalls: [] }, getWelcomeText(selectedLocation)));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

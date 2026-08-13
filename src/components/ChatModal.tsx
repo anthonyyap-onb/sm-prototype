@@ -154,6 +154,8 @@ export default function ChatModal({
   const processedUpToRef = useRef(0);         // chars of current msg already queued
   const currentTTSMsgIdRef = useRef('welcome-message'); // skip the welcome greeting
   const ttsGenRef = useRef(0);               // incremented on stop to cancel in-flight audio
+  const lastInputWasVoiceRef = useRef(false); // TTS only fires when user sent via mic
+  const voiceSubmitPriorAssistantIdRef = useRef<string | null>(null); // last assistant msg ID at voice-submit time
 
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
@@ -330,8 +332,13 @@ export default function ChatModal({
   useEffect(() => {
     if (!isOpen) return;
 
+    if (!lastInputWasVoiceRef.current) return;
+
     const last = [...messages].reverse().find((m) => m.role === 'assistant');
     if (!last) return;
+
+    // Wait until the assistant reply that was generated after the voice submission
+    if (last.id === voiceSubmitPriorAssistantIdRef.current) return;
 
     // New assistant message — reset pipeline
     if (last.id !== currentTTSMsgIdRef.current) {
@@ -412,6 +419,7 @@ export default function ChatModal({
     const text = textToSend ?? input.trim();
     if (!text || isLoading) return;
 
+    lastInputWasVoiceRef.current = false;
     setInput('');
     if (textareaRef.current) {
       textareaRef.current.style.height = '40px';
@@ -470,6 +478,9 @@ export default function ChatModal({
   const handleAudioSubmit = async (audioBlob: Blob) => {
     if (isLoading) return;
 
+    lastInputWasVoiceRef.current = true;
+    voiceSubmitPriorAssistantIdRef.current =
+      [...messages].reverse().find((m) => m.role === 'assistant')?.id ?? null;
     setIsTranscribing(true);
 
     // Start FileReader for the chat body in parallel with the transcription fetch

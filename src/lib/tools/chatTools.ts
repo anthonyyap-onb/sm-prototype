@@ -1,5 +1,16 @@
 import type { Product, PromoApplicationResult, PromoEvaluation } from '@/types';
 
+export interface RemoveFromCartArgs {
+  productId: string;
+  productName: string;
+}
+
+export interface UpdateCartQuantityArgs {
+  productId: string;
+  productName: string;
+  quantity: number;
+}
+
 export interface AddToCartArgs {
   productId?: string;
   productName: string;
@@ -13,7 +24,7 @@ export interface AddToCartArgs {
 }
 
 export interface ChatToolOutput {
-  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation' | 'fetch_promos' | 'apply_promos' | 'getRecentChatHistory';
+  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation' | 'fetch_promos' | 'apply_promos' | 'getRecentChatHistory' | 'removeFromCart' | 'updateCartQuantity';
   toolCallId: string;
   output: {
     success: boolean;
@@ -37,6 +48,8 @@ export interface ChatToolDependencies {
   fetchPromos: () => PromoEvaluation[];
   applyPromos: (ids: string[]) => PromoApplicationResult;
   navigateToCheckout: () => void;
+  removeItem: (productId: string) => void;
+  setItemQuantity: (productId: string, quantity: number) => void;
 }
 
 export function handleChatToolCall(
@@ -116,6 +129,35 @@ export function handleChatToolCall(
         message: hasNewlyAppliedPromo ? 'Promotions applied.' : 'No promotions were applied.',
         data: result,
       },
+    });
+    return;
+  }
+
+  if (toolCall.toolName === 'removeFromCart') {
+    const args = toolCall.input as RemoveFromCartArgs;
+    dependencies.removeItem(args.productId);
+    dependencies.addToolOutput({
+      tool: 'removeFromCart',
+      toolCallId: toolCall.toolCallId,
+      output: {
+        success: true,
+        message: `Removed ${args.productName} from cart.`,
+      },
+    });
+    return;
+  }
+
+  if (toolCall.toolName === 'updateCartQuantity') {
+    const args = toolCall.input as UpdateCartQuantityArgs;
+    dependencies.setItemQuantity(args.productId, args.quantity);
+    const message =
+      args.quantity <= 0
+        ? `Removed ${args.productName} from cart.`
+        : `Updated ${args.productName} quantity to ${args.quantity}.`;
+    dependencies.addToolOutput({
+      tool: 'updateCartQuantity',
+      toolCallId: toolCall.toolCallId,
+      output: { success: true, message },
     });
     return;
   }

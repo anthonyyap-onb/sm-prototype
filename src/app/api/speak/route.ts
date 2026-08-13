@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const maxDuration = 30;
 
+function numberToEnglish(n: number): string {
+  if (n === 0) return 'zero';
+  const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+    'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+    'seventeen', 'eighteen', 'nineteen'];
+  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  if (n < 20) return ones[n];
+  if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+  if (n < 1_000) return ones[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' ' + numberToEnglish(n % 100) : '');
+  if (n < 1_000_000) return numberToEnglish(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberToEnglish(n % 1000) : '');
+  return numberToEnglish(Math.floor(n / 1_000_000)) + ' million' + (n % 1_000_000 ? ' ' + numberToEnglish(n % 1_000_000) : '');
+}
+
 function sanitizeForTTS(text: string): string {
   return text
     // Remove emojis (and optional variation selector / combining enclosing keycap)
@@ -23,10 +36,12 @@ function sanitizeForTTS(text: string): string {
     .replace(/\bBaguio\b/gi, 'Bagyo')
     .replace(/\bMandaluyong\b/gi, 'Maandaluyong')
     .replace(/\bQuezon\b/gi, 'Kezon')
-    // ₱ prices — expand to spoken form
-    .replace(/₱\s*([\d,]*)\.00(?=\D|$)/g, '$1 Pesos')
-    .replace(/₱\s*([\d,]+)\.(\d+)/g, '$1 Pesos and $2 sentavos')
-    .replace(/₱\s*([\d,]+)/g, '$1 Pesos')
+    // ₱ prices — expand to spoken form (use explicit ₱ to avoid code-point ambiguity)
+    .replace(/₱\s*([\d,]+)(?:\.(\d+))?/g, (_, pesos, cents) => {
+      const p = pesos.replace(/,/g, '');
+      const c = cents ? parseInt(cents, 10) : 0;
+      return c > 0 ? `${p} Pesos and ${c} centavos` : `${p} Pesos`;
+    })
     // Strip trailing .00 from any bare number not already handled above
     .replace(/(\d[\d,]*)\.00(?=\D|$)/g, '$1')
     // Unit ranges: 200g-300g → 200 to 300 grams (must run before individual expansions)
@@ -53,6 +68,8 @@ function sanitizeForTTS(text: string): string {
     .replace(/(\d+)\s*pcs?\b/gi, '$1 pieces')
     .replace(/(\d+)\s*g\b/gi, '$1 grams')
     .replace(/(\d+)\s*[Ll]\b/g, '$1 liters')
+    // Spell out all remaining bare numerals in English so the TTS model never switches language
+    .replace(/\b(\d+)\b/g, (_, n) => numberToEnglish(parseInt(n, 10)))
     .trim();
 }
 
@@ -65,6 +82,8 @@ export async function POST(request: NextRequest) {
     }
 
     const sanitized = sanitizeForTTS(text);
+    console.log('[TTS] raw input :', JSON.stringify(text.slice(0, 200)));
+    console.log('[TTS] sanitized  :', JSON.stringify(sanitized.slice(0, 200)));
     if (!sanitized) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }

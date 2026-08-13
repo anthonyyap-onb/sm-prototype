@@ -1,7 +1,13 @@
 'use client';
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { CartItem, Product } from '@/types';
+import {
+  readStoredCart,
+  selectHydratedCartItems,
+  shouldPersistHydratedState,
+  writeStoredCart,
+} from '@/lib/storage/commerceStorage';
 
 interface CartContextValue {
   items: CartItem[];
@@ -10,6 +16,7 @@ interface CartContextValue {
   decrementItem: (productId: string) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
+  isHydrated: boolean;
   totalItems: number;
   totalPrice: number;
 }
@@ -18,8 +25,32 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydratedRef = useRef(false);
+  const hasPreHydrationLocalMutation = useRef(false);
+
+  useEffect(() => {
+    const restoredItems = readStoredCart();
+    queueMicrotask(() => {
+      setItems((currentItems) =>
+        selectHydratedCartItems(
+          currentItems,
+          restoredItems,
+          hasPreHydrationLocalMutation.current
+        )
+      );
+      isHydratedRef.current = true;
+      setIsHydrated(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!shouldPersistHydratedState(isHydrated)) return;
+    writeStoredCart(items);
+  }, [isHydrated, items]);
 
   const addToCart = useCallback((product: Product) => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
@@ -32,6 +63,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const incrementItem = useCallback((productId: string) => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
     setItems((prev) =>
       prev.map((i) =>
         i.product.id === productId ? { ...i, quantity: i.quantity + 1 } : i
@@ -40,6 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const decrementItem = useCallback((productId: string) => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === productId);
       if (!existing) return prev;
@@ -53,17 +86,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeItem = useCallback((productId: string) => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
     setItems((prev) => prev.filter((i) => i.product.id !== productId));
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
+    setItems([]);
+  }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, incrementItem, decrementItem, removeItem, clearCart, totalItems, totalPrice }}
+      value={{ items, addToCart, incrementItem, decrementItem, removeItem, clearCart, isHydrated, totalItems, totalPrice }}
     >
       {children}
     </CartContext.Provider>

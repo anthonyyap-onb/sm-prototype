@@ -1,4 +1,4 @@
-import type { Product } from '@/types';
+import type { Product, PromoApplicationResult, PromoEvaluation } from '@/types';
 
 export interface AddToCartArgs {
   productId?: string;
@@ -13,11 +13,12 @@ export interface AddToCartArgs {
 }
 
 export interface ChatToolOutput {
-  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation';
+  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation' | 'fetch_promos' | 'apply_promos';
   toolCallId: string;
   output: {
     success: boolean;
     message: string;
+    data?: PromoEvaluation[] | PromoApplicationResult;
   };
 }
 
@@ -31,9 +32,11 @@ export interface ChatToolDependencies {
   inventory: Product[];
   addToCart: (product: Product) => void;
   addToolOutput: (output: ChatToolOutput) => void;
-  navigateToCart: () => void;
   markStoreChangeAsToolTriggered: () => void;
   changeStore: (storeId: string) => void;
+  fetchPromos: () => PromoEvaluation[];
+  applyPromos: (ids: string[]) => PromoApplicationResult;
+  navigateToCheckout: () => void;
 }
 
 export function handleChatToolCall(
@@ -56,13 +59,62 @@ export function handleChatToolCall(
   }
 
   if (toolCall.toolName === 'checkout_cart') {
-    dependencies.navigateToCart();
+    dependencies.navigateToCheckout();
     dependencies.addToolOutput({
       tool: 'checkout_cart',
       toolCallId: toolCall.toolCallId,
       output: {
         success: true,
-        message: 'Redirecting to your cart for checkout.',
+        message: 'Redirecting to checkout.',
+      },
+    });
+    return;
+  }
+
+  if (toolCall.toolName === 'fetch_promos') {
+    dependencies.addToolOutput({
+      tool: 'fetch_promos',
+      toolCallId: toolCall.toolCallId,
+      output: {
+        success: true,
+        message: 'Promotions fetched.',
+        data: dependencies.fetchPromos(),
+      },
+    });
+    return;
+  }
+
+  if (toolCall.toolName === 'apply_promos') {
+    const promoIds = getPromoIds(toolCall.input);
+    if (!promoIds) {
+      dependencies.addToolOutput({
+        tool: 'apply_promos',
+        toolCallId: toolCall.toolCallId,
+        output: { success: false, message: 'No promotion IDs were provided.' },
+      });
+      return;
+    }
+
+    const previouslyAppliedPromoIds = new Set(
+      dependencies
+        .fetchPromos()
+        .filter((evaluation) => evaluation.applied)
+        .map((evaluation) => evaluation.promo.id)
+    );
+    const result = dependencies.applyPromos(promoIds);
+    const hasNewlyAppliedPromo = promoIds.some(
+      (id) =>
+        !previouslyAppliedPromoIds.has(id) &&
+        result.appliedIds.includes(id) &&
+        !result.rejected.some((rejection) => rejection.id === id)
+    );
+    dependencies.addToolOutput({
+      tool: 'apply_promos',
+      toolCallId: toolCall.toolCallId,
+      output: {
+        success: hasNewlyAppliedPromo,
+        message: hasNewlyAppliedPromo ? 'Promotions applied.' : 'No promotions were applied.',
+        data: result,
       },
     });
     return;
@@ -107,4 +159,12 @@ export function handleChatToolCall(
     toolCallId: toolCall.toolCallId,
     output,
   });
+}
+
+function getPromoIds(input: unknown): string[] | null {
+  if (!input || typeof input !== 'object' || !('promoIds' in input)) return null;
+  const { promoIds } = input as { promoIds?: unknown };
+  return Array.isArray(promoIds) && promoIds.length > 0 && promoIds.every((id) => typeof id === 'string')
+    ? promoIds
+    : null;
 }

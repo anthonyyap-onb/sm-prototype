@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import type { Product, Store } from '@/types';
+import { usePromos } from '@/context/PromoContext';
 import {
   handleChatToolCall,
   type AddToCartArgs,
@@ -101,14 +102,21 @@ interface ChatModalProps {
   onClose: () => void;
   selectedLocation?: string;
   inventoryData: Product[];
-  onStoreChange: (storeId: string) => void;
-  storesData: Store[];
+  onStoreChange?: (storeId: string) => void;
+  storesData?: Store[];
+  pageContext?: 'shopping' | 'checkout';
 }
 
-const SUGGESTION_CHIPS = [
+const SHOPPING_SUGGESTION_CHIPS = [
   'Ingredients for Sinigang',
   'Check chicken nugget stock',
   'What can I cook today?',
+];
+
+const CHECKOUT_SUGGESTION_CHIPS = [
+  'Show eligible promos',
+  'Explain my order total',
+  'Help with delivery',
 ];
 
 const BOT_AVATAR =
@@ -121,12 +129,19 @@ export default function ChatModal({
   inventoryData,
   onStoreChange,
   storesData,
+  pageContext = 'shopping',
 }: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
+  const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
   const router = useRouter();
+  const isCheckout = pageContext === 'checkout';
+  const welcomeText = isCheckout
+    ? 'Hello! I am your SM Markets Assistant. I can help review your order, explain totals, delivery, and eligible promotions!'
+    : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
+  const suggestionChips = isCheckout ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
 
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
@@ -134,10 +149,56 @@ export default function ChatModal({
     inventoryRef.current = inventoryData;
   }, [inventoryData]);
 
-  const onStoreChangeRef = useRef<(storeId: string) => void>(onStoreChange);
+  const onStoreChangeRef = useRef(onStoreChange);
   useEffect(() => {
     onStoreChangeRef.current = onStoreChange;
   }, [onStoreChange]);
+
+  const promosRef = useRef({ evaluations, applyPromos });
+  useLayoutEffect(() => {
+    promosRef.current = { evaluations, applyPromos };
+  }, [evaluations, applyPromos]);
+
+  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
+  const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
+
+  // Tracks whether the most recent store change was triggered by the LLM tool.
+  // If true, the useEffect below skips injecting a notification (LLM already knows).
+  const llmTriggeredStoreChangeRef = useRef(false);
+
+  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
+    messages: [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: welcomeText,
+          },
+        ],
+      },
+    ],
+    onToolCall: ({ toolCall }) => {
+      handleChatToolCall(toolCall, {
+        inventory: inventoryRef.current,
+        addToCart,
+        addToolOutput: (output) => addToolOutputRef.current?.(output),
+        markStoreChangeAsToolTriggered: () => {
+          llmTriggeredStoreChangeRef.current = true;
+        },
+        changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
+        fetchPromos: () => promosRef.current.evaluations,
+        applyPromos: (ids) => promosRef.current.applyPromos(ids),
+        navigateToCheckout: () => router.push('/checkout'),
+      });
+    },
+  });
+
+  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  useEffect(() => {
+    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+  }, [addToolOutput]);
 
   // When the store is changed externally (via the dropdown), inject a synthetic
   // assistant message so the LLM's conversation history reflects the change.
@@ -169,45 +230,6 @@ export default function ChatModal({
     ]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
-
-  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
-  const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
-
-  // Tracks whether the most recent store change was triggered by the LLM tool.
-  // If true, the useEffect below skips injecting a notification (LLM already knows).
-  const llmTriggeredStoreChangeRef = useRef(false);
-
-  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
-    messages: [
-      {
-        id: 'welcome-message',
-        role: 'assistant',
-        parts: [
-          {
-            type: 'text',
-            text: 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!',
-          },
-        ],
-      },
-    ],
-    onToolCall: ({ toolCall }) => {
-      handleChatToolCall(toolCall, {
-        inventory: inventoryRef.current,
-        addToCart,
-        addToolOutput: (output) => addToolOutputRef.current?.(output),
-        navigateToCart: () => router.push('/cart'),
-        markStoreChangeAsToolTriggered: () => {
-          llmTriggeredStoreChangeRef.current = true;
-        },
-        changeStore: (storeId) => onStoreChangeRef.current(storeId),
-      });
-    },
-  });
-
-  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
-  useEffect(() => {
-    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
-  }, [addToolOutput]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -246,7 +268,21 @@ export default function ChatModal({
         body: {
           storeLocation: selectedLocation,
           inventoryData: inventoryData,
-          storesData: storesData,
+          storesData,
+          pageContext,
+          checkoutContext: {
+            evaluations,
+            appliedPromotions: appliedPromos,
+            totals,
+            cartItems: items.map(({ product, quantity }) => ({
+              productId: product.id,
+              productName: product.name,
+              weight: product.weight,
+              unitPrice: product.price,
+              quantity,
+              lineTotal: product.price * quantity,
+            })),
+          },
         },
       }
     );
@@ -491,8 +527,109 @@ export default function ChatModal({
                           </span>
                           <span>
                             {isPending
-                              ? 'Redirecting to your cart…'
-                              : output?.message ?? 'Cart updated'}
+                              ? 'Redirecting to checkout…'
+                              : output?.message ?? 'Checkout updated'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (part.type === 'tool-fetch_promos') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as ChatToolOutput['output'] | undefined;
+                    const eligibleEvaluationCount = Array.isArray(output?.data)
+                      ? output.data.filter(
+                          (item) =>
+                            typeof item === 'object' &&
+                            item !== null &&
+                            'eligible' in item &&
+                            item.eligible === true
+                        ).length
+                      : 0;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending ? 'local_offer' : isSuccess ? 'check_circle' : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Checking live promotions…'
+                              : isSuccess
+                              ? `${output?.message ?? 'Promotions fetched.'} ${eligibleEvaluationCount} eligible.`
+                              : output?.message ?? 'Could not fetch promotions.'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (part.type === 'tool-apply_promos') {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const toolPart = part as any;
+                    const isPending =
+                      toolPart.state === 'input-streaming' ||
+                      toolPart.state === 'input-available';
+                    const isSuccess =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === true;
+                    const isError =
+                      toolPart.state === 'output-available' &&
+                      toolPart.output?.success === false;
+                    const output = toolPart.output as ChatToolOutput['output'] | undefined;
+                    const data = output?.data;
+                    const hasRejections =
+                      typeof data === 'object' &&
+                      data !== null &&
+                      !Array.isArray(data) &&
+                      'rejected' in data &&
+                      Array.isArray(data.rejected) &&
+                      data.rejected.length > 0;
+
+                    return (
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                        <div
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
+                            isPending
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                              : isSuccess
+                              ? 'bg-green-50 border-green-200 text-green-800'
+                              : isError
+                              ? 'bg-red-50 border-red-200 text-red-800'
+                              : 'bg-gray-50 border-gray-200 text-gray-600'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {isPending ? 'local_offer' : isSuccess ? 'check_circle' : 'error'}
+                          </span>
+                          <span>
+                            {isPending
+                              ? 'Applying promotions…'
+                              : isSuccess && hasRejections
+                              ? `${output?.message ?? 'Promotions applied.'} Some promotions could not be applied.`
+                              : output?.message ?? 'No promotions were applied.'}
                           </span>
                         </div>
                       </div>
@@ -505,7 +642,7 @@ export default function ChatModal({
                 {/* Suggestion chips under the initial greeting */}
                 {index === 0 && isAssistant && (
                   <div className="flex gap-2 max-w-[85%] self-start pl-10 flex-wrap mt-1">
-                    {SUGGESTION_CHIPS.map((chip) => (
+                    {suggestionChips.map((chip) => (
                       <button
                         key={chip}
                         onClick={() => handleSend(chip)}

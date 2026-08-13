@@ -153,7 +153,7 @@ export default function ChatModal({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
   const [checkoutSuggestionsDismissed, setCheckoutSuggestionsDismissed] = useState(false);
-  const { addToCart, items } = useCart();
+  const { addToCart, totalItems, clearCart } = useCart();
   const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
   const router = useRouter();
   const isCheckout = pageContext === 'checkout';
@@ -236,9 +236,10 @@ export default function ChatModal({
   });
 
   // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  const clearCartRef = useRef<() => void>(clearCart);
   useEffect(() => {
-    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
-  }, [addToolOutput]);
+    clearCartRef.current = clearCart;
+  }, [clearCart]);
 
   useEffect(() => {
     const session = readChatSession();
@@ -286,6 +287,9 @@ export default function ChatModal({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
 
+  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const scrollToBottom = () => {
@@ -327,21 +331,8 @@ export default function ChatModal({
         body: {
           storeLocation: selectedLocation,
           inventoryData: inventoryData,
-          storesData,
-          pageContext,
-          checkoutContext: {
-            evaluations,
-            appliedPromotions: appliedPromos,
-            totals,
-            cartItems: items.map(({ product, quantity }) => ({
-              productId: product.id,
-              productName: product.name,
-              weight: product.weight,
-              unitPrice: product.price,
-              quantity,
-              lineTotal: product.price * quantity,
-            })),
-          },
+          storesData: storesData,
+          cartItemCount: totalItems,
         },
       }
     );
@@ -404,6 +395,7 @@ export default function ChatModal({
             storesData: storesData,
             audioBase64: base64Audio,
             audioMimeType: audioBlob.type,
+            cartItemCount: totalItems,
           },
         }
       );

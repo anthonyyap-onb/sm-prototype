@@ -24,7 +24,8 @@ export async function POST(req: Request) {
     checkoutContext,
   }: {
     audioBase64,
-    audioMimeType
+    audioMimeType,
+    cartItemCount,
   } = json as {
     messages: UIMessage[];
     storeLocation?: string;
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
   } = await req.json();
     audioBase64?: string;
     audioMimeType?: string;
+    cartItemCount?: number;
   };
 
   const formattedInventory =
@@ -70,6 +72,11 @@ export async function POST(req: Request) {
   const storeListText = storesData && storesData.length > 0
     ? storesData.map((s) => `  - \`${s.id}\` → ${s.name}, ${s.city}`).join('\n')
     : '  - (no stores available)';
+
+  const cartWarning =
+    cartItemCount && cartItemCount > 0
+      ? `\n\n⚠️ CART WARNING: The user currently has ${cartItemCount} item(s) in their cart. Changing the store will CLEAR their entire cart. You MUST send a confirmation message to the user BEFORE calling \`setStoreLocation\`. The confirmation must explicitly warn them that their cart will be cleared. Only call the tool after they explicitly agree (e.g., "yes", "ok", "go ahead", "sige", "oo"). If they say no or are hesitant, do NOT call the tool.`
+      : '';
 
   const systemPrompt = `
 # ROLE & PERSONALITY
@@ -131,6 +138,7 @@ ${formattedInventory}
 3. **Available store IDs for \`setStoreLocation\`:**
 ${storeListText}
   - Never use a store ID that is not on this list.
+${cartWarning}
 
 4. When mentioning the store location in your responses, always highlight it with bold text (e.g., **SM Aura**, **Mall of Asia**).
 

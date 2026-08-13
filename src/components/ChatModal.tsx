@@ -267,7 +267,10 @@ export default function ChatModal({
   }, [messages, isLoading]);
 
   useEffect(() => {
-    if (isOpen) textareaRef.current?.focus();
+    if (isOpen) {
+      textareaRef.current?.focus();
+      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+    }
   }, [isOpen]);
 
   useEffect(() => {

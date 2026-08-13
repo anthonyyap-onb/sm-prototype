@@ -16,6 +16,8 @@ import { getPromoToolCards } from '@/lib/tools/promoToolPresentation';
 import { shouldContinueAfterClientTools } from '@/lib/tools/chatContinuation';
 import {
   appendToolCall,
+  clearChatSession,
+  CHAT_HISTORY_VERSION,
   formatRecentHistory,
   getInitialChatMessages,
   mergePersistedMessages,
@@ -272,19 +274,30 @@ export default function ChatModal({
 
   // When the store is changed externally (via the dropdown), inject a synthetic
   // assistant message so the LLM's conversation history reflects the change.
+  const mountedLocationRef = useRef<string | undefined>(selectedLocation);
   const isInitialMountRef = useRef(true);
   useEffect(() => {
     if (isInitialMountRef.current) {
       isInitialMountRef.current = false;
+      mountedLocationRef.current = selectedLocation;
       return;
     }
     if (!selectedLocation || selectedLocation.includes('undefined')) return;
-
-    if (llmTriggeredStoreChangeRef.current) {
-      llmTriggeredStoreChangeRef.current = false;
+    // Skip if the location hasn't actually changed, or if there was no prior location
+    // (the latter guards against StoreContext hydrating from empty → stored value on mount)
+    if (selectedLocation === mountedLocationRef.current) return;
+    if (!mountedLocationRef.current) {
+      mountedLocationRef.current = selectedLocation;
       return;
     }
 
+    if (llmTriggeredStoreChangeRef.current) {
+      llmTriggeredStoreChangeRef.current = false;
+      mountedLocationRef.current = selectedLocation;
+      return;
+    }
+
+    mountedLocationRef.current = selectedLocation;
     setMessages((prev) => [
       ...prev,
       {

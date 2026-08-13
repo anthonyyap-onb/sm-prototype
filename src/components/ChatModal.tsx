@@ -23,6 +23,11 @@ import {
   type StoredChatSession,
   writeChatSession,
 } from '@/lib/chat/chatHistory';
+import {
+  scrollChatToLatest,
+  shouldShowCheckoutSuggestionChips,
+  shouldShowMessageSuggestionChips,
+} from '@/lib/chat/chatPresentation';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -146,6 +151,7 @@ export default function ChatModal({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
+  const [checkoutSuggestionsDismissed, setCheckoutSuggestionsDismissed] = useState(false);
   const { addToCart, items } = useCart();
   const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
   const router = useRouter();
@@ -276,12 +282,12 @@ export default function ChatModal({
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollChatToLatest(isOpen, messagesEndRef.current);
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -302,6 +308,7 @@ export default function ChatModal({
     const text = textToSend ?? input.trim();
     if (!text || isLoading) return;
 
+    if (isCheckout) setCheckoutSuggestionsDismissed(true);
     setInput('');
     if (textareaRef.current) {
       textareaRef.current.style.height = '40px';
@@ -715,7 +722,7 @@ export default function ChatModal({
                 })}
 
                 {/* Suggestion chips under the initial greeting */}
-                {index === 0 && isAssistant && (
+                {shouldShowMessageSuggestionChips(pageContext, index, m.role) && (
                   <div className="flex gap-2 max-w-[85%] self-start pl-10 flex-wrap mt-1">
                     {suggestionChips.map((chip) => (
                       <button
@@ -731,6 +738,20 @@ export default function ChatModal({
               </div>
             );
           })}
+
+          {shouldShowCheckoutSuggestionChips(pageContext, checkoutSuggestionsDismissed) && (
+            <div className="flex gap-2 max-w-[85%] self-start pl-10 flex-wrap mt-1">
+              {suggestionChips.map((chip) => (
+                <button
+                  key={chip}
+                  onClick={() => handleSend(chip)}
+                  className="text-xs bg-white border border-[var(--color-primary)] text-[var(--color-primary)] px-3 py-1.5 rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-colors font-medium"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Typing Indicator */}
           {isLoading && (

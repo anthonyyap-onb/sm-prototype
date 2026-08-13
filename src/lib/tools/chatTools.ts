@@ -13,7 +13,7 @@ export interface AddToCartArgs {
 }
 
 export interface ChatToolOutput {
-  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation' | 'fetch_promos' | 'apply_promos';
+  tool: 'addToCart' | 'checkout_cart' | 'setStoreLocation' | 'fetch_promos' | 'apply_promos' | 'getRecentChatHistory';
   toolCallId: string;
   output: {
     success: boolean;

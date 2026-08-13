@@ -9,6 +9,7 @@ import {
   UIMessage,
 } from 'ai';
 import { z } from 'zod';
+import { getChatToolAvailability } from '@/lib/tools/chatToolAvailability';
 
 export const maxDuration = 30;
 
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
       : '[]';
   const formattedCheckoutContext = JSON.stringify(checkoutContext, null, 2) ?? 'null';
   const currentPageContext = rawPageContext === 'checkout' ? 'checkout' : 'shopping';
+  const toolAvailability = getChatToolAvailability(currentPageContext);
 
   const storeListText = storesData && storesData.length > 0
     ? storesData.map((s) => `  - \`${s.id}\` → ${s.name}, ${s.city}`).join('\n')
@@ -205,13 +207,14 @@ After all confirmed \`addToCart\` calls have succeeded and you have summarised w
 
 # CHECKOUT CONTEXT AND PROMOTIONS
 
-When CURRENT PAGE CONTEXT is \`checkout\`, help only with checkout fields, delivery or payment explanations, cart review, and promotions. Do not expand into shopping or item-addition assistance on this page.
+When CURRENT PAGE CONTEXT is \`checkout\`, help with checkout fields, totals, delivery or payment explanations, cart review, promotions, current-inventory products, and confirmed cart additions. The global inventory guardrail and confirmation-before-add sequence still apply. Do not call \`checkout_cart\` when the current page context is already checkout.
 
 1. Use \`fetch_promos\` before recommending a promotion or claiming promotion eligibility or savings.
 2. Only market active mock/prototype offers returned by \`fetch_promos\`. Do not invent, infer, or promote offers that the tool did not return.
-3. Before calling \`apply_promos\`, summarize the exact promotion IDs, codes, terms, stacking result, and estimated savings for the requested set. Then wait for the user's explicit confirmation of that exact set.
-4. A rejection does nothing: if the user rejects the promotion set, is ambiguous, or asks to change it, do not call \`apply_promos\`.
-5. Never place, submit, or finalize a purchase; never process payment; and never claim that a purchase or payment happened. These tools can only redirect to checkout or manage prototype promotions.
+3. After a successful \`fetch_promos\`, immediately summarize every returned offer's code, terms, eligibility or reason, estimated savings, applied state, and prototype status before waiting for more user input.
+4. Before calling \`apply_promos\`, summarize the exact promotion IDs, codes, terms, stacking result, and estimated savings for the requested set. Then wait for the user's explicit confirmation of that exact set.
+5. A rejection does nothing: if the user rejects the promotion set, is ambiguous, or asks to change it, do not call \`apply_promos\`.
+6. Never place, submit, or finalize a purchase; never process payment; and never claim that a purchase or payment happened. These tools can only redirect to checkout or manage prototype promotions.
 
 ---
 
@@ -315,15 +318,19 @@ When the user suggests their own ingredient (not from the numbered list), e.g., 
             ),
         })),
       }),
-      checkout_cart: tool({
-        description:
-          "Redirect the user to checkout. Only call this after cart items have been added, you have separately asked whether the user wants to checkout, and the user explicitly accepts. Never call it when the user wants to continue shopping or rejects checkout.",
-        inputSchema: zodSchema(z.object({})),
-      }),
-      ...(currentPageContext === 'checkout'
+      ...(toolAvailability.checkoutCart
+        ? {
+            checkout_cart: tool({
+              description:
+                "Redirect the user to checkout. Only call this after cart items have been added, you have separately asked whether the user wants to checkout, and the user explicitly accepts. Never call it when the user wants to continue shopping or rejects checkout.",
+              inputSchema: zodSchema(z.object({})),
+            }),
+          }
+        : {}),
+      ...(toolAvailability.promotions
         ? {
             fetch_promos: tool({
-              description: 'Fetch the current prototype checkout promotions and evaluate them against the live cart. Use this before recommending or claiming eligibility for a promo. This tool does not apply anything.',
+              description: 'Fetch the current prototype checkout promotions and evaluate them against the live cart. Use this before recommending or claiming eligibility for a promo. This tool does not apply anything. Immediately after it completes successfully, present every returned offer with its code, terms, eligibility or reason, estimated savings, applied state, and prototype status before waiting for user input.',
               inputSchema: zodSchema(z.object({})),
             }),
             apply_promos: tool({

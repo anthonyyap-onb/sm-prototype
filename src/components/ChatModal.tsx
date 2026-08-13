@@ -11,6 +11,8 @@ import {
   type AddToCartArgs,
   type ChatToolOutput,
 } from '@/lib/tools/chatTools';
+import { shouldContinueAfterClientTools } from '@/lib/tools/chatContinuation';
+import { getPromoToolCards } from '@/lib/tools/promoToolPresentation';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -179,6 +181,7 @@ export default function ChatModal({
         ],
       },
     ],
+    sendAutomaticallyWhen: shouldContinueAfterClientTools,
     onToolCall: ({ toolCall }) => {
       handleChatToolCall(toolCall, {
         inventory: inventoryRef.current,
@@ -548,18 +551,13 @@ export default function ChatModal({
                       toolPart.state === 'output-available' &&
                       toolPart.output?.success === false;
                     const output = toolPart.output as ChatToolOutput['output'] | undefined;
-                    const eligibleEvaluationCount = Array.isArray(output?.data)
-                      ? output.data.filter(
-                          (item) =>
-                            typeof item === 'object' &&
-                            item !== null &&
-                            'eligible' in item &&
-                            item.eligible === true
-                        ).length
-                      : 0;
+                    const promoToolCards = isSuccess ? getPromoToolCards(output?.data) : null;
+                    const eligibleEvaluationCount = promoToolCards?.filter(
+                      (card) => card.statusLabel === 'Eligible'
+                    ).length;
 
                     return (
-                      <div key={partIdx} className="self-start max-w-[85%] pl-10">
+                      <div key={partIdx} className="self-start max-w-[85%] pl-10 space-y-2">
                         <div
                           className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border ${
                             isPending
@@ -578,10 +576,45 @@ export default function ChatModal({
                             {isPending
                               ? 'Checking live promotions…'
                               : isSuccess
-                              ? `${output?.message ?? 'Promotions fetched.'} ${eligibleEvaluationCount} eligible.`
+                              ? `${output?.message ?? 'Promotions fetched.'}${
+                                  eligibleEvaluationCount === undefined
+                                    ? ''
+                                    : ` ${eligibleEvaluationCount} eligible.`
+                                }`
                               : output?.message ?? 'Could not fetch promotions.'}
                           </span>
                         </div>
+                        {promoToolCards?.map((card) => (
+                          <div
+                            key={card.id}
+                            className="rounded-xl border border-[var(--color-border-subtle)] bg-white p-3 text-xs text-[var(--color-on-surface)] shadow-sm"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="font-semibold text-sm">{card.title}</p>
+                                <code className="font-mono text-[11px] text-[var(--color-primary)]">
+                                  {card.code}
+                                </code>
+                              </div>
+                              <span className="shrink-0 rounded-full bg-[var(--color-surface-container-high)] px-2 py-0.5 font-medium text-[10px]">
+                                {card.applied ? 'Applied · ' : ''}
+                                {card.statusLabel}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-[var(--color-on-surface-variant)]">{card.terms}</p>
+                            <p className="mt-1">
+                              <span className="font-medium">Reason:</span> {card.reason}
+                            </p>
+                            <p className="mt-1 font-medium">
+                              Estimated savings: {card.estimatedSavingsLabel}
+                            </p>
+                          </div>
+                        ))}
+                        {promoToolCards?.length === 0 && (
+                          <p className="rounded-xl border border-[var(--color-border-subtle)] bg-white px-3 py-2 text-xs text-[var(--color-on-surface-variant)]">
+                            No current prototype offers were returned.
+                          </p>
+                        )}
                       </div>
                     );
                   }

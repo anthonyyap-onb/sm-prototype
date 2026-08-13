@@ -13,6 +13,16 @@ import {
 } from '@/lib/tools/chatTools';
 import { shouldContinueAfterClientTools } from '@/lib/tools/chatContinuation';
 import { getPromoToolCards } from '@/lib/tools/promoToolPresentation';
+import {
+  appendToolCall,
+  formatRecentHistory,
+  getInitialChatMessages,
+  mergePersistedMessages,
+  readChatSession,
+  selectChatSessionForRetrieval,
+  type StoredChatSession,
+  writeChatSession,
+} from '@/lib/chat/chatHistory';
 
 function InlineMarkdown({ text }: { text: string }) {
   const tokenRegex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
@@ -163,26 +173,40 @@ export default function ChatModal({
 
   // addToolOutput ref — populated after useChat initialises so onToolCall can call it
   const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
+  const historySessionRef = useRef<StoredChatSession | null>(null);
+  const historyHydratedRef = useRef(false);
 
   // Tracks whether the most recent store change was triggered by the LLM tool.
   // If true, the useEffect below skips injecting a notification (LLM already knows).
   const llmTriggeredStoreChangeRef = useRef(false);
 
   const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
-    messages: [
-      {
-        id: 'welcome-message',
-        role: 'assistant',
-        parts: [
-          {
-            type: 'text',
-            text: welcomeText,
-          },
-        ],
-      },
-    ],
+    messages: [],
     sendAutomaticallyWhen: shouldContinueAfterClientTools,
     onToolCall: ({ toolCall }) => {
+      const updatedSession = appendToolCall(historySessionRef.current ?? readChatSession(), {
+        id: toolCall.toolCallId,
+        tool: toolCall.toolName,
+        arguments: toolCall.input,
+        createdAt: new Date().toISOString(),
+        pageContext,
+      });
+      historySessionRef.current = updatedSession;
+      writeChatSession(updatedSession);
+
+      if (toolCall.toolName === 'getRecentChatHistory') {
+        const message = formatRecentHistory(
+          selectChatSessionForRetrieval(historySessionRef.current, readChatSession),
+          (toolCall.input as { limit?: unknown }).limit
+        );
+        addToolOutputRef.current?.({
+          tool: 'getRecentChatHistory',
+          toolCallId: toolCall.toolCallId,
+          output: { success: true, message },
+        });
+        return;
+      }
+
       handleChatToolCall(toolCall, {
         inventory: inventoryRef.current,
         addToCart,
@@ -202,6 +226,21 @@ export default function ChatModal({
   useEffect(() => {
     addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
   }, [addToolOutput]);
+
+  useEffect(() => {
+    const session = readChatSession();
+    historySessionRef.current = session;
+    setMessages(getInitialChatMessages(session, welcomeText));
+    historyHydratedRef.current = true;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!historyHydratedRef.current) return;
+    const updatedSession = mergePersistedMessages(historySessionRef.current ?? readChatSession(), messages);
+    historySessionRef.current = updatedSession;
+    writeChatSession(updatedSession);
+  }, [messages]);
 
   // When the store is changed externally (via the dropdown), inject a synthetic
   // assistant message so the LLM's conversation history reflects the change.

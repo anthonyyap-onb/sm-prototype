@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import type { Store } from '@/types';
 import TopNavBar from './TopNavBar';
@@ -147,12 +148,12 @@ export default function CartPageClient({ stores }: CartPageClientProps) {
                       Vouchers and Final Total on Checkout
                     </p>
 
-                    <button
-                      disabled
-                      className="w-full bg-[var(--color-primary)] text-white font-bold py-3 px-4 rounded-md text-lg shadow-sm opacity-60 cursor-not-allowed"
+                    <Link
+                      href="/checkout"
+                      className="block w-full bg-[var(--color-primary)] text-center text-white font-bold py-3 px-4 rounded-md text-lg shadow-sm hover:bg-[var(--color-primary-container)] transition-colors"
                     >
                       Checkout
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

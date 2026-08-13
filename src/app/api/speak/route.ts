@@ -82,8 +82,6 @@ export async function POST(request: NextRequest) {
     }
 
     const sanitized = sanitizeForTTS(text);
-    console.log('[TTS] raw input :', JSON.stringify(text.slice(0, 200)));
-    console.log('[TTS] sanitized  :', JSON.stringify(sanitized.slice(0, 200)));
     if (!sanitized) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }

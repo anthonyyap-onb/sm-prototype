@@ -137,7 +137,7 @@ export default function ChatModal({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
-  const { addToCart } = useCart();
+  const { addToCart, totalItems, clearCart } = useCart();
   const { setSelectedStoreId } = useStore();
 
   // --- STT State ---
@@ -157,52 +157,10 @@ export default function ChatModal({
     onStoreChangeRef.current = setSelectedStoreId;
   }, [setSelectedStoreId]);
 
-  const promosRef = useRef({ evaluations, applyPromos });
-  useLayoutEffect(() => {
-    promosRef.current = { evaluations, applyPromos };
-  }, [evaluations, applyPromos]);
-
-  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
-  const addToolOutputRef = useRef<((output: ChatToolOutput) => void) | null>(null);
-
-  // Tracks whether the most recent store change was triggered by the LLM tool.
-  // If true, the useEffect below skips injecting a notification (LLM already knows).
-  const llmTriggeredStoreChangeRef = useRef(false);
-
-  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
-    messages: [
-      {
-        id: 'welcome-message',
-        role: 'assistant',
-        parts: [
-          {
-            type: 'text',
-            text: welcomeText,
-          },
-        ],
-      },
-    ],
-    sendAutomaticallyWhen: shouldContinueAfterClientTools,
-    onToolCall: ({ toolCall }) => {
-      handleChatToolCall(toolCall, {
-        inventory: inventoryRef.current,
-        addToCart,
-        addToolOutput: (output) => addToolOutputRef.current?.(output),
-        markStoreChangeAsToolTriggered: () => {
-          llmTriggeredStoreChangeRef.current = true;
-        },
-        changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
-        fetchPromos: () => promosRef.current.evaluations,
-        applyPromos: (ids) => promosRef.current.applyPromos(ids),
-        navigateToCheckout: () => router.push('/checkout'),
-      });
-    },
-  });
-
-  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  const clearCartRef = useRef<() => void>(clearCart);
   useEffect(() => {
-    addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
-  }, [addToolOutput]);
+    clearCartRef.current = clearCart;
+  }, [clearCart]);
 
   // When the store is changed externally (via the dropdown), inject a synthetic
   // assistant message so the LLM's conversation history reflects the change.
@@ -234,6 +192,88 @@ export default function ChatModal({
     ]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
+
+  // addToolOutput ref — populated after useChat initialises so onToolCall can call it
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addToolOutputRef = useRef<((...args: any[]) => void) | null>(null);
+
+  // Tracks whether the most recent store change was triggered by the LLM tool.
+  // If true, the useEffect below skips injecting a notification (LLM already knows).
+  const llmTriggeredStoreChangeRef = useRef(false);
+
+  const { messages, sendMessage, status, addToolOutput, setMessages } = useChat({
+    messages: [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        parts: [
+          {
+            type: 'text',
+            text: 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!',
+          },
+        ],
+      },
+    ],
+    onToolCall: ({ toolCall }) => {
+      if (toolCall.toolName === 'setStoreLocation') {
+        const args = toolCall.input as { storeId: string; storeName: string };
+        llmTriggeredStoreChangeRef.current = true;
+        clearCartRef.current();
+        onStoreChangeRef.current(args.storeId);
+        addToolOutputRef.current?.({
+          tool: 'setStoreLocation',
+          toolCallId: toolCall.toolCallId,
+          output: { success: true, message: `Store set to ${args.storeName}.` },
+        });
+        return;
+      }
+
+      if (toolCall.toolName !== 'addToCart') return;
+
+      const args = toolCall.input as AddToCartArgs;
+      const qty = args.quantity ?? 1;
+      let output: { success: boolean; message: string };
+
+      if (args.productId) {
+        const matched = inventoryRef.current.find((p) => p.id === args.productId);
+        if (matched) {
+          for (let i = 0; i < qty; i++) addToCart(matched);
+          output = { success: true, message: `Added ${matched.name} × ${qty} to cart.` };
+        } else {
+          // productId provided but not found in current inventory — fall through
+          output = {
+            success: false,
+            message: `Product ID ${args.productId} not found in current store inventory.`,
+          };
+        }
+      } else if (args.price !== undefined) {
+        // No product ID but we have enough info to create a synthetic product
+        const syntheticProduct: Product = {
+          id: `llm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name: args.productName,
+          imageUrl: args.imageUrl ?? '',
+          weight: args.weight ?? '',
+          price: args.price,
+        };
+        for (let i = 0; i < qty; i++) addToCart(syntheticProduct);
+        output = { success: true, message: `Added ${args.productName} × ${qty} to cart.` };
+      } else {
+        output = {
+          success: false,
+          message: `Could not add ${args.productName} to cart — no inventory match found. Please select it manually from the store page.`,
+        };
+      }
+
+      addToolOutputRef.current?.({
+        tool: 'addToCart',
+        toolCallId: toolCall.toolCallId,
+        output,
+      });
+    },
+  });
+
+  // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
+  addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -275,21 +315,8 @@ export default function ChatModal({
         body: {
           storeLocation: selectedLocation,
           inventoryData: inventoryData,
-          storesData,
-          pageContext,
-          checkoutContext: {
-            evaluations,
-            appliedPromotions: appliedPromos,
-            totals,
-            cartItems: items.map(({ product, quantity }) => ({
-              productId: product.id,
-              productName: product.name,
-              weight: product.weight,
-              unitPrice: product.price,
-              quantity,
-              lineTotal: product.price * quantity,
-            })),
-          },
+          storesData: storesData,
+          cartItemCount: totalItems,
         },
       }
     );
@@ -352,6 +379,7 @@ export default function ChatModal({
             storesData: storesData,
             audioBase64: base64Audio,
             audioMimeType: audioBlob.type,
+            cartItemCount: totalItems,
           },
         }
       );

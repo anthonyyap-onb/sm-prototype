@@ -17,7 +17,7 @@ interface TopNavBarProps {
 export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: TopNavBarProps) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const selectedStore = stores.find((s) => s.id === selectedStoreId);
-  const { items } = useCart();
+  const { items, clearCart } = useCart();
 
   return (
     <header className="bg-[var(--color-primary)] text-[var(--color-on-primary)] sticky top-0 z-50 flex justify-between items-center w-full h-16 px-10 shadow-md border-b border-white/10">
@@ -60,7 +60,12 @@ export default function TopNavBar({ stores, selectedStoreId, onStoreChange }: To
             <StorePicker
               stores={stores}
               selectedStoreId={selectedStoreId}
-              onSelect={onStoreChange}
+              onSelect={(id) => {
+                if (id !== selectedStoreId) {
+                  clearCart();
+                }
+                onStoreChange(id);
+              }}
               onClose={() => setIsPickerOpen(false)}
             />
           )}

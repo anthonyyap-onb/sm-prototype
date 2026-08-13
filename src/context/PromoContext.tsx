@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -17,6 +18,13 @@ import {
   evaluatePromos,
   reconcileAppliedPromoIds,
 } from '@/lib/promos/promoEngine';
+import {
+  canReconcilePromos,
+  readStoredPromoIds,
+  selectHydratedPromoIds,
+  shouldPersistHydratedState,
+  writeStoredPromoIds,
+} from '@/lib/storage/commerceStorage';
 import type {
   AppliedPromo,
   CheckoutTotals,
@@ -43,8 +51,24 @@ function haveSameOrderedIds(left: string[], right: string[]): boolean {
 }
 
 export function PromoProvider({ children }: { children: ReactNode }) {
-  const { items } = useCart();
+  const { items, isHydrated: cartHydrated } = useCart();
   const [appliedPromoIds, setAppliedPromoIds] = useState<string[]>([]);
+  const [promosHydrated, setPromosHydrated] = useState(false);
+  const hasPreHydrationLocalMutation = useRef(false);
+
+  useEffect(() => {
+    const restoredPromoIds = readStoredPromoIds();
+    queueMicrotask(() => {
+      setAppliedPromoIds((currentIds) =>
+        selectHydratedPromoIds(
+          currentIds,
+          restoredPromoIds,
+          hasPreHydrationLocalMutation.current
+        )
+      );
+      setPromosHydrated(true);
+    });
+  }, []);
 
   const evaluations = useMemo(
     () => evaluatePromos({ promos, items, appliedIds: appliedPromoIds }),
@@ -68,6 +92,8 @@ export function PromoProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
+    if (!canReconcilePromos(cartHydrated, promosHydrated)) return;
+
     const reconciledIds = reconcileAppliedPromoIds({ promos, items, appliedIds: appliedPromoIds });
     if (!haveSameOrderedIds(reconciledIds, appliedPromoIds)) {
       queueMicrotask(() => {
@@ -78,10 +104,16 @@ export function PromoProvider({ children }: { children: ReactNode }) {
         );
       });
     }
-  }, [items, appliedPromoIds]);
+  }, [items, appliedPromoIds, cartHydrated, promosHydrated]);
+
+  useEffect(() => {
+    if (!shouldPersistHydratedState(promosHydrated)) return;
+    writeStoredPromoIds(appliedPromoIds);
+  }, [appliedPromoIds, promosHydrated]);
 
   const applyPromos = useCallback(
     (ids: string[]) => {
+      if (!promosHydrated) hasPreHydrationLocalMutation.current = true;
       const result = applyPromoIds({
         promos,
         items,
@@ -91,12 +123,13 @@ export function PromoProvider({ children }: { children: ReactNode }) {
       setAppliedPromoIds(result.appliedIds);
       return result;
     },
-    [items, appliedPromoIds]
+    [items, appliedPromoIds, promosHydrated]
   );
 
   const removePromo = useCallback((id: string) => {
+    if (!promosHydrated) hasPreHydrationLocalMutation.current = true;
     setAppliedPromoIds((currentIds) => currentIds.filter((appliedId) => appliedId !== id));
-  }, []);
+  }, [promosHydrated]);
 
   const value = useMemo(
     () => ({

@@ -145,6 +145,11 @@ export default function ChatModal({
     : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
   const suggestionChips = isCheckout ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
 
+  // --- STT State ---
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
   // Keep a ref to inventoryData so the onToolCall closure always sees the latest value
   const inventoryRef = useRef<Product[]>(inventoryData);
   useEffect(() => {
@@ -292,6 +297,69 @@ export default function ChatModal({
         },
       }
     );
+  };
+
+  const startRecording = async () => {
+    try {
+      // Request microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        // Combine chunks into a single audio blob
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        // Stop all tracks to turn off the red recording light in the browser tab
+        stream.getTracks().forEach((track) => track.stop());
+        handleAudioSubmit(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+      alert("Could not access the microphone. Please check your permissions.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const handleAudioSubmit = async (audioBlob: Blob) => {
+    if (isLoading) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(audioBlob);
+    reader.onloadend = async () => {
+      const base64Audio = reader.result as string;
+
+      // Send standard text, but pack the audio into our custom body
+      await sendMessage(
+        {
+          text: '🎙️ [Voice message]',
+        },
+        {
+          body: {
+            storeLocation: selectedLocation || '',
+            inventoryData: inventoryData, 
+            // Send the audio data custom here!
+            audioBase64: base64Audio,
+            audioMimeType: audioBlob.type, 
+          },
+        }
+      );
+    };
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -744,10 +812,28 @@ export default function ChatModal({
               type="button"
               onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
-              className="p-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-container)] disabled:opacity-50 transition-colors shrink-0 mb-0.5 mr-0.5 flex items-center justify-center"
+              className={`p-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-container)] disabled:opacity-50 transition-colors shrink-0 mb-0.5 mr-0.5 flex items-center justify-center ${
+                !input.trim() || isLoading ? 'cursor-default' : 'cursor-pointer'
+              }`}
               aria-label="Send message"
             >
               <span className="material-symbols-outlined text-sm">send</span>
+            </button>
+            <button
+              type="button"
+              className={`p-2 rounded-full cursor-pointer flex items-center justify-center mb-0.5 mr-0.5 ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-200'}`}
+              onMouseDown={startRecording}
+              onMouseUp={stopRecording}
+              onMouseLeave={stopRecording} // Failsafe if they drag their mouse away
+              onTouchStart={startRecording} // For mobile devices
+              onTouchEnd={stopRecording}
+              disabled={isLoading}
+            >
+              {isRecording ? (
+                'Recording...'
+              ) : (
+                <span className="material-symbols-outlined text-sm">mic</span>
+              )}
             </button>
           </div>
           <div className="text-center mt-2">

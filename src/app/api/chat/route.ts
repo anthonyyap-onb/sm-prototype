@@ -14,7 +14,8 @@ import { getChatToolAvailability } from '@/lib/tools/chatToolAvailability';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const {
+  const json = await req.json();
+  let {
     messages,
     storeLocation,
     inventoryData,
@@ -22,6 +23,9 @@ export async function POST(req: Request) {
     pageContext: rawPageContext,
     checkoutContext,
   }: {
+    audioBase64,
+    audioMimeType
+  } = json as {
     messages: UIMessage[];
     storeLocation?: string;
     inventoryData?: unknown;
@@ -29,14 +33,39 @@ export async function POST(req: Request) {
     pageContext?: unknown;
     checkoutContext?: unknown;
   } = await req.json();
+    audioBase64?: string;
+    audioMimeType?: string;
+  };
 
   const formattedInventory =
     storeLocation && inventoryData
       ? JSON.stringify(inventoryData, null, 2)
       : '[]';
-  const formattedCheckoutContext = JSON.stringify(checkoutContext, null, 2) ?? 'null';
-  const currentPageContext = rawPageContext === 'checkout' ? 'checkout' : 'shopping';
-  const toolAvailability = getChatToolAvailability(currentPageContext);
+  
+  if (audioBase64 && messages.length > 0) {
+    // Cast to `any` locally to easily manipulate the object
+    const lastMessage = messages[messages.length - 1] as any;
+    
+    if (lastMessage.role === 'user') {
+      // 1. Ensure the `parts` array exists
+      if (!lastMessage.parts) {
+        lastMessage.parts = [{ 
+          type: 'text', 
+          text: lastMessage.text || lastMessage.content || '' 
+        }];
+      }
+      
+      // 2. Append the audio file as a standard UI part!
+      lastMessage.parts.push({
+        type: 'file',
+        // The frontend FileReader creates a full data URL (e.g. data:audio/webm;base64,...)
+        // so we pass it straight into the url property
+        url: audioBase64, 
+        // Vercel UI parts use `mediaType` instead of `mimeType`
+        mediaType: audioMimeType || 'audio/webm', 
+      });
+    }
+  }
 
   const storeListText = storesData && storesData.length > 0
     ? storesData.map((s) => `  - \`${s.id}\` → ${s.name}, ${s.city}`).join('\n')

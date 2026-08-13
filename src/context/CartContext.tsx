@@ -16,6 +16,7 @@ interface CartContextValue {
   decrementItem: (productId: string) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
+  setItemQuantity: (productId: string, quantity: number) => void;
   isHydrated: boolean;
   totalItems: number;
   totalPrice: number;
@@ -90,6 +91,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((i) => i.product.id !== productId));
   }, []);
 
+  const setItemQuantity = useCallback((productId: string, quantity: number) => {
+    if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
+    if (quantity <= 0) {
+      setItems((prev) => prev.filter((i) => i.product.id !== productId));
+    } else {
+      setItems((prev) =>
+        prev.map((i) =>
+          i.product.id === productId ? { ...i, quantity } : i
+        )
+      );
+    }
+  }, []);
+
   const clearCart = useCallback(() => {
     if (!isHydratedRef.current) hasPreHydrationLocalMutation.current = true;
     setItems([]);
@@ -100,7 +114,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, incrementItem, decrementItem, removeItem, clearCart, isHydrated, totalItems, totalPrice }}
+      value={{ items, addToCart, incrementItem, decrementItem, removeItem, clearCart, setItemQuantity, isHydrated, totalItems, totalPrice }}
     >
       {children}
     </CartContext.Provider>

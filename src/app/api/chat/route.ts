@@ -247,6 +247,34 @@ Once confirmed:
 
 ---
 
+# CART MANAGEMENT (REMOVE & UPDATE QUANTITY)
+
+The \`removeFromCart\` and \`updateCartQuantity\` tools let you modify items already in the cart.
+
+## When to use them
+- **removeFromCart**: User explicitly asks to remove, delete, or take out a specific item (e.g., "remove the soy sauce", "take out the vinegar", "alisin ang manok").
+- **updateCartQuantity**: User asks to change the number of a specific item (e.g., "change the chicken to 3", "I only need 2 of those", "gawing 4 ang bigas").
+  - Setting quantity to 0 removes the item — use this only if the user explicitly says "set it to 0" or "remove it" AND you have no product ID for \`removeFromCart\`.
+
+## Confirmation before acting (REQUIRED)
+Before calling either tool, send a confirmation message. Examples:
+
+> "Just to confirm, I'll remove **DATU PUTI SOY SAUCE 1L** from your cart. Shall I go ahead?"
+
+> "Just to confirm, I'll update **Magnolia Chicken Rtc Grillers** to ×3. Shall I go ahead?"
+
+Wait for the user to confirm before calling the tool.
+
+## Product ID requirement
+- Both tools require the \`productId\` that was used when the item was added.
+- You can find this from the most recent \`addToCart\` tool call in the session history, or from CURRENT INVENTORY DATA.
+- If you cannot identify the exact product ID, ask the user to clarify before proceeding.
+
+## Ambiguity
+If the user says something vague (e.g., "remove everything" or "clear my cart"), do NOT call these tools. Instead, clarify what they want — if they genuinely want to clear the cart, guide them to the cart page instead.
+
+---
+
 # POST-ADD CHECKOUT CONSENT
 
 After all confirmed \`addToCart\` calls have succeeded and you have summarised what was added:
@@ -387,6 +415,45 @@ When the user suggests their own ingredient (not from the numbered list), e.g., 
               'The name of the original ingredient this is replacing, if isAlternative is true.'
             ),
         })),
+      }),
+      removeFromCart: tool({
+        description:
+          "Remove a specific item completely from the user's shopping cart. Only call this after the user explicitly asks to remove an item and you have confirmed which item they mean. Always confirm with the user before calling.",
+        inputSchema: zodSchema(
+          z.object({
+            productId: z
+              .string()
+              .describe(
+                'The product ID of the cart item to remove. Must match the ID that was used when the item was added to the cart.'
+              ),
+            productName: z
+              .string()
+              .describe('The display name of the product being removed, for the confirmation message.'),
+          })
+        ),
+      }),
+      updateCartQuantity: tool({
+        description:
+          "Update the quantity of a specific item already in the user's shopping cart to an exact number. Use this when the user asks to change how many of an item they have (e.g. 'change my chicken to 3' or 'I only need 2 of those'). Setting quantity to 0 will remove the item. Only call after explicit user confirmation.",
+        inputSchema: zodSchema(
+          z.object({
+            productId: z
+              .string()
+              .describe(
+                'The product ID of the cart item to update. Must match the ID used when the item was added to the cart.'
+              ),
+            productName: z
+              .string()
+              .describe('The display name of the product, for the confirmation message.'),
+            quantity: z
+              .number()
+              .int()
+              .min(0)
+              .describe(
+                'The new quantity for this cart item. Use 0 to remove the item entirely. Must be the exact number the user requested.'
+              ),
+          })
+        ),
       }),
       ...(toolAvailability.checkoutCart
         ? {

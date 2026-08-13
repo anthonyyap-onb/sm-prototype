@@ -156,7 +156,7 @@ export default function ChatModal({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
   const [checkoutSuggestionsDismissed, setCheckoutSuggestionsDismissed] = useState(false);
-  const { addToCart, totalItems, clearCart } = useCart();
+  const { addToCart, totalItems, clearCart, removeItem, setItemQuantity, items } = useCart();
   const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
   const router = useRouter();
   const isCheckout = pageContext === 'checkout';
@@ -247,6 +247,8 @@ export default function ChatModal({
         fetchPromos: () => promosRef.current.evaluations,
         applyPromos: (ids) => promosRef.current.applyPromos(ids),
         navigateToCheckout: () => router.push('/checkout'),
+        removeItem,
+        setItemQuantity,
       });
     },
   });

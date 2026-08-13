@@ -280,6 +280,16 @@ export function readChatSession(storage = defaultStorage()): StoredChatSession {
   }
 }
 
+export function clearChatSession(storage = defaultStorage()): boolean {
+  if (!storage) return false;
+  try {
+    storage.removeItem(CHAT_HISTORY_STORAGE_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function writeChatSession(session: StoredChatSession, storage = defaultStorage()): boolean {
   if (!storage) return false;
   try {

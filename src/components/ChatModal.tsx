@@ -562,6 +562,13 @@ export default function ChatModal({
     }
   };
 
+  const handleNewChat = () => {
+    clearChatSession();
+    historySessionRef.current = null;
+    mountedLocationRef.current = selectedLocation;
+    setMessages(getInitialChatMessages({ version: CHAT_HISTORY_VERSION, messages: [], toolCalls: [] }, welcomeText));
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
     if (textareaRef.current) {
@@ -615,14 +622,25 @@ export default function ChatModal({
               </span>
             </div>
           </div>
-          <button
-            id="chat-close-btn"
-            aria-label="Close chat"
-            onClick={onClose}
-            className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              id="chat-new-btn"
+              aria-label="New chat"
+              onClick={handleNewChat}
+              title="New chat"
+              className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <span className="material-symbols-outlined">edit_square</span>
+            </button>
+            <button
+              id="chat-close-btn"
+              aria-label="Close chat"
+              onClick={onClose}
+              className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
         </div>
 
         {/* Messages Feed */}

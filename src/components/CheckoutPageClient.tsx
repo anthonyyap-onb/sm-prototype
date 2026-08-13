@@ -8,9 +8,9 @@ import ChatModal from '@/components/ChatModal';
 import TopNavBar from '@/components/TopNavBar';
 import { useCart } from '@/context/CartContext';
 import { usePromos } from '@/context/PromoContext';
+import { useStore } from '@/context/StoreContext';
+import { getStoreInventory } from '@/lib/inventory/storeInventory';
 import type { Store, StoreProducts } from '@/types';
-
-const DEFAULT_STORE_ID = 'sm-megamall';
 
 interface CheckoutPageClientProps {
   stores: Store[];
@@ -83,7 +83,7 @@ function ChoiceButton({
 }
 
 export default function CheckoutPageClient({ stores, allStoreProducts }: CheckoutPageClientProps) {
-  const [selectedStoreId, setSelectedStoreId] = useState(DEFAULT_STORE_ID);
+  const { selectedStoreId, setSelectedStoreId } = useStore();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'card'>('cod');
   const [promoMessage, setPromoMessage] = useState<string | null>(null);
@@ -91,19 +91,13 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
   const { evaluations, appliedPromos, applyPromos, removePromo, totals } = usePromos();
 
   const selectedStore = useMemo(() => {
-    return stores.find((store) => store.id === selectedStoreId) ?? stores[0];
+    return stores.find((store) => store.id === selectedStoreId);
   }, [stores, selectedStoreId]);
 
-  const currentInventory = useMemo(() => {
-    const storeRecord = allStoreProducts.find((products) => products.storeId === selectedStoreId);
-    if (!storeRecord) return [];
-    return [
-      ...storeRecord.featuredProducts,
-      ...storeRecord.priceDrop,
-      ...storeRecord.freshMeatAndSeafood,
-      ...storeRecord.pantry,
-    ];
-  }, [allStoreProducts, selectedStoreId]);
+  const currentInventory = useMemo(
+    () => getStoreInventory(allStoreProducts, selectedStoreId),
+    [allStoreProducts, selectedStoreId]
+  );
 
   const handleApplyPromo = (promoId: string) => {
     const result = applyPromos([promoId]);
@@ -437,6 +431,8 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
         onClose={() => setIsChatOpen(false)}
         selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined}
         inventoryData={currentInventory}
+        onStoreChange={setSelectedStoreId}
+        storesData={stores}
         pageContext="checkout"
       />
     </div>

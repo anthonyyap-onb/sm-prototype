@@ -45,6 +45,7 @@ export interface ChatToolDependencies {
   addToolOutput: (output: ChatToolOutput) => void;
   markStoreChangeAsToolTriggered: () => void;
   changeStore: (storeId: string) => void;
+  clearCart: () => void;
   fetchPromos: () => PromoEvaluation[];
   applyPromos: (ids: string[]) => PromoApplicationResult;
   navigateToCheckout: () => void;
@@ -59,6 +60,7 @@ export function handleChatToolCall(
   if (toolCall.toolName === 'setStoreLocation') {
     const args = toolCall.input as { storeId: string; storeName: string };
     dependencies.markStoreChangeAsToolTriggered();
+    dependencies.clearCart();
     dependencies.changeStore(args.storeId);
     dependencies.addToolOutput({
       tool: 'setStoreLocation',

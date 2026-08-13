@@ -244,6 +244,7 @@ export default function ChatModal({
           llmTriggeredStoreChangeRef.current = true;
         },
         changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
+        clearCart: () => clearCartRef.current(),
         fetchPromos: () => promosRef.current.evaluations,
         applyPromos: (ids) => promosRef.current.applyPromos(ids),
         navigateToCheckout: () => router.push('/checkout'),

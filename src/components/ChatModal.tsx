@@ -4,6 +4,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useStore } from '@/context/StoreContext';
 import type { Product, Store } from '@/types';
 import { usePromos } from '@/context/PromoContext';
 import {
@@ -136,14 +137,8 @@ export default function ChatModal({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
-  const { addToCart, items } = useCart();
-  const { evaluations, appliedPromos, applyPromos, totals } = usePromos();
-  const router = useRouter();
-  const isCheckout = pageContext === 'checkout';
-  const welcomeText = isCheckout
-    ? 'Hello! I am your SM Markets Assistant. I can help review your order, explain totals, delivery, and eligible promotions!'
-    : 'Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!';
-  const suggestionChips = isCheckout ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
+  const { addToCart } = useCart();
+  const { setSelectedStoreId } = useStore();
 
   // --- STT State ---
   const [isRecording, setIsRecording] = useState(false);
@@ -157,9 +152,10 @@ export default function ChatModal({
   }, [inventoryData]);
 
   const onStoreChangeRef = useRef(onStoreChange);
+  const onStoreChangeRef = useRef<(storeId: string) => void>(setSelectedStoreId);
   useEffect(() => {
-    onStoreChangeRef.current = onStoreChange;
-  }, [onStoreChange]);
+    onStoreChangeRef.current = setSelectedStoreId;
+  }, [setSelectedStoreId]);
 
   const promosRef = useRef({ evaluations, applyPromos });
   useLayoutEffect(() => {
@@ -352,10 +348,10 @@ export default function ChatModal({
         {
           body: {
             storeLocation: selectedLocation || '',
-            inventoryData: inventoryData, 
-            // Send the audio data custom here!
+            inventoryData: inventoryData,
+            storesData: storesData,
             audioBase64: base64Audio,
-            audioMimeType: audioBlob.type, 
+            audioMimeType: audioBlob.type,
           },
         }
       );

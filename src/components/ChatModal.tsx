@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useStore } from '@/context/StoreContext';
 import type { Product, Store } from '@/types';
@@ -12,7 +11,6 @@ import {
   type AddToCartArgs,
   type ChatToolOutput,
 } from '@/lib/tools/chatTools';
-import { shouldContinueAfterClientTools } from '@/lib/tools/chatContinuation';
 import { getPromoToolCards } from '@/lib/tools/promoToolPresentation';
 import {
   appendToolCall,
@@ -140,58 +138,6 @@ const CHECKOUT_SUGGESTION_CHIPS = [
 
 const BOT_AVATAR =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDOPltKPtKkftDwK_WwaDIvGFqOb4ARXd90n8B-zAJnEDn7afcFzjMP2_A_fwRYvzq10TphZ7K0Og_3azR3gAwIFeZon4V18UoaQVm7Sfy024XYG3TAceQT8eRwT9ry1lgZY55x-4GOcbvrOlN0X420733DceHqxiBsKRQ4vdvftKMUIQSqaIYWjK-VFoUXpvZ-pidODBiPckQDMGsZg6RMEt9fHXQDwl-9E5zoI4P1jzoCOWWTkQx6Bw';
-
-interface AddToCartArgs {
-  productId?: string;
-  productName: string;
-  price?: number;
-  imageUrl?: string;
-  weight?: string;
-  ingredientNumber?: number;
-  quantity?: number;
-  isAlternative?: boolean;
-  originalIngredientName?: string;
-}
-
-function stripMarkdown(text: string): string {
-  return text
-    // Remove emojis (and optional variation selector / combining enclosing keycap)
-    .replace(/\p{Extended_Pictographic}[️⃣]?/gu, '')
-    // Strip markdown formatting
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/`(.*?)`/g, '$1')
-    .replace(/^#{1,6}\s+/gm, '')
-    .replace(/^[-*]\s+/gm, '')
-    .replace(/^\d+\.\s+/gm, '')
-    // Remove table separator rows (e.g. | --- | --- |) then remaining pipes
-    .replace(/^\|[-|\s:]+\|$/gm, '')
-    .replace(/\|/g, ' ')
-    // Phonetic fixes for Philippine proper nouns
-    .replace(/\bEDSA\b/g, 'Edsah')
-    .replace(/\bTaguig\b/gi, 'Tagig')
-    .replace(/\bPasay\b/gi, 'Paahsigh')
-    .replace(/\bBaguio\b/gi, 'Bagyo')
-    .replace(/\bMandaluyong\b/gi, 'Maandaluyong')
-    .replace(/\bQuezon\b/gi, 'Kezon')
-    // ₱ prices — expand to spoken form
-    .replace(/₱([\d,]*)\.00\b/g, '$1 Pesos')
-    .replace(/₱([\d,]+)\.(\d+)/g, '$1 Pesos and $2 centavos')
-    .replace(/₱([\d,]+)/g, '$1 Pesos')
-    // Expand unit abbreviations — longer/more specific first to avoid partial matches
-    .replace(/(\d+)\s*kcal\b/gi, '$1 kilocalories')
-    .replace(/(\d+)\s*kg\b/gi, '$1 kilograms')
-    .replace(/(\d+)\s*mg\b/gi, '$1 milligrams')
-    .replace(/(\d+)\s*ml\b/gi, '$1 milliliters')
-    .replace(/(\d+)\s*lbs?\b/gi, '$1 pounds')
-    .replace(/(\d+)\s*oz\b/gi, '$1 ounces')
-    .replace(/(\d+)\s*tbsp\b/gi, '$1 tablespoons')
-    .replace(/(\d+)\s*tsp\b/gi, '$1 teaspoons')
-    .replace(/(\d+)\s*pcs?\b/gi, '$1 pieces')
-    .replace(/(\d+)\s*g\b/gi, '$1 grams')
-    .replace(/(\d+)\s*[Ll]\b/g, '$1 liters')
-    .trim();
-}
 
 export default function ChatModal({
   isOpen,
@@ -412,31 +358,30 @@ export default function ChatModal({
       isPlayingQueueRef.current = false;
     }
 
-    const rawText = last.parts
+    const text = last.parts
       ?.filter((p) => p.type === 'text')
       .map((p) => (p as { type: 'text'; text: string }).text)
       .join('') ?? '';
-    const text = stripMarkdown(rawText);
     const unprocessed = text.slice(processedUpToRef.current);
     if (!unprocessed) return;
 
-    // Queue each complete sentence found in the new text
-    const sentenceRegex = /[^.!?！？。]+[.!?！？。]+\s*/g;
+    const speakChunk = (chunk: string) =>
+      fetch('/api/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: chunk }),
+      })
+        .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
+        .then((b) => URL.createObjectURL(b));
+
+    // Queue each complete sentence found in the new text.
+    // (?<=\d)\.(?=\d) lets decimal points (e.g. ₱159.50) pass through without breaking the sentence.
+    const sentenceRegex = /(?:[^.!?！？。]|(?<=\d)\.(?=\d))+[.!?！？。]+\s*/g;
     let match: RegExpExecArray | null;
     let consumed = 0;
     while ((match = sentenceRegex.exec(unprocessed)) !== null) {
       const sentence = match[0].trim();
-      if (sentence.length >= 5) {
-        sentenceQueueRef.current.push(
-          fetch('/api/speak', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: sentence }),
-          })
-            .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
-            .then((b) => URL.createObjectURL(b))
-        );
-      }
+      if (sentence.length >= 5) sentenceQueueRef.current.push(speakChunk(sentence));
       consumed = match.index + match[0].length;
     }
     processedUpToRef.current += consumed;
@@ -445,15 +390,7 @@ export default function ChatModal({
     if (!isLoading) {
       const remaining = text.slice(processedUpToRef.current).trim();
       if (remaining.length >= 5) {
-        sentenceQueueRef.current.push(
-          fetch('/api/speak', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: remaining }),
-          })
-            .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
-            .then((b) => URL.createObjectURL(b))
-        );
+        sentenceQueueRef.current.push(speakChunk(remaining));
         processedUpToRef.current = text.length;
       }
     }
@@ -550,41 +487,46 @@ export default function ChatModal({
   const handleAudioSubmit = async (audioBlob: Blob) => {
     if (isLoading) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(audioBlob);
-    reader.onloadend = async () => {
-      const base64Audio = reader.result as string;
+    setIsTranscribing(true);
 
-      setIsTranscribing(true);
-      let transcript = '🎙️ [Voice message]';
-      try {
-        const res = await fetch('/api/transcribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ audioBase64: base64Audio, audioMimeType: audioBlob.type }),
-        });
-        const data = await res.json();
-        if (data.transcript) transcript = data.transcript;
-      } catch (err) {
-        console.warn('Transcription failed, using fallback:', err);
-      } finally {
-        setIsTranscribing(false);
+    // Start FileReader for the chat body in parallel with the transcription fetch
+    const base64Promise = new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(audioBlob);
+    });
+
+    // Send binary FormData — no base64 encoding needed, ~33% smaller payload
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+
+    let transcript = '[Voice message]';
+    try {
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.transcript) transcript = data.transcript;
+    } catch (err) {
+      console.warn('Transcription failed, using fallback:', err);
+    } finally {
+      setIsTranscribing(false);
+    }
+
+    // FileReader ran in parallel — almost certainly done by now
+    const base64Audio = await base64Promise;
+
+    await sendMessage(
+      { text: transcript },
+      {
+        body: {
+          storeLocation: selectedLocation || '',
+          inventoryData: inventoryData,
+          storesData: storesData,
+          audioBase64: base64Audio,
+          audioMimeType: audioBlob.type,
+          cartItemCount: totalItems,
+        },
       }
-
-      await sendMessage(
-        { text: transcript },
-        {
-          body: {
-            storeLocation: selectedLocation || '',
-            inventoryData: inventoryData,
-            storesData: storesData,
-            audioBase64: base64Audio,
-            audioMimeType: audioBlob.type,
-            cartItemCount: totalItems,
-          },
-        }
-      );
-    };
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -601,6 +543,9 @@ export default function ChatModal({
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 128)}px`;
     }
   };
+
+  const suggestionChips =
+    pageContext === 'checkout' ? CHECKOUT_SUGGESTION_CHIPS : SHOPPING_SUGGESTION_CHIPS;
 
   if (!isOpen) return null;
 

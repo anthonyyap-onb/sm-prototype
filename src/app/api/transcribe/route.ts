@@ -4,15 +4,16 @@ import { generateText } from 'ai';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { audioBase64, audioMimeType } = await req.json();
+  const formData = await req.formData();
+  const audioFile = formData.get('audio') as File | null;
 
-  if (!audioBase64) {
+  if (!audioFile) {
     return Response.json({ transcript: '' }, { status: 400 });
   }
 
-  // Strip the data URL prefix (data:audio/webm;base64,XXX → XXX)
-  const base64Data = audioBase64.includes(',') ? audioBase64.split(',')[1] : audioBase64;
-  const mediaType = audioMimeType || 'audio/webm';
+  const arrayBuffer = await audioFile.arrayBuffer();
+  const base64Data = Buffer.from(arrayBuffer).toString('base64');
+  const mediaType = (audioFile.type || 'audio/webm') as `audio/${string}`;
 
   const { text } = await generateText({
     model: google('gemini-3.1-flash-lite'),

@@ -22,7 +22,6 @@ export async function POST(req: Request) {
     storesData,
     pageContext: rawPageContext,
     checkoutContext,
-  }: {
     audioBase64,
     audioMimeType,
     cartItemCount,
@@ -33,7 +32,6 @@ export async function POST(req: Request) {
     storesData?: { id: string; name: string; city: string }[];
     pageContext?: unknown;
     checkoutContext?: unknown;
-  } = await req.json();
     audioBase64?: string;
     audioMimeType?: string;
     cartItemCount?: number;
@@ -77,6 +75,15 @@ export async function POST(req: Request) {
     cartItemCount && cartItemCount > 0
       ? `\n\n⚠️ CART WARNING: The user currently has ${cartItemCount} item(s) in their cart. Changing the store will CLEAR their entire cart. You MUST send a confirmation message to the user BEFORE calling \`setStoreLocation\`. The confirmation must explicitly warn them that their cart will be cleared. Only call the tool after they explicitly agree (e.g., "yes", "ok", "go ahead", "sige", "oo"). If they say no or are hesitant, do NOT call the tool.`
       : '';
+
+  const currentPageContext: 'shopping' | 'checkout' =
+    rawPageContext === 'checkout' ? 'checkout' : 'shopping';
+
+  const formattedCheckoutContext = checkoutContext
+    ? JSON.stringify(checkoutContext, null, 2)
+    : 'N/A';
+
+  const toolAvailability = getChatToolAvailability(currentPageContext);
 
   const systemPrompt = `
 # ROLE & PERSONALITY

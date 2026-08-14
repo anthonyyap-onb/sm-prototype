@@ -11,6 +11,7 @@ import { usePromos } from '@/context/PromoContext';
 import { useStore } from '@/context/StoreContext';
 import { getStoreInventory } from '@/lib/inventory/storeInventory';
 import type { Store, StoreProducts } from '@/types';
+import MobileCheckoutView from '@/components/MobileCheckoutView';
 
 interface CheckoutPageClientProps {
   stores: Store[];
@@ -110,12 +111,19 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-surface-bright)]">
-      <TopNavBar
-        stores={stores}
-        selectedStoreId={selectedStoreId}
-        onStoreChange={setSelectedStoreId}
-      />
+    <>
+      {/* Mobile / Tablet layout — shown below lg (1024px) */}
+      <div className="lg:hidden">
+        <MobileCheckoutView isChatOpen={isChatOpen} />
+      </div>
+
+      {/* Desktop layout — shown at lg (1024px) and above */}
+      <div className="hidden lg:flex min-h-screen flex-col bg-[var(--color-surface-bright)]">
+        <TopNavBar
+          stores={stores}
+          selectedStoreId={selectedStoreId}
+          onStoreChange={setSelectedStoreId}
+        />
 
       <main
         className={`flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-300 ${
@@ -425,6 +433,9 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
         </div>
       </main>
 
+      </div>
+
+      {/* ChatFAB + ChatModal — rendered for all viewport sizes */}
       <ChatFAB onClick={() => setIsChatOpen((open) => !open)} isOpen={isChatOpen} />
       <ChatModal
         isOpen={isChatOpen}
@@ -435,6 +446,6 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
         storesData={stores}
         pageContext="checkout"
       />
-    </div>
+    </>
   );
 }

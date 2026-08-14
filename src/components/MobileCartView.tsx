@@ -11,7 +11,7 @@ export default function MobileCartView() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--color-surface)]">
-      <MobileTopAppBar />
+      <MobileTopAppBar backHref="/" />
 
       {items.length === 0 ? (
         <main className="flex-1 flex flex-col items-center justify-center gap-4 pt-16 px-4">

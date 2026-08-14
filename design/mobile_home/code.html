@@ -1,0 +1,285 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SM Markets - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#241a00",
+                        "promo-orange": "#FF8F1C",
+                        "on-background": "#191c1d",
+                        "outline-variant": "#c3c6d6",
+                        "outline": "#737685",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-secondary-container": "#6e5700",
+                        "inverse-primary": "#b4c5ff",
+                        "on-primary-fixed": "#00174b",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed": "#dbe1ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffafa7",
+                        "primary-container": "#0046be",
+                        "inverse-surface": "#2e3132",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-fixed": "#410002",
+                        "surface-white": "#FFFFFF",
+                        "border-subtle": "#e0e0e0",
+                        "on-primary-container": "#afc1ff",
+                        "secondary-container": "#fecb00",
+                        "surface-dim": "#d9dadb",
+                        "surface-tint": "#2155cc",
+                        "on-tertiary-fixed-variant": "#93000d",
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#a60010",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#f1c100",
+                        "secondary": "#745b00",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "background": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#584400",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-lowest": "#ffffff",
+                        "text-dark": "#1a1a1a",
+                        "tertiary-fixed": "#ffdad6",
+                        "primary": "#00328c",
+                        "on-surface": "#191c1d",
+                        "surface-container": "#edeeef",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#434654",
+                        "tertiary": "#7a0008",
+                        "surface": "#f8f9fa",
+                        "secondary-fixed": "#ffe08b",
+                        "on-primary-fixed-variant": "#003da9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "4px",
+                        "base": "8px",
+                        "gutter-mobile": "16px",
+                        "stack-lg": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "stack-md": "12px",
+                        "gutter-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "title-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-bold": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "price-display": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "price-display": ["18px", { "lineHeight": "24px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Hide scrollbar for category pills but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-sm min-h-screen pt-16 pb-20 overflow-x-hidden md:hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-primary dark:bg-primary font-headline-lg-mobile text-headline-lg-mobile fixed top-0 w-full z-50 shadow-md flex justify-between items-center px-margin-mobile h-16 w-full">
+<button aria-label="Menu" class="text-on-primary dark:text-on-primary hover:bg-primary-container/20 active:scale-95 transition-transform flex items-center justify-center p-2 -ml-2 rounded-full">
+<span aria-hidden="true" class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-primary dark:text-on-primary absolute left-1/2 -translate-x-1/2">
+            SM Markets
+        </span>
+<button aria-label="Search" class="text-on-primary dark:text-on-primary hover:bg-primary-container/20 active:scale-95 transition-transform flex items-center justify-center p-2 -mr-2 rounded-full">
+<span aria-hidden="true" class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col px-margin-mobile py-stack-md gap-stack-lg">
+<!-- Category Pills (Horizontal Scroll) -->
+<section aria-label="Categories" class="w-full -mx-margin-mobile px-margin-mobile overflow-x-auto no-scrollbar pb-2">
+<div class="flex gap-base w-max">
+<button class="bg-primary-container text-on-primary border-primary px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap shadow-[0_2px_4px_rgba(0,0,0,0.05)] flex items-center gap-2">
+<span class="material-symbols-outlined fill text-[18px]">set_meal</span>
+                    Fresh Meat &amp; Seafood
+                </button>
+<button class="bg-surface-white text-on-surface-variant border border-border-subtle px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">eco</span>
+                    Fruits &amp; Vegetables
+                </button>
+<button class="bg-surface-white text-on-surface-variant border border-border-subtle px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                    Pantry Staples
+                </button>
+<button class="bg-surface-white text-on-surface-variant border border-border-subtle px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">bakery_dining</span>
+                    Bakery
+                </button>
+<button class="bg-surface-white text-on-surface-variant border border-border-subtle px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">egg_alt</span>
+                    Dairy &amp; Eggs
+                </button>
+</div>
+</section>
+<!-- Product Grid -->
+<section aria-labelledby="category-title" class="flex flex-col gap-stack-md">
+<div class="flex justify-between items-end">
+<h2 class="font-title-md text-title-md text-primary" id="category-title">Fresh Meat &amp; Seafood</h2>
+<button class="font-label-bold text-label-bold text-primary-container flex items-center">
+                    See All <span class="material-symbols-outlined text-[16px] ml-1">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-stack-sm">
+<!-- Product Card 1 -->
+<article class="bg-surface-white border border-border-subtle rounded-lg flex flex-col overflow-hidden relative">
+<div class="absolute top-2 left-2 bg-promo-orange text-surface-white px-2 py-0.5 rounded font-label-bold text-[10px] uppercase tracking-wider z-10 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">Sale</div>
+<div class="aspect-square bg-surface-container-low relative w-full border-b border-border-subtle">
+<img class="object-cover w-full h-full absolute inset-0 mix-blend-multiply" data-alt="A top-down view of premium, fresh salmon fillets resting on a clean white butcher's tray. The lighting is bright and cool, simulating a modern supermarket display case, highlighting the rich orange color and delicate white marbling of the fish. The aesthetic is clean, professional, and appetizing, fitting a high-end corporate retail grocery store setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIvAI_wQyhF3pSHxIVf9jfjhwqy2rf0dXOnlrtPld43FCQoLajWAVNNYOk5qml2ivH8eirGy7xsQ3l-XVnDioyLOXKudnEL0ty1v6-m9QT8kc9bBheDG7R-tEYsWUXyDiEAq-b6huxJoUMlpMqpVYcsPvCdQsFExuyUV5I51M4hlEzeOccYAHGzoHcHEx3_uT0qTIGGAAKGhFNMaI7gSkkEecE9RICVvUKx8oeYG6H7g1AykM048RkEw">
+</div>
+<div class="p-base flex flex-col flex-1 justify-between gap-stack-sm">
+<div class="flex flex-col gap-1">
+<h3 class="font-body-sm text-body-sm text-on-surface line-clamp-2 leading-tight">Norwegian Atlantic Salmon Fillet, Fresh</h3>
+<span class="font-label-bold text-label-bold text-outline uppercase tracking-wider text-[10px]">1kg • Seafood</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto pt-2 border-t border-border-subtle border-dashed">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display text-price-display text-primary">₱850.00</span>
+<span class="text-[12px] text-outline line-through">₱920.00</span>
+</div>
+<button aria-label="Add to cart" class="bg-secondary-container hover:bg-[#ebd55b] text-primary w-full py-1.5 rounded font-label-bold text-label-bold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</article>
+<!-- Product Card 2 -->
+<article class="bg-surface-white border border-border-subtle rounded-lg flex flex-col overflow-hidden">
+<div class="aspect-square bg-surface-container-low relative w-full border-b border-border-subtle">
+<img class="object-cover w-full h-full absolute inset-0 mix-blend-multiply" data-alt="A neat stack of premium lean ground beef packed in a clear, shallow rectangular plastic tray, characteristic of modern supermarket packaging. The bright, high-key white lighting emphasizes the rich red color and freshness of the meat against the bright white background of the container. The overall look is structured, hygienic, and highly organized." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT-lvnsiFoTLxmtqwe9WAEoYabg8Y3u-bGxgowSsPRwfb8dkINUK1B_RLQAwbSiipX0wC-evWIL2P-cxJIiou9Sxk5RqcHWIqBSflk4SVpzGwkC9GYFLrOZte0LG4HuppkcbnC4bWIRwV3G09q2SWLongpxEkm7AcfcNdU7lVT1MFQrfTodndUgEwM59Elamggl0wtbZKD2YPg74DBp9jdWVVGBGYTxAtw28BdEc7O6rjX1lCcbxlgug">
+</div>
+<div class="p-base flex flex-col flex-1 justify-between gap-stack-sm">
+<div class="flex flex-col gap-1">
+<h3 class="font-body-sm text-body-sm text-on-surface line-clamp-2 leading-tight">Premium Lean Ground Beef, 90% Lean</h3>
+<span class="font-label-bold text-label-bold text-outline uppercase tracking-wider text-[10px]">500g • Meat</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto pt-2 border-t border-border-subtle border-dashed">
+<span class="font-price-display text-price-display text-primary">₱320.50</span>
+<button aria-label="Add to cart" class="bg-secondary-container hover:bg-[#ebd55b] text-primary w-full py-1.5 rounded font-label-bold text-label-bold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</article>
+<!-- Product Card 3 -->
+<article class="bg-surface-white border border-border-subtle rounded-lg flex flex-col overflow-hidden">
+<div class="aspect-square bg-surface-container-low relative w-full border-b border-border-subtle">
+<img class="object-cover w-full h-full absolute inset-0 mix-blend-multiply" data-alt="Several plump, fresh chicken breasts laid out symmetrically on a white styrofoam tray wrapped in clear film. The lighting is stark and objective, typical of a well-lit commercial grocery aisle, ensuring the product looks clean and safe. The overall composition is grid-like and functional, focusing purely on the product's quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl6ymR_IB-J-PdvLm1wDpHPaRGRyLpqQwyb9YP3mWkgVUqXb5hr5MaCZnw7ZdBCJIPZGPZgwg6PSzPmrIRkoSf66SYZ0cDX3vGyJkXQnQ4UdhSyexyEeCLhG_KeXNOjWUwkSiJ_wjCdc67hNXxuWiouMGYe1_WPepGeo_PDhFJlpNVMU_48abWNEOOirrCXCoaySZn7yslORtp_Hp9KPzLh1RapXrbmihLZyLQficPCKdnMe93VyedNQ">
+</div>
+<div class="p-base flex flex-col flex-1 justify-between gap-stack-sm">
+<div class="flex flex-col gap-1">
+<h3 class="font-body-sm text-body-sm text-on-surface line-clamp-2 leading-tight">Fresh Boneless Skinless Chicken Breast</h3>
+<span class="font-label-bold text-label-bold text-outline uppercase tracking-wider text-[10px]">1kg • Poultry</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto pt-2 border-t border-border-subtle border-dashed">
+<span class="font-price-display text-price-display text-primary">₱280.00</span>
+<button aria-label="Add to cart" class="bg-secondary-container hover:bg-[#ebd55b] text-primary w-full py-1.5 rounded font-label-bold text-label-bold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</article>
+<!-- Product Card 4 -->
+<article class="bg-surface-white border border-border-subtle rounded-lg flex flex-col overflow-hidden">
+<div class="aspect-square bg-surface-container-low relative w-full border-b border-border-subtle">
+<img class="object-cover w-full h-full absolute inset-0 mix-blend-multiply" data-alt="A close-up shot of large, raw tiger prawns arranged neatly on a bed of crushed ice within a clean, modern white display case. The bright, crisp lighting reflects off the wet ice and highlights the distinct grey and blue banding on the prawns. The aesthetic is extremely fresh, clinical, and typical of a high-end corporate retail environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn8V63Yvy5DdxRrNjn7dtSi1MbY1trlH5MRBS08WHSz0Jb6baur-DE95wE6Wh1pXNcfpGdIOnH9H5TvUzzF5GgFKjKW7A32BcYUOVTou0FmHRAY4cCszn0Jjmi5tz_y3PIRleqwIwoLwZ7WV02jYDOkJuhsTLcAlIb6yhluAhHixS1BeEinMP0yM5cJbhC5dbNXQDvZb2mTEH6zvi_FnHrZ2UEGA-DoEPXkYX9eJAI9K5DXSrlWMpWtQ">
+</div>
+<div class="p-base flex flex-col flex-1 justify-between gap-stack-sm">
+<div class="flex flex-col gap-1">
+<h3 class="font-body-sm text-body-sm text-on-surface line-clamp-2 leading-tight">Jumbo Tiger Prawns, Frozen</h3>
+<span class="font-label-bold text-label-bold text-outline uppercase tracking-wider text-[10px]">500g • Seafood</span>
+</div>
+<div class="flex flex-col gap-2 mt-auto pt-2 border-t border-border-subtle border-dashed">
+<span class="font-price-display text-price-display text-primary">₱550.00</span>
+<button aria-label="Add to cart" class="bg-secondary-container hover:bg-[#ebd55b] text-primary w-full py-1.5 rounded font-label-bold text-label-bold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-white dark:bg-surface-dim fixed bottom-0 w-full z-50 h-16 border-t border-border-subtle flex justify-around items-center px-2">
+<!-- Active Tab: Home -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-primary-fixed/30 rounded-full px-4 py-1 hover:bg-surface-container-low active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined fill">home</span>
+<span class="font-label-bold text-label-bold mt-0.5">Home</span>
+</a>
+<!-- Inactive Tab: Categories -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low active:scale-90 transition-all duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-bold text-label-bold mt-0.5">Categories</span>
+</a>
+<!-- Inactive Tab: Deals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low active:scale-90 transition-all duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold mt-0.5">Cart</span>
+</a>
+<!-- Inactive Tab: Account -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low active:scale-90 transition-all duration-200 px-4 py-1 rounded-full" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold mt-0.5">Account</span>
+</a>
+</nav>
+
+
+</body></html>

@@ -26,3 +26,10 @@ export function middleware(req: NextRequest) {
     },
   });
 }
+
+export const config = {
+  matcher: [
+    // ignore paths starting with /api
+    '/((?!api).*)',
+  ],
+};

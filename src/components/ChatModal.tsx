@@ -606,7 +606,7 @@ export default function ChatModal({
         role="dialog"
         aria-modal="true"
         aria-label="SM Markets Assistant"
-        className={`fixed top-16 left-0 w-full max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)] ${
+        className={`fixed top-16 left-0 w-full lg:max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)] ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

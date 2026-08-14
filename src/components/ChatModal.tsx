@@ -595,7 +595,7 @@ export default function ChatModal({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-x-0 bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+        className={`fixed inset-x-0 bottom-16 lg:bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         style={{ top: '4rem' }}
@@ -606,10 +606,9 @@ export default function ChatModal({
         role="dialog"
         aria-modal="true"
         aria-label="SM Markets Assistant"
-        className={`fixed top-16 left-0 w-full max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out ${
+        className={`fixed top-16 left-0 w-full lg:max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)] ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ height: 'calc(100vh - 4rem)' }}
       >
         {/* Header */}
         <div className="bg-[var(--color-primary)] text-white p-4 flex justify-between items-center shrink-0 shadow-sm">

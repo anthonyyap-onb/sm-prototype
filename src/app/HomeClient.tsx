@@ -9,6 +9,7 @@ import ChatModal from '@/components/ChatModal';
 import ChatFAB from '@/components/ChatFAB';
 import { useStore } from '@/context/StoreContext';
 import { getStoreInventory } from '@/lib/inventory/storeInventory';
+import MobileHomeLayout from '@/components/MobileHomeLayout';
 
 interface HomeClientProps {
   stores: Store[];
@@ -61,64 +62,73 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
     : mergeAllProducts(allStoreProducts);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <TopNavBar
-        stores={stores}
-        selectedStoreId={selectedStoreId}
-        onStoreChange={setSelectedStoreId}
-      />
-
-      <div className="flex flex-1 overflow-hidden">
-        <SideNavBar />
-
-        {/* Main content — blurs when chat is open */}
-        <main
-          className={`flex-1 md:ml-64 p-10 overflow-y-auto bg-[var(--color-surface-bright)] transition-all duration-300 ${
-            isChatOpen ? 'blur-sm pointer-events-none select-none' : ''
-          }`}
-        >
-          <ProductGrid
-            title="Featured Products"
-            products={storeData.featuredProducts}
-            icon="star"
-            viewAllHref="#"
-          />
-          <ProductGrid
-            title="SM Price Drop"
-            products={storeData.priceDrop}
-            icon="sell"
-            viewAllHref="#"
-          />
-          <ProductGrid
-            title="Fresh Meat and Seafood"
-            products={storeData.freshMeatAndSeafood}
-            icon="restaurant"
-            viewAllHref="#"
-          />
-          <ProductGrid
-            title="Pantry"
-            products={storeData.pantry}
-            icon="shopping_basket"
-            viewAllHref="#"
-          />
-          <ProductGrid
-            title="Fresh Produce"
-            products={storeData.freshProduce}
-            icon="eco"
-            viewAllHref="#"
-          />
-        </main>
+    <>
+      {/* Mobile / Tablet layout — shown below lg (1024px) */}
+      <div className="lg:hidden">
+        <MobileHomeLayout storeData={storeData} isChatOpen={isChatOpen} />
       </div>
 
+      {/* Desktop layout — shown at lg (1024px) and above */}
+      <div className="hidden lg:flex flex-col min-h-screen">
+        <TopNavBar
+          stores={stores}
+          selectedStoreId={selectedStoreId}
+          onStoreChange={setSelectedStoreId}
+        />
+
+        <div className="flex flex-1 overflow-hidden">
+          <SideNavBar />
+
+          {/* Main content — blurs when chat is open */}
+          <main
+            className={`flex-1 md:ml-64 p-10 overflow-y-auto bg-[var(--color-surface-bright)] transition-all duration-300 ${
+              isChatOpen ? 'blur-sm pointer-events-none select-none' : ''
+            }`}
+          >
+            <ProductGrid
+              title="Featured Products"
+              products={storeData.featuredProducts}
+              icon="star"
+              viewAllHref="#"
+            />
+            <ProductGrid
+              title="SM Price Drop"
+              products={storeData.priceDrop}
+              icon="sell"
+              viewAllHref="#"
+            />
+            <ProductGrid
+              title="Fresh Meat and Seafood"
+              products={storeData.freshMeatAndSeafood}
+              icon="restaurant"
+              viewAllHref="#"
+            />
+            <ProductGrid
+              title="Pantry"
+              products={storeData.pantry}
+              icon="shopping_basket"
+              viewAllHref="#"
+            />
+            <ProductGrid
+              title="Fresh Produce"
+              products={storeData.freshProduce}
+              icon="eco"
+              viewAllHref="#"
+            />
+          </main>
+        </div>
+      </div>
+
+      {/* ChatFAB + ChatModal — rendered for all viewport sizes */}
       <ChatFAB onClick={() => setIsChatOpen((v) => !v)} isOpen={isChatOpen} />
-      <ChatModal 
-        isOpen={isChatOpen} 
+      <ChatModal
+        isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
-        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined} 
+        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined}
         inventoryData={currentInventory}
         onStoreChange={setSelectedStoreId}
         storesData={stores}
       />
-    </div>
+    </>
   );
 }

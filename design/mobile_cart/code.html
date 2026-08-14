@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SM Markets - Cart (Mobile)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2e3132",
+                    "secondary-container": "#fecb00",
+                    "on-secondary-container": "#6e5700",
+                    "text-dark": "#1a1a1a",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-container": "#a60010",
+                    "surface-container-high": "#e7e8e9",
+                    "tertiary": "#7a0008",
+                    "surface": "#f8f9fa",
+                    "surface-tint": "#2155cc",
+                    "on-tertiary-fixed-variant": "#93000d",
+                    "surface-dim": "#d9dadb",
+                    "outline-variant": "#c3c6d6",
+                    "primary": "#00328c",
+                    "surface-variant": "#e1e3e4",
+                    "surface-bright": "#f8f9fa",
+                    "on-surface": "#191c1d",
+                    "surface-white": "#FFFFFF",
+                    "tertiary-fixed-dim": "#ffb4ab",
+                    "promo-orange": "#FF8F1C",
+                    "on-primary-container": "#afc1ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-secondary-fixed-variant": "#584400",
+                    "error": "#ba1a1a",
+                    "border-subtle": "#e0e0e0",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#00174b",
+                    "on-tertiary-fixed": "#410002",
+                    "on-background": "#191c1d",
+                    "surface-container-low": "#f3f4f5",
+                    "surface-container": "#edeeef",
+                    "on-tertiary-container": "#ffafa7",
+                    "outline": "#737685",
+                    "on-primary": "#ffffff",
+                    "secondary": "#745b00",
+                    "on-primary-fixed-variant": "#003da9",
+                    "secondary-fixed-dim": "#f1c100",
+                    "inverse-on-surface": "#f0f1f2",
+                    "primary-container": "#0046be",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#ffe08b",
+                    "tertiary-fixed": "#ffdad6",
+                    "on-surface-variant": "#434654",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#241a00",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "background": "#f8f9fa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "container-max": "1280px",
+                    "gutter-desktop": "24px",
+                    "base": "8px",
+                    "margin-desktop": "40px",
+                    "gutter-mobile": "16px",
+                    "stack-md": "12px",
+                    "margin-mobile": "16px",
+                    "stack-lg": "24px"
+            },
+            "fontFamily": {
+                    "body-sm": [
+                            "Hanken Grotesk"
+                    ],
+                    "title-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "price-display": [
+                            "Hanken Grotesk"
+                    ],
+                    "display-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "label-bold": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg-mobile": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-lg": [
+                            "Hanken Grotesk"
+                    ]
+            },
+            "fontSize": {
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "title-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "price-display": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-bold": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+        }
+        /* Mobile Specific Overrides to ensure viewport fitting */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full flex flex-col relative md:hidden">
+<!-- Top Navigation (Mobile Version based on Shared JSON intent for transactional page) -->
+<!-- Suppressing side nav and bottom nav as this is a transactional page (Cart) -->
+<header class="bg-primary flex justify-between items-center w-full h-16 px-margin-mobile z-50 shadow-md sticky top-0 shrink-0 border-b border-white/10">
+<button aria-label="Go back" class="text-white hover:bg-primary-container p-2 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="text-headline-lg-mobile font-headline-lg-mobile font-bold text-white text-center flex-1">
+            SM MARKETS
+        </div>
+<div class="relative flex items-center justify-center p-2 text-white">
+<span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+<span class="absolute top-1 right-0 bg-promo-orange text-white text-[10px] font-bold px-[5px] py-[1px] rounded-full">4</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto w-full pb-[180px] pt-stack-md px-margin-mobile flex flex-col gap-stack-md">
+<!-- Page Title -->
+<div class="flex justify-between items-end pb-stack-sm border-b border-border-subtle">
+<h1 class="text-title-md font-title-md text-primary">Your Cart</h1>
+<span class="text-body-sm font-body-sm text-on-surface-variant">4 items</span>
+</div>
+<!-- Cart Items List -->
+<div class="flex flex-col gap-stack-md">
+<!-- Item 1 -->
+<div class="bg-surface-white rounded-lg border border-border-subtle p-stack-md flex gap-stack-md shadow-sm">
+<!-- Image -->
+<div class="w-[80px] h-[80px] shrink-0 border border-border-subtle rounded-md overflow-hidden bg-surface flex items-center justify-center">
+<img alt="Saba Pink Salmon" class="w-full h-full object-contain p-1" data-alt="A clean, studio-lit product photograph of a can of Saba Pink Salmon. The can is primarily light blue with pink accents, sitting on a pure white surface. High contrast lighting highlights the label details, perfect for modern e-commerce corporate retail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAO7rV00xJQy_ai05wC-dSk_9oQ5sGUO_PyMayYIDWNd5Ojpgq3cCeeljqdUX8fTRY-RmKdfVBzpc8CnCXtwrhTbP2pM4E62K2T3JH7NfxhOA8kkgoZkapzCZ2NuaJJEWy3vKCmVeuHGDSx5DhTYaFdrAUPNfNkzAF7QoWOEGJjlxq3aUJtkR7iB_opwqPMx7V6r0QMwRfJeON7uVjzA7-xMBxAuKTlRoPCNY67zntQXRthK-uIJXEnAg"/>
+</div>
+<!-- Details -->
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-body-sm font-body-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1">Saba Pink Salmon 14.75 oz</h3>
+<p class="text-[12px] text-primary-container flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> In Stock
+                        </p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<div class="text-price-display font-price-display text-primary">₱ 225.00</div>
+<!-- Quantity Control -->
+<div class="flex items-center border border-border-subtle rounded-md h-[32px]">
+<button aria-label="Decrease quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-[32px] h-full text-center text-body-sm font-body-sm border-0 p-0 focus:ring-0 bg-transparent text-on-surface" readonly="" type="text" value="1"/>
+<button aria-label="Increase quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-white rounded-lg border border-border-subtle p-stack-md flex gap-stack-md shadow-sm">
+<div class="w-[80px] h-[80px] shrink-0 border border-border-subtle rounded-md overflow-hidden bg-surface flex items-center justify-center">
+<img alt="Magnolia Chicken Breast Fillet" class="w-full h-full object-contain p-1" data-alt="A clean, studio-lit product photograph of Magnolia Chicken Breast Fillet in its transparent plastic packaging. The packaging has a blue and red Magnolia logo. It rests on a pristine white background with soft, diffused e-commerce lighting to emphasize freshness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDPxQMrzRaKP5c9iIT5F61bCSOK9rtCb3U19ttCvd_8qcd0hPGpzhW-RdlqKQRI70fqs3RwBrr6ONO1T8rP3Oc_6-00PsEGxHM1cQ2BNwyGiYmlvdtxRRtEaWsIJ9e3YHNfsOBEqSOKeuMWWV0METjcupMWsdy1en0N1fr3J5YIMu0Ibclz5-8YYR5oU2iYqSpwThiCLPpWUYOI1VcZyPG2tCkYZj2HaQX9__DAFDWfKkqq_e49GkquA"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-body-sm font-body-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1">Magnolia Chicken Breast Fillet 1kg</h3>
+<p class="text-[12px] text-primary-container flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> In Stock
+                        </p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<div class="text-price-display font-price-display text-primary">₱ 280.00</div>
+<div class="flex items-center border border-border-subtle rounded-md h-[32px]">
+<button aria-label="Decrease quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-[32px] h-full text-center text-body-sm font-body-sm border-0 p-0 focus:ring-0 bg-transparent text-on-surface" readonly="" type="text" value="2"/>
+<button aria-label="Increase quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-white rounded-lg border border-border-subtle p-stack-md flex gap-stack-md shadow-sm">
+<div class="w-[80px] h-[80px] shrink-0 border border-border-subtle rounded-md overflow-hidden bg-surface flex items-center justify-center">
+<img alt="Axe Deodorant Dark Temptation" class="w-full h-full object-contain p-1" data-alt="A sharp, professional product shot of Axe Deodorant Body Spray, Dark Temptation scent. The black aerosol can with subtle brown/gold accents stands vertically against an isolated white background. High fidelity lighting ensures the brand text is highly legible for an online retail catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt81KK3dkDZ9Y1DA7eLYkW6g2kLNmNnKGP86yVlb_RizvHfpVdyNOL_LX9jIL3V8gyuWaAdoMsBaliD7MsFr-vI_Ha3jARup2o1pU623T4L8h523MDSf7puQkZG580hgVp3SZXnt7lcyJb0aZfDJU9eFOa0zT0gwue1WzqJxjj-YYbhR_IFiN1YCPEqiewpn9dYcWbHMQPvS_IaTkCq5WVa4VcMr05jrGVMBh96BwUufTtMnquS5QLIQ"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h3 class="text-body-sm font-body-sm font-bold text-on-surface line-clamp-2 leading-tight mb-1">Axe Deodorant Body Spray Dark Temptation 150ml</h3>
+<p class="text-[12px] text-promo-orange flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span> Low Stock
+                        </p>
+</div>
+<div class="flex justify-between items-end mt-2">
+<div class="text-price-display font-price-display text-primary">₱ 215.00</div>
+<div class="flex items-center border border-border-subtle rounded-md h-[32px]">
+<button aria-label="Decrease quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-[32px] h-full text-center text-body-sm font-body-sm border-0 p-0 focus:ring-0 bg-transparent text-on-surface" readonly="" type="text" value="1"/>
+<button aria-label="Increase quantity" class="w-[32px] h-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Promo Code Section -->
+<div class="mt-4 flex gap-2">
+<input class="flex-1 bg-surface-white border border-border-subtle rounded-md px-3 py-2 text-body-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary transition-colors outline-none" placeholder="Enter Promo Code" type="text"/>
+<button class="bg-surface-container-high text-on-surface font-bold text-body-sm font-body-sm px-4 py-2 rounded-md hover:bg-surface-variant transition-colors border border-border-subtle">Apply</button>
+</div>
+</main>
+<!-- Sticky Bottom Order Summary & Checkout -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-white border-t border-border-subtle shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-40 px-margin-mobile pt-stack-md pb-stack-lg flex flex-col gap-stack-md">
+<!-- Order Details Snippet -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-body-sm font-body-sm text-on-surface-variant">
+<span>Subtotal (4 items)</span>
+<span>₱ 1,000.00</span>
+</div>
+<div class="flex justify-between text-body-sm font-body-sm text-on-surface-variant">
+<span>Delivery Fee</span>
+<span>Calculated at checkout</span>
+</div>
+<div class="flex justify-between items-center mt-1 pt-2 border-t border-border-subtle">
+<div class="flex flex-col">
+<span class="text-title-md font-title-md font-bold text-primary">Total</span>
+<span class="text-[10px] text-on-surface-variant">Includes 12% VAT</span>
+</div>
+<span class="text-headline-lg-mobile font-headline-lg-mobile font-bold text-primary">₱ 1,000.00</span>
+</div>
+</div>
+<!-- Checkout Button -->
+<button class="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed transition-colors h-[48px] rounded-md flex items-center justify-center font-bold text-title-md font-title-md shadow-sm relative overflow-hidden group">
+<span class="relative z-10 flex items-center gap-2">
+                Checkout <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</span>
+<!-- Subtle hover effect layer -->
+<div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+</button>
+</div>
+</body></html>

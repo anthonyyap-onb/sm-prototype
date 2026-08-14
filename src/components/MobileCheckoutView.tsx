@@ -94,7 +94,7 @@ export default function MobileCheckoutView({ isChatOpen = false }: { isChatOpen?
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--color-surface-bright)]">
-      <MobileTopAppBar backHref="/" />
+      <MobileTopAppBar backHref="/cart" />
 
       {items.length === 0 ? (
         <main className="flex-1 flex flex-col items-center justify-center gap-4 pt-16 px-4">

@@ -20,6 +20,7 @@ export type LiveSessionStatus = 'idle' | 'connecting' | 'active' | 'error';
 export interface UseLiveVoiceSessionReturn {
   status: LiveSessionStatus;
   errorMessage: string | null;
+  isInterrupted: boolean;
   startSession: (
     context: LiveSystemPromptContext,
     dependencies: ChatToolDependencies
@@ -30,6 +31,7 @@ export interface UseLiveVoiceSessionReturn {
 export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
   const [status, setStatus] = useState<LiveSessionStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isInterrupted, setIsInterrupted] = useState(false);
 
   const sessionRef = useRef<Session | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -42,6 +44,7 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
 
   const playAudioChunk = useCallback((base64PcmData: string) => {
     if (!audioCtxRef.current) return;
+    setIsInterrupted(false);
 
     const binaryString = atob(base64PcmData);
     const bytes = new Uint8Array(binaryString.length);
@@ -179,6 +182,12 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
                 }
               }
 
+              // Stop playback and flag the interruption
+              if (msg.serverContent?.interrupted) {
+                stopAudioPlayback();
+                setIsInterrupted(true);
+              }
+
               // Handle tool calls
               if (msg.toolCall?.functionCalls && msg.toolCall.functionCalls.length > 0) {
                 const responses = await Promise.all(
@@ -238,7 +247,7 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
         }
       }
     },
-    [playAudioChunk, startMicrophone, stopMicrophoneAndAudio]
+    [playAudioChunk, startMicrophone, stopMicrophoneAndAudio, stopAudioPlayback]
   );
 
   const endSession = useCallback(async () => {
@@ -256,5 +265,5 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
     setErrorMessage(null);
   }, [stopMicrophoneAndAudio]);
 
-  return { status, errorMessage, startSession, endSession };
+  return { status, errorMessage, isInterrupted, startSession, endSession };
 }

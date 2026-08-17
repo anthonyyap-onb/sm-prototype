@@ -6,12 +6,14 @@ import type { LiveSessionStatus } from '@/hooks/useLiveVoiceSession';
 interface LiveVoiceOverlayProps {
   status: LiveSessionStatus;
   errorMessage: string | null;
+  isInterrupted: boolean;
   onEnd: () => void;
 }
 
 export default function LiveVoiceOverlay({
   status,
   errorMessage,
+  isInterrupted,
   onEnd,
 }: LiveVoiceOverlayProps) {
   return (
@@ -51,7 +53,13 @@ export default function LiveVoiceOverlay({
         </p>
         {status === 'active' && (
           <p className="text-sm text-[var(--color-outline)]">
-            Speak naturally — the assistant is listening
+            {isInterrupted ? (
+              <span className="text-[var(--color-primary)] font-medium animate-pulse">
+                Listening…
+              </span>
+            ) : (
+              'Speak naturally — the assistant is listening'
+            )}
           </p>
         )}
         {errorMessage && (

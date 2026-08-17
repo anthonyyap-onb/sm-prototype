@@ -329,6 +329,7 @@ export default function ChatModal({
   const {
     status: liveStatus,
     errorMessage: liveErrorMessage,
+    isInterrupted: liveIsInterrupted,
     startSession,
     endSession,
   } = useLiveVoiceSession();
@@ -1073,6 +1074,7 @@ export default function ChatModal({
           <LiveVoiceOverlay
             status={liveStatus}
             errorMessage={liveErrorMessage}
+            isInterrupted={liveIsInterrupted}
             onEnd={endSession}
           />
         ) : (

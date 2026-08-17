@@ -36,6 +36,13 @@ export async function POST(req: Request) {
               parts: [{ text: systemPrompt }],
             },
             tools: [{ functionDeclarations: toolDeclarations }],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: 'Aoede' // e.g., 'Puck', 'Kore', 'Charon', 'Aoede'
+                }
+              }
+            }
           },
         },
       },

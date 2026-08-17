@@ -4,6 +4,8 @@ import { useCallback, useRef, useState } from 'react';
 import {
   GoogleGenAI,
   Modality,
+  StartSensitivity,
+  EndSensitivity,
   type Session,
   type LiveServerMessage,
 } from '@google/genai/web';
@@ -165,6 +167,14 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
               parts: [{ text: systemPrompt }],
             },
             tools: [{ functionDeclarations: toolDeclarations }],
+            realtimeInputConfig: {
+              automaticActivityDetection: {
+                startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_LOW,
+                endOfSpeechSensitivity: EndSensitivity.END_SENSITIVITY_LOW,
+                prefixPaddingMs: 20,
+                silenceDurationMs: 100,
+              },
+            },
           },
           callbacks: {
             onopen: () => {

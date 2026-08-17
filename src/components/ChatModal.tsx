@@ -31,6 +31,8 @@ import {
   shouldShowCheckoutSuggestionChips,
   shouldShowMessageSuggestionChips,
 } from '@/lib/chat/chatPresentation';
+import { useLiveVoiceSession } from '@/hooks/useLiveVoiceSession';
+import LiveVoiceOverlay from './LiveVoiceOverlay';
 
 
 function InlineMarkdown({ text }: { text: string }) {
@@ -323,6 +325,53 @@ export default function ChatModal({
 
   // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
   addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+
+  const {
+    status: liveStatus,
+    errorMessage: liveErrorMessage,
+    startSession,
+    endSession,
+  } = useLiveVoiceSession();
+
+  const isLiveActive = liveStatus === 'active' || liveStatus === 'connecting';
+
+  const handleStartLiveSession = useCallback(async () => {
+    await startSession(
+      {
+        storeLocation: selectedLocation,
+        inventoryData,
+        storesData,
+        pageContext,
+        cartItemCount: totalItems,
+      },
+      {
+        inventory: inventoryRef.current,
+        addToCart,
+        addToolOutput: (output) => addToolOutputRef.current?.(output),
+        markStoreChangeAsToolTriggered: () => {
+          llmTriggeredStoreChangeRef.current = true;
+        },
+        changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
+        clearCart: () => clearCartRef.current(),
+        fetchPromos: () => promosRef.current.evaluations,
+        applyPromos: (ids) => promosRef.current.applyPromos(ids),
+        navigateToCheckout: () => router.push('/checkout'),
+        removeItem,
+        setItemQuantity,
+      }
+    );
+  }, [
+    startSession,
+    selectedLocation,
+    inventoryData,
+    storesData,
+    pageContext,
+    totalItems,
+    addToCart,
+    removeItem,
+    setItemQuantity,
+    router,
+  ]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -1020,6 +1069,14 @@ export default function ChatModal({
           <div ref={messagesEndRef} />
         </div>
 
+        {isLiveActive || liveStatus === 'error' ? (
+          <LiveVoiceOverlay
+            status={liveStatus}
+            errorMessage={liveErrorMessage}
+            onEnd={endSession}
+          />
+        ) : (
+          <>
         {/* Speaking indicator */}
         {isSpeaking && (
           <div className="bg-[var(--color-primary)]/10 border-t border-[var(--color-primary)]/20 px-4 py-2 flex items-center justify-between shrink-0">
@@ -1073,6 +1130,15 @@ export default function ChatModal({
             </button>
             <button
               type="button"
+              aria-label="Start live voice session"
+              onClick={handleStartLiveSession}
+              disabled={isLoading || isRecording || isTranscribing}
+              className="p-2 rounded-full flex items-center justify-center mb-0.5 transition-colors bg-gray-200 hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-sm">graphic_eq</span>
+            </button>
+            <button
+              type="button"
               className={`p-2 rounded-full flex items-center justify-center mb-0.5 mr-0.5 transition-colors ${
                 isRecording
                   ? 'bg-red-500 text-white animate-pulse cursor-pointer'
@@ -1098,6 +1164,8 @@ export default function ChatModal({
             </span>
           </div>
         </div>
+          </>
+        )}
       </div>
     </>
   );

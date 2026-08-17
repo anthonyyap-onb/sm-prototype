@@ -49,13 +49,20 @@ export default function MobileCartView() {
                 >
                   {/* Product image */}
                   <div className="w-20 h-20 shrink-0 border border-[var(--color-border-subtle)] rounded-md overflow-hidden bg-[var(--color-surface)] flex items-center justify-center relative">
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-contain p-1"
-                      sizes="80px"
-                    />
+                    {product.imageUrl ? (
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        fill
+                        className="object-contain p-1"
+                        sizes="80px"
+                      />
+                    ) : (
+                      // Fallback placeholder that respects your layout
+                      <div className="absolute inset-0 bg-gray-100 p-1 flex items-center justify-center text-xs text-gray-400">
+                        No Image
+                      </div>
+                    )}
                   </div>
 
                   {/* Details */}

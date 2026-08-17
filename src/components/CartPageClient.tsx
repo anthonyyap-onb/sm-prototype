@@ -70,13 +70,20 @@ export default function CartPageClient({ stores }: CartPageClientProps) {
                         >
                           {/* Product image */}
                           <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white rounded-md flex items-center justify-center p-2 border border-[var(--color-border-subtle)] relative">
-                            <Image
-                              src={product.imageUrl}
-                              alt={product.name}
-                              fill
-                              className="object-contain p-2"
-                              sizes="128px"
-                            />
+                            {product.imageUrl ? (
+                              <Image
+                                src={product.imageUrl}
+                                alt={product.name}
+                                fill
+                                className="object-contain p-1"
+                                sizes="80px"
+                              />
+                            ) : (
+                              // Fallback placeholder that respects your layout
+                              <div className="absolute inset-0 bg-gray-100 p-1 flex items-center justify-center text-xs text-gray-400">
+                                No Image
+                              </div>
+                            )}
                           </div>
 
                           {/* Product info */}

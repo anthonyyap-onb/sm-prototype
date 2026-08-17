@@ -36,6 +36,8 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const nextStartTimeRef = useRef<number>(0);
+  // Prevents onclose from overwriting 'error' status when onerror fired first
+  const erroredRef = useRef(false);
 
   const playAudioChunk = useCallback((base64PcmData: string) => {
     if (!audioCtxRef.current) return;
@@ -137,7 +139,7 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
         const toolDeclarations = getLiveToolDeclarations(context.pageContext);
 
         const session = await ai.live.connect({
-          model: 'models/gemini-2.0-flash-live-001',
+          model: 'models/gemini-3.1-flash-live-preview',
           config: {
             responseModalities: [Modality.AUDIO],
             systemInstruction: {
@@ -147,6 +149,8 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
           },
           callbacks: {
             onopen: () => {
+              console.log('[LiveSession] onopen — session active');
+              erroredRef.current = false;
               setStatus('active');
             },
             onmessage: async (msg: LiveServerMessage) => {
@@ -170,15 +174,20 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
               }
             },
             onerror: (err) => {
-              console.error('Live session error:', err);
+              console.error('[LiveSession] onerror:', err);
+              erroredRef.current = true;
               setErrorMessage('Connection error. Please try again.');
               setStatus('error');
               stopMicrophoneAndAudio();
             },
             onclose: () => {
+              console.log('[LiveSession] onclose — errored:', erroredRef.current);
               stopMicrophoneAndAudio();
               sessionRef.current = null;
-              setStatus('idle');
+              // Don't overwrite 'error' status if onerror already fired
+              if (!erroredRef.current) {
+                setStatus('idle');
+              }
             },
           },
         });
@@ -197,16 +206,23 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
           turnComplete: true,
         });
       } catch (err) {
-        console.error('Failed to start live session:', err);
+        console.error('[LiveSession] startSession failed:', err);
+        erroredRef.current = true;
         setErrorMessage(err instanceof Error ? err.message : 'Failed to connect.');
         setStatus('error');
         stopMicrophoneAndAudio();
+        // Close session if it was already opened before the error
+        if (sessionRef.current) {
+          try { await sessionRef.current.close(); } catch { /* ignore */ }
+          sessionRef.current = null;
+        }
       }
     },
     [playAudioChunk, startMicrophone, stopMicrophoneAndAudio]
   );
 
   const endSession = useCallback(async () => {
+    erroredRef.current = false;
     if (sessionRef.current) {
       try {
         await sessionRef.current.close();

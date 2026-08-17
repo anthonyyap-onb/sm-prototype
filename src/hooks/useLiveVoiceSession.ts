@@ -195,12 +195,16 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
         sessionRef.current = session;
         await startMicrophone(session);
 
-        // Trigger initial greeting
+        // Trigger initial greeting — exact wording matches the text-chat welcome message
+        const greetingInstruction = context.storeLocation
+          ? `Say exactly this greeting to the user: "Hello! I am your SM Markets Assistant. You're currently shopping at ${context.storeLocation}. Ask me about products, recipes, or item availability!"`
+          : `Say exactly this greeting to the user: "Hello! I am your SM Markets Assistant. Ask me about products, recipes, or item availability at your chosen branch!"`;
+
         await session.sendClientContent({
           turns: [
             {
               role: 'user',
-              parts: [{ text: 'Say a brief friendly hello to greet the user.' }],
+              parts: [{ text: greetingInstruction }],
             },
           ],
           turnComplete: true,

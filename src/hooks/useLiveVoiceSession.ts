@@ -36,6 +36,7 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const nextStartTimeRef = useRef<number>(0);
+  const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
   // Prevents onclose from overwriting 'error' status when onerror fired first
   const erroredRef = useRef(false);
 
@@ -63,6 +64,11 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
     source.buffer = audioBuffer;
     source.connect(audioCtxRef.current.destination);
 
+    activeSourcesRef.current.push(source);
+    source.onended = () => {
+      activeSourcesRef.current = activeSourcesRef.current.filter((s) => s !== source);
+    };
+
     const currentTime = audioCtxRef.current.currentTime;
     const startTime = Math.max(currentTime, nextStartTimeRef.current);
     source.start(startTime);
@@ -83,6 +89,16 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
       audioCtxRef.current = null;
     }
     nextStartTimeRef.current = 0;
+  }, []);
+
+  const stopAudioPlayback = useCallback(() => {
+    for (const source of activeSourcesRef.current) {
+      try { source.stop(); } catch { /* already ended — safe to ignore */ }
+    }
+    activeSourcesRef.current = [];
+    if (audioCtxRef.current) {
+      nextStartTimeRef.current = audioCtxRef.current.currentTime;
+    }
   }, []);
 
   const startMicrophone = useCallback(

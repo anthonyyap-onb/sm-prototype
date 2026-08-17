@@ -9,11 +9,7 @@ import {
   type Session,
   type LiveServerMessage,
 } from '@google/genai/web';
-import {
-  buildLiveSystemPrompt,
-  type LiveSystemPromptContext,
-} from '@/lib/live/buildLiveSystemPrompt';
-import { getLiveToolDeclarations } from '@/lib/live/liveToolDeclarations';
+import type { LiveSystemPromptContext } from '@/lib/live/buildLiveSystemPrompt';
 import { handleLiveToolCall } from '@/lib/live/liveToolHandler';
 import type { ChatToolDependencies } from '@/lib/tools/chatTools';
 
@@ -144,7 +140,11 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
       setErrorMessage(null);
 
       try {
-        const res = await fetch('/api/live-session', { method: 'POST' });
+        const res = await fetch('/api/live-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(context),
+        });
         const { accessToken, error } = await res.json();
         if (error || !accessToken) throw new Error(error ?? 'No token returned');
 
@@ -156,17 +156,10 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
           httpOptions: { apiVersion: 'v1alpha' },
         });
 
-        const systemPrompt = buildLiveSystemPrompt(context);
-        const toolDeclarations = getLiveToolDeclarations(context.pageContext);
-
         const session = await ai.live.connect({
           model: 'models/gemini-3.1-flash-live-preview',
           config: {
             responseModalities: [Modality.AUDIO],
-            systemInstruction: {
-              parts: [{ text: systemPrompt }],
-            },
-            tools: [{ functionDeclarations: toolDeclarations }],
             realtimeInputConfig: {
               automaticActivityDetection: {
                 startOfSpeechSensitivity: StartSensitivity.START_SENSITIVITY_LOW,

@@ -1,7 +1,12 @@
 import { GoogleGenAI, Modality } from '@google/genai';
 import { NextResponse } from 'next/server';
+import {
+  buildLiveSystemPrompt,
+  type LiveSystemPromptContext,
+} from '@/lib/live/buildLiveSystemPrompt';
+import { getLiveToolDeclarations } from '@/lib/live/liveToolDeclarations';
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
@@ -10,6 +15,10 @@ export async function POST() {
         { status: 500 }
       );
     }
+
+    const context = (await req.json()) as LiveSystemPromptContext;
+    const systemPrompt = buildLiveSystemPrompt(context);
+    const toolDeclarations = getLiveToolDeclarations(context.pageContext);
 
     const ai = new GoogleGenAI({ apiKey });
 
@@ -23,6 +32,10 @@ export async function POST() {
           model: 'models/gemini-3.1-flash-live-preview',
           config: {
             responseModalities: [Modality.AUDIO],
+            systemInstruction: {
+              parts: [{ text: systemPrompt }],
+            },
+            tools: [{ functionDeclarations: toolDeclarations }],
           },
         },
       },

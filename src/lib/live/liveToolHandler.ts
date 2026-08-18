@@ -46,17 +46,38 @@ export async function handleLiveToolCall(
     }
 
     case 'addToCart': {
-      const product = {
-        id: (args.productId as string | undefined) ?? `live-${Date.now()}`,
-        name: args.productName as string,
-        price: (args.price as number | undefined) ?? 0,
-        imageUrl: (args.imageUrl as string | undefined) ?? '',
-        weight: (args.weight as string | undefined) ?? '',
-      };
-      dependencies.addToCart(product);
+      const requestedId = args.productId as string | undefined;
+      const requestedName = args.productName as string;
+      const quantity = (args.quantity as number | undefined) ?? 1;
+
+      // 1. Exact ID match
+      let matched = requestedId
+        ? dependencies.inventory.find((p) => p.id === requestedId)
+        : undefined;
+
+      // 2. Fuzzy name fallback
+      if (!matched) {
+        const needle = requestedName.toLowerCase();
+        matched = dependencies.inventory.find(
+          (p) =>
+            p.name.toLowerCase().includes(needle) ||
+            needle.includes(p.name.toLowerCase())
+        );
+      }
+
+      if (!matched) {
+        return success({
+          success: false,
+          message: `"${requestedName}" was not found in the current store inventory. Do not add it. Tell the user it is unavailable and ask if they want a different product.`,
+        });
+      }
+
+      for (let i = 0; i < quantity; i++) {
+        dependencies.addToCart(matched);
+      }
       return success({
         success: true,
-        message: `${args.productName} added to cart.`,
+        message: `${matched.name} ×${quantity} added to cart.`,
       });
     }
 

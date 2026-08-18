@@ -132,6 +132,16 @@ const CHECKOUT_CART: FunctionDeclaration = {
   },
 };
 
+const GET_CART_ITEMS: FunctionDeclaration = {
+  name: 'getCartItems',
+  description:
+    "Retrieve all items currently in the user's cart, including product names, prices, quantities, and product IDs. Call this to confirm what's in the cart before removing or updating items, or when the user asks what's in their cart.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {},
+  },
+};
+
 const FETCH_PROMOS: FunctionDeclaration = {
   name: 'fetch_promos',
   description:
@@ -166,6 +176,7 @@ const SHOPPING_TOOL_DECLARATIONS: FunctionDeclaration[] = [
   REMOVE_FROM_CART,
   UPDATE_CART_QUANTITY,
   CHECKOUT_CART,
+  GET_CART_ITEMS,
 ];
 
 const CHECKOUT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
@@ -176,6 +187,7 @@ const CHECKOUT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
   UPDATE_CART_QUANTITY,
   FETCH_PROMOS,
   APPLY_PROMOS,
+  GET_CART_ITEMS,
 ];
 
 export function getLiveToolDeclarations(

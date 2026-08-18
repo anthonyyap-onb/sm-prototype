@@ -82,6 +82,24 @@ export async function handleLiveToolCall(
       });
     }
 
+    case 'getCartItems': {
+      const cartItems = dependencies.getCartItems();
+      const summary = cartItems.map((item) => ({
+        productId: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        lineTotal: item.product.price * item.quantity,
+      }));
+      return success({
+        success: true,
+        message: cartItems.length === 0 ? 'The cart is empty.' : `Cart has ${cartItems.length} item(s).`,
+        items: summary,
+        totalItems: cartItems.reduce((sum, i) => sum + i.quantity, 0),
+        totalPrice: cartItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
+      });
+    }
+
     case 'removeFromCart': {
       dependencies.removeItem(args.productId as string);
       return success({

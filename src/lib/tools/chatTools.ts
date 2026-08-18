@@ -1,4 +1,4 @@
-import type { Product, PromoApplicationResult, PromoEvaluation } from '@/types';
+import type { CartItem, Product, PromoApplicationResult, PromoEvaluation } from '@/types';
 
 export interface RemoveFromCartArgs {
   productId: string;
@@ -51,6 +51,7 @@ export interface ChatToolDependencies {
   navigateToCheckout: () => void;
   removeItem: (productId: string) => void;
   setItemQuantity: (productId: string, quantity: number) => void;
+  getCartItems: () => CartItem[];
 }
 
 export function handleChatToolCall(

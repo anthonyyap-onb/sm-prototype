@@ -196,6 +196,12 @@ export default function ChatModal({
     inventoryRef.current = inventoryData;
   }, [inventoryData]);
 
+  // Keep a ref to cart items so getCartItems always returns the current cart state
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+
   const onStoreChangeRef = useRef<(storeId: string) => void>(setSelectedStoreId);
   useEffect(() => {
     onStoreChangeRef.current = setSelectedStoreId;
@@ -256,6 +262,7 @@ export default function ChatModal({
         navigateToCheckout: () => router.push('/checkout'),
         removeItem,
         setItemQuantity,
+        getCartItems: () => itemsRef.current,
       });
     },
   });
@@ -360,6 +367,7 @@ export default function ChatModal({
         navigateToCheckout: () => router.push('/checkout'),
         removeItem,
         setItemQuantity,
+        getCartItems: () => itemsRef.current,
       }
     );
   }, [

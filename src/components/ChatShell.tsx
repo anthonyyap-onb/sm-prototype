@@ -29,6 +29,7 @@ export default function ChatShell() {
         onStoreChange={chatContextData.onStoreChange}
         storesData={chatContextData.storesData}
         pageContext={chatContextData.pageContext}
+        hasBottomNav={pathname === '/'}
       />
     </>
   );

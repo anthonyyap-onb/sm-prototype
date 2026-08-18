@@ -4,6 +4,8 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { StoreProvider } from "@/context/StoreContext";
 import { PromoProvider } from "@/context/PromoContext";
+import { LiveVoiceProvider } from "@/context/LiveVoiceContext";
+import ChatShell from "@/components/ChatShell";
 
 const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
@@ -30,7 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <StoreProvider>
           <CartProvider>
             <PromoProvider>
-            {children}
+              <LiveVoiceProvider>
+                {children}
+                <ChatShell />
+              </LiveVoiceProvider>
             </PromoProvider>
           </CartProvider>
         </StoreProvider>

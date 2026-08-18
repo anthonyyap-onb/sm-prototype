@@ -31,7 +31,7 @@ import {
   shouldShowCheckoutSuggestionChips,
   shouldShowMessageSuggestionChips,
 } from '@/lib/chat/chatPresentation';
-import { useLiveVoiceSession } from '@/hooks/useLiveVoiceSession';
+import { useLiveVoice } from '@/context/LiveVoiceContext';
 import LiveVoiceOverlay from './LiveVoiceOverlay';
 
 
@@ -340,7 +340,7 @@ export default function ChatModal({
     startSession,
     endSession,
     injectStoreUpdate,
-  } = useLiveVoiceSession();
+  } = useLiveVoice();
 
   const isLiveActive = liveStatus === 'active' || liveStatus === 'connecting';
 

@@ -1,15 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { Store, StoreProducts } from '@/types';
 import TopNavBar from '@/components/TopNavBar';
 import SideNavBar from '@/components/SideNavBar';
 import ProductGrid from '@/components/ProductGrid';
-import ChatModal from '@/components/ChatModal';
-import ChatFAB from '@/components/ChatFAB';
 import { useStore } from '@/context/StoreContext';
 import { getStoreInventory } from '@/lib/inventory/storeInventory';
 import MobileHomeLayout from '@/components/MobileHomeLayout';
+import { useLiveVoice } from '@/context/LiveVoiceContext';
 
 interface HomeClientProps {
   stores: Store[];
@@ -37,7 +36,7 @@ function mergeAllProducts(allStoreProducts: StoreProducts[]): StoreProducts {
 
 export default function HomeClient({ stores, allStoreProducts }: HomeClientProps) {
   const { selectedStoreId, setSelectedStoreId } = useStore();
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const { setChatContext, isChatOpen } = useLiveVoice();
 
   const selectedStore = useMemo(
     () => stores.find((s) => s.id === selectedStoreId),
@@ -60,6 +59,16 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
   const storeData = selectedStoreId
     ? (allStoreProducts.find((sp) => sp.storeId === selectedStoreId) ?? mergeAllProducts(allStoreProducts))
     : mergeAllProducts(allStoreProducts);
+
+  useEffect(() => {
+    setChatContext({
+      selectedLocation: selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined,
+      inventoryData: currentInventory,
+      onStoreChange: setSelectedStoreId,
+      storesData: stores,
+      pageContext: 'shopping',
+    });
+  }, [selectedStore, currentInventory, stores, setSelectedStoreId, setChatContext]);
 
   return (
     <>
@@ -119,16 +128,6 @@ export default function HomeClient({ stores, allStoreProducts }: HomeClientProps
         </div>
       </div>
 
-      {/* ChatFAB + ChatModal — rendered for all viewport sizes */}
-      <ChatFAB onClick={() => setIsChatOpen((v) => !v)} isOpen={isChatOpen} />
-      <ChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined}
-        inventoryData={currentInventory}
-        onStoreChange={setSelectedStoreId}
-        storesData={stores}
-      />
     </>
   );
 }

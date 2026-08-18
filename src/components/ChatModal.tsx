@@ -31,7 +31,7 @@ import {
   shouldShowCheckoutSuggestionChips,
   shouldShowMessageSuggestionChips,
 } from '@/lib/chat/chatPresentation';
-import { useLiveVoiceSession } from '@/hooks/useLiveVoiceSession';
+import { useLiveVoice } from '@/context/LiveVoiceContext';
 import LiveVoiceOverlay from './LiveVoiceOverlay';
 
 
@@ -128,6 +128,7 @@ interface ChatModalProps {
   onStoreChange?: (storeId: string) => void;
   storesData?: Store[];
   pageContext?: 'shopping' | 'checkout';
+  hasBottomNav?: boolean;
 }
 
 const SHOPPING_SUGGESTION_CHIPS = [
@@ -153,6 +154,7 @@ export default function ChatModal({
   onStoreChange,
   storesData,
   pageContext = 'shopping',
+  hasBottomNav = false,
 }: ChatModalProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -340,7 +342,7 @@ export default function ChatModal({
     startSession,
     endSession,
     injectStoreUpdate,
-  } = useLiveVoiceSession();
+  } = useLiveVoice();
 
   const isLiveActive = liveStatus === 'active' || liveStatus === 'connecting';
 
@@ -681,7 +683,7 @@ export default function ChatModal({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-x-0 bottom-16 lg:bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+        className={`fixed inset-x-0 ${hasBottomNav ? 'bottom-16' : 'bottom-0'} lg:bottom-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         style={{ top: '4rem' }}
@@ -692,7 +694,7 @@ export default function ChatModal({
         role="dialog"
         aria-modal="true"
         aria-label="SM Markets Assistant"
-        className={`fixed top-16 left-0 w-full lg:max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out h-[calc(100vh-8rem)] lg:h-[calc(100vh-4rem)] ${
+        className={`fixed top-16 left-0 w-full lg:max-w-md bg-white shadow-2xl z-40 flex flex-col border-r border-[var(--color-border-subtle)] transition-transform duration-300 ease-in-out ${hasBottomNav ? 'h-[calc(100vh-8rem)]' : 'h-[calc(100vh-4rem)]'} lg:h-[calc(100vh-4rem)] ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

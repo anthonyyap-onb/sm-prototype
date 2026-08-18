@@ -2,9 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import ChatFAB from '@/components/ChatFAB';
-import ChatModal from '@/components/ChatModal';
+import { useEffect, useMemo, useState } from 'react';
 import TopNavBar from '@/components/TopNavBar';
 import { useCart } from '@/context/CartContext';
 import { usePromos } from '@/context/PromoContext';
@@ -12,6 +10,7 @@ import { useStore } from '@/context/StoreContext';
 import { getStoreInventory } from '@/lib/inventory/storeInventory';
 import type { Store, StoreProducts } from '@/types';
 import MobileCheckoutView from '@/components/MobileCheckoutView';
+import { useLiveVoice } from '@/context/LiveVoiceContext';
 
 interface CheckoutPageClientProps {
   stores: Store[];
@@ -85,7 +84,7 @@ function ChoiceButton({
 
 export default function CheckoutPageClient({ stores, allStoreProducts }: CheckoutPageClientProps) {
   const { selectedStoreId, setSelectedStoreId } = useStore();
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const { setChatContext, isChatOpen } = useLiveVoice();
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'card'>('cod');
   const [promoMessage, setPromoMessage] = useState<string | null>(null);
   const { items } = useCart();
@@ -99,6 +98,16 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
     () => getStoreInventory(allStoreProducts, selectedStoreId),
     [allStoreProducts, selectedStoreId]
   );
+
+  useEffect(() => {
+    setChatContext({
+      selectedLocation: selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined,
+      inventoryData: currentInventory,
+      onStoreChange: setSelectedStoreId,
+      storesData: stores,
+      pageContext: 'checkout',
+    });
+  }, [selectedStore, currentInventory, stores, setSelectedStoreId, setChatContext]);
 
   const handleApplyPromo = (promoId: string) => {
     const result = applyPromos([promoId]);
@@ -435,17 +444,6 @@ export default function CheckoutPageClient({ stores, allStoreProducts }: Checkou
 
       </div>
 
-      {/* ChatFAB + ChatModal — rendered for all viewport sizes */}
-      <ChatFAB onClick={() => setIsChatOpen((open) => !open)} isOpen={isChatOpen} />
-      <ChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        selectedLocation={selectedStore ? `${selectedStore.name} ${selectedStore.city}` : undefined}
-        inventoryData={currentInventory}
-        onStoreChange={setSelectedStoreId}
-        storesData={stores}
-        pageContext="checkout"
-      />
     </>
   );
 }

@@ -78,6 +78,7 @@ export async function handleLiveToolCall(
       return success({
         success: true,
         message: `${matched.name} ×${quantity} added to cart.`,
+        productId: matched.id,
       });
     }
 

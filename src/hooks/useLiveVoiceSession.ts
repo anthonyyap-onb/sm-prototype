@@ -193,26 +193,6 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
 
               // Handle tool calls
               if (msg.toolCall?.functionCalls && msg.toolCall.functionCalls.length > 0) {
-                // Inject a holding message so the model speaks while tool calls run asynchronously.
-                // turnComplete: false means this is a non-interrupting injection, not a new conversation turn.
-                try {
-                  sessionRef.current?.sendClientContent({
-                    turns: [
-                      {
-                        role: 'user',
-                        parts: [
-                          {
-                            text: 'Repeat this sentence exactly: "Let me check that for you, one moment."',
-                          },
-                        ],
-                      },
-                    ],
-                    turnComplete: false,
-                  });
-                } catch {
-                  // Non-fatal — session may be closing; proceed with tool dispatch regardless
-                }
-
                 const responses = await Promise.all(
                   msg.toolCall.functionCalls.map((call) =>
                     handleLiveToolCall(call, dependencies)

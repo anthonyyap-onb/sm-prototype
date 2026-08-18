@@ -347,7 +347,7 @@ export default function ChatModal({
         cartItemCount: totalItems,
       },
       {
-        inventory: inventoryRef.current,
+        get inventory() { return inventoryRef.current; },
         addToCart,
         addToolOutput: (output) => addToolOutputRef.current?.(output),
         markStoreChangeAsToolTriggered: () => {

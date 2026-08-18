@@ -332,6 +332,7 @@ export default function ChatModal({
     isInterrupted: liveIsInterrupted,
     startSession,
     endSession,
+    injectStoreUpdate,
   } = useLiveVoiceSession();
 
   const isLiveActive = liveStatus === 'active' || liveStatus === 'connecting';
@@ -373,6 +374,33 @@ export default function ChatModal({
     setItemQuantity,
     router,
   ]);
+
+  // Keep injectStoreUpdate in a ref so the effect below never captures a stale closure
+  const injectStoreUpdateRef = useRef(injectStoreUpdate);
+  useEffect(() => {
+    injectStoreUpdateRef.current = injectStoreUpdate;
+  }, [injectStoreUpdate]);
+
+  const isLiveActiveRef = useRef(isLiveActive);
+  useEffect(() => {
+    isLiveActiveRef.current = isLiveActive;
+  }, [isLiveActive]);
+
+  // When the store changes mid-session, push the new inventory into the running session
+  // via sendClientContent so the model has fresh context without losing conversation history.
+  const liveStoreUpdateMountedRef = useRef(true);
+  useEffect(() => {
+    if (liveStoreUpdateMountedRef.current) {
+      liveStoreUpdateMountedRef.current = false;
+      return;
+    }
+    if (!selectedLocation || selectedLocation.includes('undefined')) return;
+    if (!isLiveActiveRef.current) return;
+
+    injectStoreUpdateRef.current(selectedLocation, inventoryRef.current);
+  // inventoryRef is a stable ref — reading .current gives the latest value without re-running
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 

@@ -24,6 +24,7 @@ export interface UseLiveVoiceSessionReturn {
     dependencies: ChatToolDependencies
   ) => Promise<void>;
   endSession: () => Promise<void>;
+  injectStoreUpdate: (storeLocation: string, inventory: unknown[]) => void;
 }
 
 export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
@@ -268,5 +269,26 @@ export function useLiveVoiceSession(): UseLiveVoiceSessionReturn {
     setErrorMessage(null);
   }, [stopMicrophoneAndAudio]);
 
-  return { status, errorMessage, isInterrupted, startSession, endSession };
+  const injectStoreUpdate = useCallback((storeLocation: string, inventory: unknown[]) => {
+    if (!sessionRef.current) return;
+    try {
+      sessionRef.current.sendClientContent({
+        turns: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: `STORE UPDATE: The active store has changed to "${storeLocation}". Discard the previous inventory. The new CURRENT INVENTORY DATA is:\n${JSON.stringify(inventory, null, 2)}\nUse only products from this new inventory going forward.`,
+              },
+            ],
+          },
+        ],
+        turnComplete: true,
+      });
+    } catch {
+      // Session may be closing — safe to ignore
+    }
+  }, []);
+
+  return { status, errorMessage, isInterrupted, startSession, endSession, injectStoreUpdate };
 }

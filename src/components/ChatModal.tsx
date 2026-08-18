@@ -31,6 +31,8 @@ import {
   shouldShowCheckoutSuggestionChips,
   shouldShowMessageSuggestionChips,
 } from '@/lib/chat/chatPresentation';
+import { useLiveVoiceSession } from '@/hooks/useLiveVoiceSession';
+import LiveVoiceOverlay from './LiveVoiceOverlay';
 
 
 function InlineMarkdown({ text }: { text: string }) {
@@ -194,6 +196,12 @@ export default function ChatModal({
     inventoryRef.current = inventoryData;
   }, [inventoryData]);
 
+  // Keep a ref to cart items so getCartItems always returns the current cart state
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+
   const onStoreChangeRef = useRef<(storeId: string) => void>(setSelectedStoreId);
   useEffect(() => {
     onStoreChangeRef.current = setSelectedStoreId;
@@ -254,6 +262,7 @@ export default function ChatModal({
         navigateToCheckout: () => router.push('/checkout'),
         removeItem,
         setItemQuantity,
+        getCartItems: () => itemsRef.current,
       });
     },
   });
@@ -323,6 +332,83 @@ export default function ChatModal({
 
   // Keep addToolOutputRef in sync so the onToolCall closure always has the latest function
   addToolOutputRef.current = addToolOutput as typeof addToolOutputRef.current;
+
+  const {
+    status: liveStatus,
+    errorMessage: liveErrorMessage,
+    isInterrupted: liveIsInterrupted,
+    startSession,
+    endSession,
+    injectStoreUpdate,
+  } = useLiveVoiceSession();
+
+  const isLiveActive = liveStatus === 'active' || liveStatus === 'connecting';
+
+  const handleStartLiveSession = useCallback(async () => {
+    await startSession(
+      {
+        storeLocation: selectedLocation,
+        inventoryData,
+        storesData,
+        pageContext,
+        cartItemCount: totalItems,
+      },
+      {
+        get inventory() { return inventoryRef.current; },
+        addToCart,
+        addToolOutput: (output) => addToolOutputRef.current?.(output),
+        markStoreChangeAsToolTriggered: () => {
+          llmTriggeredStoreChangeRef.current = true;
+        },
+        changeStore: (storeId) => onStoreChangeRef.current?.(storeId),
+        clearCart: () => clearCartRef.current(),
+        fetchPromos: () => promosRef.current.evaluations,
+        applyPromos: (ids) => promosRef.current.applyPromos(ids),
+        navigateToCheckout: () => router.push('/checkout'),
+        removeItem,
+        setItemQuantity,
+        getCartItems: () => itemsRef.current,
+      }
+    );
+  }, [
+    startSession,
+    selectedLocation,
+    inventoryData,
+    storesData,
+    pageContext,
+    totalItems,
+    addToCart,
+    removeItem,
+    setItemQuantity,
+    router,
+  ]);
+
+  // Keep injectStoreUpdate in a ref so the effect below never captures a stale closure
+  const injectStoreUpdateRef = useRef(injectStoreUpdate);
+  useEffect(() => {
+    injectStoreUpdateRef.current = injectStoreUpdate;
+  }, [injectStoreUpdate]);
+
+  const isLiveActiveRef = useRef(isLiveActive);
+  useEffect(() => {
+    isLiveActiveRef.current = isLiveActive;
+  }, [isLiveActive]);
+
+  // When the store changes mid-session, push the new inventory into the running session
+  // via sendClientContent so the model has fresh context without losing conversation history.
+  const liveStoreUpdateMountedRef = useRef(true);
+  useEffect(() => {
+    if (liveStoreUpdateMountedRef.current) {
+      liveStoreUpdateMountedRef.current = false;
+      return;
+    }
+    if (!selectedLocation || selectedLocation.includes('undefined')) return;
+    if (!isLiveActiveRef.current) return;
+
+    injectStoreUpdateRef.current(selectedLocation, inventoryRef.current);
+  // inventoryRef is a stable ref — reading .current gives the latest value without re-running
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation]);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 
@@ -1020,6 +1106,15 @@ export default function ChatModal({
           <div ref={messagesEndRef} />
         </div>
 
+        {isLiveActive || liveStatus === 'error' ? (
+          <LiveVoiceOverlay
+            status={liveStatus}
+            errorMessage={liveErrorMessage}
+            isInterrupted={liveIsInterrupted}
+            onEnd={endSession}
+          />
+        ) : (
+          <>
         {/* Speaking indicator */}
         {isSpeaking && (
           <div className="bg-[var(--color-primary)]/10 border-t border-[var(--color-primary)]/20 px-4 py-2 flex items-center justify-between shrink-0">
@@ -1073,6 +1168,15 @@ export default function ChatModal({
             </button>
             <button
               type="button"
+              aria-label="Start live voice session"
+              onClick={handleStartLiveSession}
+              disabled={isLoading || isRecording || isTranscribing}
+              className="p-2 rounded-full flex items-center justify-center mb-0.5 transition-colors bg-gray-200 hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-sm">graphic_eq</span>
+            </button>
+            <button
+              type="button"
               className={`p-2 rounded-full flex items-center justify-center mb-0.5 mr-0.5 transition-colors ${
                 isRecording
                   ? 'bg-red-500 text-white animate-pulse cursor-pointer'
@@ -1098,6 +1202,8 @@ export default function ChatModal({
             </span>
           </div>
         </div>
+          </>
+        )}
       </div>
     </>
   );
